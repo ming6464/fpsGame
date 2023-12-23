@@ -756,13 +756,12 @@ MonoBehaviour:
   _viewSensitiveHor: 7
   _camera: {fileID: 1132131453}
   _player: {fileID: 591214670}
-  _gravity: -18
-  _jumpingHeight: 2
+  _jumpingHeight: {x: 0, y: 2, z: 0}
   _velocityJumping: {x: 0, y: 0, z: 0}
-  _smoothJumping: 0
-  _jumpingFalloff: 0
+  _smoothJumping: 0.2
+  _jumpingFalloff: {x: 0, y: -3, z: 0}
   _velocityJumpingFalloff: {x: 0, y: 0, z: 0}
-  _smoothJumpingFalloff: 0
+  _smoothJumpingFalloff: 0.2
   PlayerStance: 0
   _stanceSmoothing: 0.15
   _stanceInfos:
@@ -784,7 +783,7 @@ MonoBehaviour:
   _headStandTf: {fileID: 580325025}
   _headCrouchTf: {fileID: 1606850909}
   _headProneTf: {fileID: 106617242}
-  checkRayStandAndCrouch: 0
+  _checkRayStandAndCrouch: 0
 --- !u!143 &591214672
 CharacterController:
   m_ObjectHideFlags: 0

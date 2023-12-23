@@ -24,18 +24,13 @@ public class PlayerCtrl : MonoBehaviour
     [SerializeField] private Transform _camera;
     [SerializeField] private Transform _player;
 
-    [Header("Gravity")] 
-    [SerializeField] private float _gravity = -9.8f;
-
     [Header("Jumping")] 
-    [SerializeField] private float _jumpingHeight;
+    [SerializeField] private Vector3 _jumpingHeight;
     [SerializeField] private Vector3 _velocityJumping;
     [SerializeField] private float _smoothJumping;
-    [SerializeField] private float _jumpingFalloff;
+    [SerializeField] private Vector3 _jumpingFalloff;
     [SerializeField] private Vector3 _velocityJumpingFalloff;
     [SerializeField] private float _smoothJumpingFalloff;
-    private float jumpHeight;
-    private bool isJump;
 
     [Header("Player Stance")] 
     public Stance PlayerStance = Stance.Stand;
@@ -71,8 +66,10 @@ public class PlayerCtrl : MonoBehaviour
     private float rotateX;
     private float rotateY;
     private InputBase inputBase;
-    private Vector3 velocity;
-    private bool checkJumpOnStep;
+    
+    private Vector3 vt_jump;
+    private Vector3 jumpHeight;
+    private bool isJump;
 
     private void Awake()
     {
@@ -195,7 +192,6 @@ public class PlayerCtrl : MonoBehaviour
         if (_checkRayStandAndCrouch)
         {
             isJump = false;
-            velocity.y = 0f;
         }
         if (curStance == nextStance) return;
         var stanceInfoNext = Array.Find(_stanceInfos, x => x.StanceType == nextStance);
@@ -258,36 +254,47 @@ public class PlayerCtrl : MonoBehaviour
 
         
         //jump
-
+        vt_jump = Vector3.zero;
         if (isJump)
         {
-            if (Math.Abs(jumpHeight - _jumpingHeight) < 0.5f || (checkJumpOnStep && _characterController.isGrounded))
+            if (Math.Abs(jumpHeight.y - _jumpingHeight.y) <= 0.5f)
             {
                 isJump = false;
-                velocity.y = 0f;
+                jumpHeight = Vector3.zero;
+                _velocityJumping = Vector3.zero;
+                _velocityJumpingFalloff = Vector3.zero;
             }
             else
             {
-                checkJumpOnStep = true;
-                var jumpStep = Mathf.Lerp(jumpHeight, _jumpingHeight, Time.deltaTime * 3f);
-                movementVelocity += (jumpStep - jumpHeight) * Vector3.up;
+                if (jumpHeight.y < 0)
+                {
+                    jumpHeight = Vector3.zero;
+                }
+                var jumpStep = Vector3.SmoothDamp(jumpHeight, _jumpingHeight, ref _velocityJumping,_smoothJumping);
+                vt_jump += jumpStep - jumpHeight;
                 jumpHeight = jumpStep;
             }
         }
         else
         {
-            //gravity
-            if (_characterController.isGrounded && velocity.y < 0f)
+            if (_characterController.isGrounded)
             {
-                velocity.y = -1f;
+                jumpHeight = Vector3.zero;
+                vt_jump = Vector3.down;
+                _velocityJumpingFalloff = Vector3.zero;
             }
             else
             {
-                velocity.y += _gravity * Time.deltaTime * Time.deltaTime * 1/2f;
+                if (jumpHeight.y > 0 || vt_jump.y > 0)
+                {
+                    jumpHeight = Vector3.zero;
+                    vt_jump = Vector3.down;
+                    _velocityJumpingFalloff = Vector3.zero;
+                }
+                vt_jump = Vector3.SmoothDamp(jumpHeight, _jumpingFalloff, ref _velocityJumpingFalloff,_smoothJumpingFalloff);
             }
-            movementVelocity += velocity;
-            //gravity
         }
+        movementVelocity += vt_jump;
         //jump
         _characterController.Move(movementVelocity);
     }
@@ -313,9 +320,10 @@ public class PlayerCtrl : MonoBehaviour
             return;
         }
         
-        checkJumpOnStep = false;
-        jumpHeight = 0f;
         isJump = true;
+        jumpHeight = Vector3.zero;
+        _velocityJumping = Vector3.zero;
+        _velocityJumpingFalloff = Vector3.zero;
     }
 }
 
