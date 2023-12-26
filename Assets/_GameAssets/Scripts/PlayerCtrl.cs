@@ -9,8 +9,7 @@ using UnityEngine.ProBuilder.Shapes;
 
 public class PlayerCtrl : MonoBehaviour
 {
-    [Header("Movement")]
-    [SerializeField] private float _walkingForwardSpeed;
+    [Header("Movement")] [SerializeField] private float _walkingForwardSpeed;
     [SerializeField] private float _walkingBackwardSpeed;
     [SerializeField] private float _walkingStrafeSpeed;
     [SerializeField] private float _walkingForwardOnAirSpeed;
@@ -18,35 +17,41 @@ public class PlayerCtrl : MonoBehaviour
     [SerializeField] private float _walkingStrafeOnAirSpeed;
     [SerializeField] private CharacterController _characterController;
 
-    [Header("Rotation")]
-    [SerializeField] private float _viewSensitiveVer;
-    [SerializeField] private float _viewSensitiveHor;
+    [Header("Rotation")] [SerializeField] private Vector2 _viewSensitive;
     [SerializeField] private Transform _camera;
     [SerializeField] private Transform _player;
+    [SerializeField] private float _rotateSmoothTime;
 
-    [Header("Jumping")] 
-    [SerializeField] private Vector3 _jumpingHeight;
-    [SerializeField] private Vector3 _velocityJumping;
-    [SerializeField] private float _smoothJumping;
+
+    [Header("Jumping")] [SerializeField] private Vector3 _jumpingHeight;
+    [SerializeField] private float _jumpingSmoothTime;
     [SerializeField] private Vector3 _jumpingFalloff;
-    [SerializeField] private Vector3 _velocityJumpingFalloff;
-    [SerializeField] private float _smoothJumpingFalloff;
+    [SerializeField] private float _jumpingFalloffSmoothTime;
 
-    [Header("Player Stance")] 
-    public Stance PlayerStance = Stance.Stand;
+    [Header("Player Stance")] public Stance PlayerStance = Stance.Stand;
     [SerializeField] private float _stanceSmoothing;
     [SerializeField] private StanceInfo[] _stanceInfos;
 
-    [Header("Raycast Info")] 
-    [SerializeField] private Transform _headStandTf;
+    [Header("Raycast Info")] [SerializeField]
+    private Transform _headStandTf;
+
     [SerializeField] private Transform _headCrouchTf;
     [SerializeField] private Transform _headProneTf;
     [SerializeField] private bool _checkRayStandAndCrouch;
-    
+
+    [Header("Weapon")] [SerializeField] private WeaponCtrl _weaponCtrl;
+
+    private Vector2 inputView = Vector2.zero;
+    public Vector2 InputView => inputView;
+
     private StanceInfo curStanceInfo = null;
     private Vector3 vtSmoothCam = Vector3.zero;
     private Vector3 vtSmoothCrtCenter = Vector3.zero;
     private float vtSmoothCrtHeight = 0f;
+
+    private Vector3 vtRotate;
+    private Vector2 curRotate;
+
     private Stance curStance
     {
         get => curStanceInfo.StanceType;
@@ -60,16 +65,17 @@ public class PlayerCtrl : MonoBehaviour
             vtSmoothCrtHeight = 0f;
         }
     }
+
     private Vector3 camPos;
     private Stance nextStance;
     private Vector2 movementCharacter;
-    private float rotateX;
-    private float rotateY;
     private InputBase inputBase;
-    
+
     private Vector3 vt_jump;
     private Vector3 jumpHeight;
     private bool isJump;
+    private Vector3 vtJumping;
+    private Vector3 vtJumpingFalloff;
 
     private void Awake()
     {
@@ -80,6 +86,206 @@ public class PlayerCtrl : MonoBehaviour
 
     private void OnEnable()
     {
+        LinkInputSystem();
+    }
+
+    private void OnDisable()
+    {
+        UnlinkInputSystem();
+    }
+
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        inputBase.Enable();
+        curRotate.x = _camera.localRotation.eulerAngles.x;
+        curRotate.y = _player.localRotation.eulerAngles.y;
+        _weaponCtrl.Init(this);
+    }
+
+    private void Update()
+    {
+        UpdateViewCamera();
+        CalculateMovement();
+        UpdateCamera();
+        UpdateStance();
+    }
+
+    private void UpdateStance()
+    {
+        var startPosRay = Vector3.zero;
+        var endPosRay = Vector3.zero;
+
+        switch (curStance)
+        {
+            case Stance.Stand:
+                startPosRay = _headStandTf.position;
+                endPosRay = _headStandTf.position;
+                break;
+            case Stance.Crouch:
+                startPosRay = _headCrouchTf.position;
+                endPosRay = _headStandTf.position;
+                break;
+            case Stance.Prone:
+                startPosRay = _headProneTf.position;
+                endPosRay = _headCrouchTf.position;
+                break;
+        }
+
+        endPosRay.y += _characterController.stepOffset;
+        Debug.DrawLine(startPosRay, endPosRay, Color.red);
+        _checkRayStandAndCrouch = Physics.Raycast(startPosRay, Vector3.up, endPosRay.y - startPosRay.y);
+
+
+        for (var i = 0; i < 8; i++)
+        {
+            var vtDir = Quaternion.Euler(0, i * 45, 0) * Vector3.right;
+            Debug.DrawRay(endPosRay, vtDir * _characterController.radius, Color.red);
+            if (!_checkRayStandAndCrouch)
+                _checkRayStandAndCrouch = Physics.Raycast(endPosRay, vtDir, _characterController.radius);
+        }
+
+        if (_checkRayStandAndCrouch) isJump = false;
+        if (curStance == nextStance) return;
+        var stanceInfoNext = Array.Find(_stanceInfos, x => x.StanceType == nextStance);
+        if (stanceInfoNext.ColliderHeight < curStanceInfo.ColliderHeight)
+        {
+            curStance = nextStance;
+            return;
+        }
+
+        switch (curStance)
+        {
+            case Stance.Crouch:
+                if (_checkRayStandAndCrouch) return;
+                curStance = nextStance;
+                break;
+            case Stance.Prone:
+                if (_checkRayStandAndCrouch) return;
+                curStance = Stance.Crouch;
+                break;
+        }
+    }
+
+    private void UpdateCamera()
+    {
+        if (_camera.localPosition == camPos) return;
+        _camera.localPosition = Vector3.SmoothDamp(_camera.localPosition, camPos, ref vtSmoothCam, _stanceSmoothing);
+        _characterController.center = Vector3.SmoothDamp(_characterController.center, curStanceInfo.ColliderCenter,
+            ref vtSmoothCrtCenter, _stanceSmoothing);
+        _characterController.height = Mathf.SmoothDamp(_characterController.height, curStanceInfo.ColliderHeight,
+            ref vtSmoothCrtHeight, _stanceSmoothing);
+    }
+
+    private void CalculateMovement()
+    {
+        //update stance
+        if (movementCharacter != Vector2.zero || isJump)
+            if (nextStance == Stance.Prone)
+            {
+                nextStance = Stance.Stand;
+                return;
+            }
+
+        var movementVelocity = Vector3.zero;
+
+
+        //movement
+        if (movementCharacter != Vector2.zero)
+        {
+            var walkingBackwardSpeed =
+                _characterController.isGrounded ? _walkingBackwardSpeed : _walkingBackwardOnAirSpeed;
+            var walkingForwardSpeed =
+                _characterController.isGrounded ? _walkingForwardSpeed : _walkingForwardOnAirSpeed;
+            var walkingStrafeSpeed = _characterController.isGrounded ? _walkingStrafeSpeed : _walkingStrafeOnAirSpeed;
+            var verSpeed = movementCharacter.y *
+                           ((movementCharacter.y < 0 ? walkingBackwardSpeed : walkingForwardSpeed) +
+                            curStanceInfo.SpeedChange) * Time.deltaTime;
+
+            var horSpeed = movementCharacter.x * (walkingStrafeSpeed + curStanceInfo.SpeedChange) * Time.deltaTime;
+
+            movementVelocity += _player.TransformDirection(horSpeed, 0f, verSpeed);
+        }
+        //movement
+
+
+        //jump
+        vt_jump = Vector3.zero;
+        if (isJump)
+        {
+            if (Math.Abs(jumpHeight.y - _jumpingHeight.y) <= 0.5f)
+            {
+                isJump = false;
+                jumpHeight = Vector3.zero;
+                vtJumping = Vector3.zero;
+                vtJumpingFalloff = Vector3.zero;
+            }
+            else
+            {
+                if (jumpHeight.y < 0) jumpHeight = Vector3.zero;
+                var jumpStep = Vector3.SmoothDamp(jumpHeight, _jumpingHeight, ref vtJumping, _jumpingSmoothTime);
+                vt_jump += jumpStep - jumpHeight;
+                jumpHeight = jumpStep;
+            }
+        }
+        else
+        {
+            if (_characterController.isGrounded)
+            {
+                jumpHeight = Vector3.zero;
+                vt_jump = Vector3.down;
+                vtJumpingFalloff = Vector3.zero;
+            }
+            else
+            {
+                if (jumpHeight.y > 0 || vt_jump.y > 0)
+                {
+                    jumpHeight = Vector3.zero;
+                    vt_jump = Vector3.down;
+                    vtJumpingFalloff = Vector3.zero;
+                }
+
+                vt_jump = Vector3.SmoothDamp(jumpHeight, _jumpingFalloff, ref vtJumpingFalloff,
+                    _jumpingFalloffSmoothTime);
+            }
+        }
+
+        movementVelocity += vt_jump;
+        //jump
+        _characterController.Move(movementVelocity);
+    }
+
+    private void UpdateViewCamera()
+    {
+        curRotate.x -= inputView.y * _viewSensitive.y * Time.deltaTime;
+        curRotate.y += inputView.x * _viewSensitive.x * Time.deltaTime;
+
+        curRotate.x = Math.Clamp(curRotate.x, -62f, 44f);
+        _camera.localRotation = Quaternion.Euler(curRotate.x, 0, 0);
+
+        _player.localRotation = Quaternion.Euler(0, curRotate.y, 0);
+    }
+
+    private void Jump()
+    {
+        if (!_characterController.isGrounded) return;
+        if (curStance != Stance.Stand)
+        {
+            nextStance = Stance.Stand;
+            return;
+        }
+
+        isJump = true;
+        jumpHeight = Vector3.zero;
+        vtJumping = Vector3.zero;
+        vtJumpingFalloff = Vector3.zero;
+    }
+
+    #region -InputSystem handler-
+
+    private void LinkInputSystem()
+    {
         inputBase.Character.Movement.performed += CharacterMovementInputBase;
         inputBase.Character.View.performed += CharacterViewInputBase;
         inputBase.Character.Jump.performed += CharacterJumpInputBase;
@@ -87,8 +293,8 @@ public class PlayerCtrl : MonoBehaviour
         inputBase.Character.Crouch.canceled += CharacterCrouchInputBase;
         inputBase.Character.Prone.performed += CharacterProneInputBase;
     }
-    
-    private void OnDisable()
+
+    private void UnlinkInputSystem()
     {
         inputBase.Character.Movement.performed -= CharacterMovementInputBase;
         inputBase.Character.View.performed -= CharacterViewInputBase;
@@ -109,17 +315,14 @@ public class PlayerCtrl : MonoBehaviour
         if (!_characterController.isGrounded) return;
         if (obj.canceled)
         {
-            if (nextStance == Stance.Crouch)
-            {
-                nextStance = Stance.Stand;
-            }
+            if (nextStance == Stance.Crouch) nextStance = Stance.Stand;
         }
-        else if(nextStance != Stance.Crouch)
+        else if (nextStance != Stance.Crouch)
         {
             nextStance = Stance.Crouch;
         }
     }
-    
+
     private void CharacterJumpInputBase(InputAction.CallbackContext obj)
     {
         if (!_characterController.isGrounded || _checkRayStandAndCrouch) return;
@@ -128,203 +331,15 @@ public class PlayerCtrl : MonoBehaviour
 
     private void CharacterViewInputBase(InputAction.CallbackContext obj)
     {
-        UpdateViewCamera(obj.ReadValue<Vector2>());
+        inputView = obj.ReadValue<Vector2>();
     }
-    
+
     private void CharacterMovementInputBase(InputAction.CallbackContext obj)
     {
         movementCharacter = obj.ReadValue<Vector2>();
     }
 
-    void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        inputBase.Enable();
-        rotateX = _camera.localRotation.eulerAngles.x;
-        rotateY = _player.localRotation.eulerAngles.y;
-    }
-
-    private void Update()
-    {
-        CalculateMovement();
-        UpdateCamera();
-        UpdateStance();
-    }
-
-    private void UpdateStance()
-    {
-        Vector3 startPosRay = Vector3.zero;
-        Vector3 endPosRay = Vector3.zero;
-
-        switch (curStance)
-        {
-            case Stance.Stand:
-                startPosRay = _headStandTf.position;
-                endPosRay = _headStandTf.position;
-                break;
-            case Stance.Crouch:
-                startPosRay = _headCrouchTf.position;
-                endPosRay = _headStandTf.position;
-                break;
-            case Stance.Prone:
-                startPosRay = _headProneTf.position;
-                endPosRay = _headCrouchTf.position;
-                break;
-            
-        }
-
-        endPosRay.y += _characterController.stepOffset;
-        Debug.DrawLine(startPosRay,endPosRay,Color.red);
-        _checkRayStandAndCrouch = Physics.Raycast(startPosRay, Vector3.up, endPosRay.y - startPosRay.y);
-        
-        
-        for (int i = 0; i < 8; i++)
-        {
-            var vtDir = Quaternion.Euler(0, i * 45, 0) * Vector3.right;
-            Debug.DrawRay(endPosRay,vtDir * _characterController.radius,Color.red);
-            if (!_checkRayStandAndCrouch)
-            {
-                _checkRayStandAndCrouch = Physics.Raycast(endPosRay, vtDir, _characterController.radius);
-            }
-        }
-
-        if (_checkRayStandAndCrouch)
-        {
-            isJump = false;
-        }
-        if (curStance == nextStance) return;
-        var stanceInfoNext = Array.Find(_stanceInfos, x => x.StanceType == nextStance);
-        if (stanceInfoNext.ColliderHeight < curStanceInfo.ColliderHeight)
-        {
-            curStance = nextStance;
-            return;
-        }
-        switch (curStance)
-        {
-            case Stance.Crouch:
-                if (_checkRayStandAndCrouch) return;
-                curStance = nextStance;
-                break;
-            case Stance.Prone:
-                if (_checkRayStandAndCrouch) return;
-                curStance = Stance.Crouch;
-                break;
-        }
-    }
-
-    private void UpdateCamera()
-    {
-        if (_camera.localPosition == camPos) return;
-        _camera.localPosition = Vector3.SmoothDamp(_camera.localPosition, camPos,ref vtSmoothCam, _stanceSmoothing);
-        _characterController.center = Vector3.SmoothDamp(_characterController.center, curStanceInfo.ColliderCenter,
-            ref vtSmoothCrtCenter, _stanceSmoothing);
-        _characterController.height = Mathf.SmoothDamp(_characterController.height, curStanceInfo.ColliderHeight,
-            ref vtSmoothCrtHeight, _stanceSmoothing);
-    }
-
-    private void CalculateMovement()
-    {
-        //update stance
-        if (movementCharacter != Vector2.zero || isJump)
-        {
-            if (nextStance == Stance.Prone)
-            {
-                nextStance = Stance.Stand;
-                return;
-            }
-        }
-
-        Vector3 movementVelocity = Vector3.zero;
-        
-
-        //movement
-        if (movementCharacter != Vector2.zero)
-        {
-            var walkingBackwardSpeed = _characterController.isGrounded ? _walkingBackwardSpeed : _walkingBackwardOnAirSpeed;
-            var walkingForwardSpeed = _characterController.isGrounded ? _walkingForwardSpeed : _walkingForwardOnAirSpeed;
-            var walkingStrafeSpeed = _characterController.isGrounded ? _walkingStrafeSpeed : _walkingStrafeOnAirSpeed;
-            var verSpeed = movementCharacter.y * ((movementCharacter.y < 0 ? walkingBackwardSpeed : walkingForwardSpeed) + curStanceInfo.SpeedChange) * Time.deltaTime;
-        
-            var horSpeed = movementCharacter.x * (walkingStrafeSpeed + curStanceInfo.SpeedChange) * Time.deltaTime;
-
-            movementVelocity += _player.TransformDirection(horSpeed, 0f, verSpeed);
-        }
-        //movement
-
-        
-        //jump
-        vt_jump = Vector3.zero;
-        if (isJump)
-        {
-            if (Math.Abs(jumpHeight.y - _jumpingHeight.y) <= 0.5f)
-            {
-                isJump = false;
-                jumpHeight = Vector3.zero;
-                _velocityJumping = Vector3.zero;
-                _velocityJumpingFalloff = Vector3.zero;
-            }
-            else
-            {
-                if (jumpHeight.y < 0)
-                {
-                    jumpHeight = Vector3.zero;
-                }
-                var jumpStep = Vector3.SmoothDamp(jumpHeight, _jumpingHeight, ref _velocityJumping,_smoothJumping);
-                vt_jump += jumpStep - jumpHeight;
-                jumpHeight = jumpStep;
-            }
-        }
-        else
-        {
-            if (_characterController.isGrounded)
-            {
-                jumpHeight = Vector3.zero;
-                vt_jump = Vector3.down;
-                _velocityJumpingFalloff = Vector3.zero;
-            }
-            else
-            {
-                if (jumpHeight.y > 0 || vt_jump.y > 0)
-                {
-                    jumpHeight = Vector3.zero;
-                    vt_jump = Vector3.down;
-                    _velocityJumpingFalloff = Vector3.zero;
-                }
-                vt_jump = Vector3.SmoothDamp(jumpHeight, _jumpingFalloff, ref _velocityJumpingFalloff,_smoothJumpingFalloff);
-            }
-        }
-        movementVelocity += vt_jump;
-        //jump
-        _characterController.Move(movementVelocity);
-    }
-
-    private void UpdateViewCamera(Vector2 vt)
-    {
-        rotateX -= vt.y * _viewSensitiveVer  * Time.deltaTime;
-        rotateY = vt.x * _viewSensitiveHor * Time.deltaTime;
-
-        rotateX = Math.Clamp(rotateX, -62f, 44f);
-        _camera.localRotation = Quaternion.Euler(rotateX, 0, 0);
-        
-        _player.Rotate(Vector3.up,rotateY);
-    }
-    
-    
-    private void Jump()
-    {
-        if(!_characterController.isGrounded) return;
-        if (curStance != Stance.Stand)
-        {
-            nextStance = Stance.Stand;
-            return;
-        }
-        
-        isJump = true;
-        jumpHeight = Vector3.zero;
-        _velocityJumping = Vector3.zero;
-        _velocityJumpingFalloff = Vector3.zero;
-    }
+    #endregion
 }
 
 [Serializable]
