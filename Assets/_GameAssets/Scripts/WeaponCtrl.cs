@@ -11,11 +11,11 @@ public class WeaponCtrl : MonoBehaviour
     [SerializeField] private Vector2 _maxAngleRorate = new(11f, 23f);
     [SerializeField] private Vector2 _minAngleRorate = new(-23f, -10f);
     private PlayerCtrl playerCtrl;
-    private Vector2 curRotate;
-    private Vector2 targeRotate;
+    private Vector3 curRotate;
+    private Vector3 targeRotate;
     private bool isInit;
-    private Vector2 swayVelocity = Vector3.zero;
-    private Vector2 swayResetVelocity = Vector3.zero;
+    private Vector3 swayVelocity = Vector3.zero;
+    private Vector3 swayResetVelocity = Vector3.zero;
 
     public void Init(PlayerCtrl playerCtrl)
     {
@@ -35,9 +35,10 @@ public class WeaponCtrl : MonoBehaviour
         targeRotate.x -= _swaySensitive.y * playerCtrl.InputView.y * Time.deltaTime;
         targeRotate.x = Math.Clamp(targeRotate.x, _minAngleRorate.x, _maxAngleRorate.x);
         targeRotate.y = Math.Clamp(targeRotate.y, _minAngleRorate.y, _maxAngleRorate.y);
-        targeRotate = Vector2.SmoothDamp(targeRotate, Vector2.zero,
+        targeRotate.z = -targeRotate.y * 5;
+        targeRotate = Vector3.SmoothDamp(targeRotate, Vector3.zero,
             ref swayResetVelocity, _swayResetSmoothTime);
-        curRotate = Vector2.SmoothDamp(curRotate, targeRotate, ref swayVelocity, _swaySmoothTime);
-        transform.localRotation = Quaternion.Euler(curRotate.x, curRotate.y, 0);
+        curRotate = Vector3.SmoothDamp(curRotate, targeRotate, ref swayVelocity, _swaySmoothTime);
+        transform.localRotation = Quaternion.Euler(curRotate);
     }
 }
