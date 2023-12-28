@@ -4,8 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - cube
-  - vom
+  - PrimaryWeapon
+  - SecondaryWeapon
+  - MeleeWeapon
+  - Explosives
   layers:
   - Default
   - TransparentFX

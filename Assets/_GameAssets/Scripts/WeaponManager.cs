@@ -1,13 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class WeaponManager : MonoBehaviour
 {
     [Header("Weapon")] [SerializeField] private string _curWeaponName;
-    [SerializeField] private bool _isFire;
+    [SerializeField] private WeaponKEY _curWeaponKey = WeaponKEY.MeleeWeapon;
+    [SerializeField] private WeaponCtrl _weaponCanPickup = null;
     [Header("Sway")] [SerializeField] private Vector2 _swaySensitive;
     [SerializeField] private float _swaySmoothTime;
     [SerializeField] private float _swayResetSmoothTime;
@@ -19,8 +21,8 @@ public class WeaponManager : MonoBehaviour
     private bool isInit;
     private Vector3 swayVelocity = Vector3.zero;
     private Vector3 swayResetVelocity = Vector3.zero;
-    private WeaponCtrl curWeapon;
     private InputBase inputBase;
+    private Dictionary<WeaponKEY, WeaponCtrl> Weapons = new();
 
     private void Awake()
     {
@@ -40,6 +42,19 @@ public class WeaponManager : MonoBehaviour
     private void Start()
     {
         inputBase.Enable();
+        LoadWeapons();
+    }
+
+    private void LoadWeapons()
+    {
+        foreach (Transform child in transform)
+            if (child.TryGetComponent(out WeaponCtrl weaponCtrl))
+            {
+                PickUpWeapon(weaponCtrl);
+                if (weaponCtrl.WeaponType == WeaponKEY.PrimaryWeapon ||
+                    (_curWeaponKey != WeaponKEY.PrimaryWeapon && weaponCtrl.WeaponType >= _curWeaponKey))
+                    ChangeWeapon(weaponCtrl.WeaponType);
+            }
     }
 
     public void Init(PlayerCtrl playerCtrl)
@@ -48,26 +63,79 @@ public class WeaponManager : MonoBehaviour
         isInit = true;
     }
 
-    private void Fire()
+    private bool ChangeWeapon(WeaponKEY weaponKey)
     {
-        if (!curWeapon)
+        if (!Weapons.ContainsKey(weaponKey) || !Weapons[weaponKey])
         {
-            if (transform.childCount == 0 || !transform.GetChild(0).TryGetComponent(out curWeapon))
-            {
-                Debug.LogError("CurWeapon not found!");
-                return;
-            }
-
-            _curWeaponName = curWeapon.name;
+            Debug.LogError($"weapon has key '{weaponKey}' not found!");
+            return false;
         }
 
-        curWeapon.Fire();
+        if (Weapons.ContainsKey(_curWeaponKey) && Weapons[_curWeaponKey] != null)
+        {
+            Weapons[_curWeaponKey].UnUseWeapon();
+            Weapons[_curWeaponKey].gameObject.SetActive(false);
+        }
+
+        Weapons[weaponKey].UseWeapon();
+        _curWeaponKey = weaponKey;
+        _curWeaponName = Weapons[weaponKey].name;
+        return true;
+    }
+
+    private bool PickUpWeapon(WeaponCtrl weaponCtrl)
+    {
+        if (!weaponCtrl)
+        {
+            Debug.LogError($"weapon not found!");
+            return false;
+        }
+
+        if (!Weapons.TryAdd(weaponCtrl.WeaponType, null)) DropWeapon(weaponCtrl.WeaponType);
+        if (weaponCtrl.transform.TryGetComponent(out Rigidbody rig))
+        {
+            rig.Sleep();
+            rig.constraints = RigidbodyConstraints.FreezeAll;
+            rig.useGravity = false;
+        }
+
+        weaponCtrl.UnUseWeapon();
+        weaponCtrl.transform.gameObject.SetActive(false);
+        Weapons[weaponCtrl.WeaponType] = weaponCtrl;
+        return true;
+    }
+
+    private bool DropWeapon(WeaponKEY weaponKey)
+    {
+        if (!Weapons.ContainsKey(weaponKey) || !Weapons[weaponKey])
+        {
+            Debug.LogError($"weapon has key '{weaponKey}' not found!");
+            return false;
+        }
+
+        Weapons[weaponKey].UnUseWeapon();
+        Weapons[weaponKey].transform.SetParent(null, true);
+        if (Weapons[weaponKey].transform.TryGetComponent(out Rigidbody rig))
+        {
+            rig.WakeUp();
+            rig.constraints = RigidbodyConstraints.None;
+            rig.useGravity = true;
+        }
+
+        Weapons[weaponKey] = null;
+        foreach (var dic in Weapons)
+            if (dic.Value)
+            {
+                ChangeWeapon(dic.Key);
+                break;
+            }
+
+        return true;
     }
 
     private void Update()
     {
         UpdateRotate();
-        if (_isFire) Fire();
     }
 
     private void UpdateRotate()
@@ -88,15 +156,36 @@ public class WeaponManager : MonoBehaviour
 
     private void LinkInputSystem()
     {
-        inputBase.Weapon.Fire.performed += context => { _isFire = true; };
-        inputBase.Weapon.Fire.canceled += (context) => { _isFire = false; };
+        inputBase.Weapon.Fire.performed += context => EventDispatcher.Instance.PostEvent(EventID.OnPullTrigger);
+        inputBase.Weapon.Fire.canceled += (context) => EventDispatcher.Instance.PostEvent(EventID.OnReleaseTrigger);
+        inputBase.Weapon.ChangeMeleeWeapon.performed += context => ChangeWeapon(WeaponKEY.MeleeWeapon);
+        inputBase.Weapon.ChangeSecondaryWeapon.performed += context => ChangeWeapon(WeaponKEY.SecondaryWeapon);
+        inputBase.Weapon.ChangePrimaryWeapon.performed += context => ChangeWeapon(WeaponKEY.PrimaryWeapon);
+        inputBase.Weapon.ChangeExplosives.performed += context => ChangeWeapon(WeaponKEY.Explosives);
+        inputBase.Weapon.DropWeapon.performed += context => DropWeapon(_curWeaponKey);
+        inputBase.Weapon.PickUpWeapon.performed += context => PickUpWeapon(_weaponCanPickup);
     }
 
     private void UnLinkInputSystem()
     {
-        inputBase.Weapon.Fire.performed -= context => { _isFire = true; };
-        inputBase.Weapon.Fire.canceled -= (context) => { _isFire = false; };
+        inputBase.Weapon.Fire.performed -= context => EventDispatcher.Instance.PostEvent(EventID.OnPullTrigger);
+        inputBase.Weapon.Fire.canceled -= (context) => EventDispatcher.Instance.PostEvent(EventID.OnReleaseTrigger);
+        inputBase.Weapon.ChangeMeleeWeapon.performed -= context => ChangeWeapon(WeaponKEY.MeleeWeapon);
+        inputBase.Weapon.ChangeSecondaryWeapon.performed -= context => ChangeWeapon(WeaponKEY.SecondaryWeapon);
+        inputBase.Weapon.ChangePrimaryWeapon.performed -= context => ChangeWeapon(WeaponKEY.PrimaryWeapon);
+        inputBase.Weapon.ChangeExplosives.performed -= context => ChangeWeapon(WeaponKEY.Explosives);
+        inputBase.Weapon.DropWeapon.performed -= context => DropWeapon(_curWeaponKey);
+        inputBase.Weapon.PickUpWeapon.performed -= context => PickUpWeapon(_weaponCanPickup);
     }
 
     #endregion
+}
+
+[Serializable]
+public enum WeaponKEY
+{
+    MeleeWeapon = 1,
+    SecondaryWeapon = 2,
+    PrimaryWeapon = 3,
+    Explosives = 4
 }
