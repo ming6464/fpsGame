@@ -229,6 +229,34 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Weapon"",
+            ""id"": ""f054b914-7577-45ed-b3ab-12df381ebf42"",
+            ""actions"": [
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""ba7d127e-3e57-4e1a-a25d-2c7d0dfb9eb4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""a4400698-ed12-45b2-ba03-dcab835845e9"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -240,6 +268,9 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
         m_Character_Jump = m_Character.FindAction("Jump", throwIfNotFound: true);
         m_Character_Crouch = m_Character.FindAction("Crouch", throwIfNotFound: true);
         m_Character_Prone = m_Character.FindAction("Prone", throwIfNotFound: true);
+        // Weapon
+        m_Weapon = asset.FindActionMap("Weapon", throwIfNotFound: true);
+        m_Weapon_Fire = m_Weapon.FindAction("Fire", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -360,6 +391,39 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
         }
     }
     public CharacterActions @Character => new CharacterActions(this);
+
+    // Weapon
+    private readonly InputActionMap m_Weapon;
+    private IWeaponActions m_WeaponActionsCallbackInterface;
+    private readonly InputAction m_Weapon_Fire;
+    public struct WeaponActions
+    {
+        private @InputBase m_Wrapper;
+        public WeaponActions(@InputBase wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Fire => m_Wrapper.m_Weapon_Fire;
+        public InputActionMap Get() { return m_Wrapper.m_Weapon; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(WeaponActions set) { return set.Get(); }
+        public void SetCallbacks(IWeaponActions instance)
+        {
+            if (m_Wrapper.m_WeaponActionsCallbackInterface != null)
+            {
+                @Fire.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnFire;
+                @Fire.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnFire;
+                @Fire.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnFire;
+            }
+            m_Wrapper.m_WeaponActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Fire.started += instance.OnFire;
+                @Fire.performed += instance.OnFire;
+                @Fire.canceled += instance.OnFire;
+            }
+        }
+    }
+    public WeaponActions @Weapon => new WeaponActions(this);
     public interface ICharacterActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -367,5 +431,9 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnProne(InputAction.CallbackContext context);
+    }
+    public interface IWeaponActions
+    {
+        void OnFire(InputAction.CallbackContext context);
     }
 }

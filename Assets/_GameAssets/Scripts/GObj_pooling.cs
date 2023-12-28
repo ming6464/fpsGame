@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GObj_pooling : MonoBehaviour
+public class GObj_pooling : Singleton<GObj_pooling>
 {
     private Dictionary<PoolKEY, ObjectPool> gameObjectsDic = new();
     private static Transform myTran;
 
-    private void Awake()
+    public override void Awake()
     {
+        base.Awake();
         myTran = transform;
     }
 
@@ -62,6 +63,7 @@ public class GObj_pooling : MonoBehaviour
 
         public void UpDateGObjSpawn(GameObject gObj, PoolKEY poolKey)
         {
+            if (gObj_SpawnTf) return;
             gObj.SetActive(false);
             gObj_SpawnTf = gObj.transform;
         }
