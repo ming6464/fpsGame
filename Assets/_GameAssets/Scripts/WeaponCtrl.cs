@@ -36,7 +36,7 @@ public class WeaponCtrl : MonoBehaviour
         }
 
         curBullet.SetActive(true);
-        rigidBullet.AddForce(_pivotFireTf.forward.normalized * _bulletVelocity, ForceMode.Impulse);
+        rigidBullet.AddForce(curBullet.transform.forward.normalized * _bulletVelocity, ForceMode.Impulse);
         StartCoroutine(UpdateState());
         StartCoroutine(SetTimeLifeBullet(curBullet, _bulletTimeLife));
     }

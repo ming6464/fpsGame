@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class WeaponManager : MonoBehaviour
 {
     [Header("Weapon")] [SerializeField] private string _curWeaponName;
-
+    [SerializeField] private bool _isFire;
     [Header("Sway")] [SerializeField] private Vector2 _swaySensitive;
     [SerializeField] private float _swaySmoothTime;
     [SerializeField] private float _swayResetSmoothTime;
@@ -48,7 +48,7 @@ public class WeaponManager : MonoBehaviour
         isInit = true;
     }
 
-    private void Fire(InputAction.CallbackContext callbackContext)
+    private void Fire()
     {
         if (!curWeapon)
         {
@@ -67,6 +67,7 @@ public class WeaponManager : MonoBehaviour
     private void Update()
     {
         UpdateRotate();
+        if (_isFire) Fire();
     }
 
     private void UpdateRotate()
@@ -87,12 +88,14 @@ public class WeaponManager : MonoBehaviour
 
     private void LinkInputSystem()
     {
-        inputBase.Weapon.Fire.performed += Fire;
+        inputBase.Weapon.Fire.performed += context => { _isFire = true; };
+        inputBase.Weapon.Fire.canceled += (context) => { _isFire = false; };
     }
 
     private void UnLinkInputSystem()
     {
-        inputBase.Weapon.Fire.performed -= Fire;
+        inputBase.Weapon.Fire.performed -= context => { _isFire = true; };
+        inputBase.Weapon.Fire.canceled -= (context) => { _isFire = false; };
     }
 
     #endregion

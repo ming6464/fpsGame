@@ -426,6 +426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _curWeaponName: 
+  _isFire: 0
   _swaySensitive: {x: 3, y: 3}
   _swaySmoothTime: 0.1
   _swayResetSmoothTime: 0.16
@@ -6215,11 +6216,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pivotFireTf: {fileID: 1979121381}
   _canFire: 1
-  _timeResetFire: 0.2
+  _timeResetFire: 0.4
   _bulletPrefab: {fileID: 6546032397643880724, guid: fb13c55f092ec234abe34b792a79798d,
     type: 3}
   _bulletVelocity: 10
-  _bulletTimeLife: 20
+  _bulletTimeLife: 3
   _totalNumberBullets: 100
   _totalNumberBulletsOfMagazine: 30
   _numberBulletsOfMagazine: 30
