@@ -39,7 +39,7 @@ public class PlayerCtrl : MonoBehaviour
     [SerializeField] private Transform _headProneTf;
     [SerializeField] private bool _checkRayStandAndCrouch;
 
-    [Header("Weapon")] [SerializeField] private WeaponCtrl _weaponCtrl;
+    [Header("Weapon")] [SerializeField] private WeaponManager _weaponManager;
 
     private Vector2 inputView = Vector2.zero;
     public Vector2 InputView => inputView;
@@ -101,7 +101,7 @@ public class PlayerCtrl : MonoBehaviour
         inputBase.Enable();
         curRotate.x = _camera.localRotation.eulerAngles.x;
         curRotate.y = _player.localRotation.eulerAngles.y;
-        _weaponCtrl.Init(this);
+        _weaponManager.Init(this);
     }
 
     private void Update()

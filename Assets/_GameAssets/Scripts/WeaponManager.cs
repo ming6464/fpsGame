@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponCtrl : MonoBehaviour
+public class WeaponManager : MonoBehaviour
 {
     [Header("Sway")] [SerializeField] private Vector2 _swaySensitive;
     [SerializeField] private float _swaySmoothTime;
