@@ -7,9 +7,11 @@ using UnityEngine.InputSystem;
 
 public class WeaponManager : MonoBehaviour
 {
+    [Header("Info")] [SerializeField] private Transform _playerTf;
     [Header("Weapon")] [SerializeField] private string _curWeaponName;
     [SerializeField] private WeaponKEY _curWeaponKey = WeaponKEY.MeleeWeapon;
-    [SerializeField] private WeaponCtrl _weaponCanPickup = null;
+    [SerializeField] private Weapon _weaponCanPickup = null;
+    [SerializeField] private List<Weapon> _weaponCanPickupList = new();
     [Header("Sway")] [SerializeField] private Vector2 _swaySensitive;
     [SerializeField] private float _swaySmoothTime;
     [SerializeField] private float _swayResetSmoothTime;
@@ -22,7 +24,7 @@ public class WeaponManager : MonoBehaviour
     private Vector3 swayVelocity = Vector3.zero;
     private Vector3 swayResetVelocity = Vector3.zero;
     private InputBase inputBase;
-    private Dictionary<WeaponKEY, WeaponCtrl> Weapons = new();
+    private Dictionary<WeaponKEY, Weapon> Weapons = new();
 
     private void Awake()
     {
@@ -32,11 +34,13 @@ public class WeaponManager : MonoBehaviour
     private void OnEnable()
     {
         LinkInputSystem();
+        LinkEvent();
     }
 
     private void OnDisable()
     {
         UnLinkInputSystem();
+        UnLinkEvent();
     }
 
     private void Start()
@@ -45,10 +49,23 @@ public class WeaponManager : MonoBehaviour
         LoadWeapons();
     }
 
+    private void Update()
+    {
+        UpdateRotate();
+        UpdateWeaponPickup();
+        if (_curWeaponKey == WeaponKEY.None)
+            foreach (var dic in Weapons)
+                if (dic.Value)
+                {
+                    ChangeWeapon(dic.Key);
+                    break;
+                }
+    }
+
     private void LoadWeapons()
     {
         foreach (Transform child in transform)
-            if (child.TryGetComponent(out WeaponCtrl weaponCtrl))
+            if (child.TryGetComponent(out Weapon weaponCtrl))
             {
                 PickUpWeapon(weaponCtrl);
                 if (weaponCtrl.WeaponType == WeaponKEY.PrimaryWeapon ||
@@ -84,7 +101,7 @@ public class WeaponManager : MonoBehaviour
         return true;
     }
 
-    private bool PickUpWeapon(WeaponCtrl weaponCtrl)
+    private bool PickUpWeapon(Weapon weaponCtrl)
     {
         if (!weaponCtrl)
         {
@@ -92,16 +109,23 @@ public class WeaponManager : MonoBehaviour
             return false;
         }
 
+        var weaponTran = weaponCtrl.transform;
+
         if (!Weapons.TryAdd(weaponCtrl.WeaponType, null)) DropWeapon(weaponCtrl.WeaponType);
-        if (weaponCtrl.transform.TryGetComponent(out Rigidbody rig))
+        if (weaponTran.TryGetComponent(out Rigidbody rig))
         {
             rig.Sleep();
             rig.constraints = RigidbodyConstraints.FreezeAll;
             rig.useGravity = false;
         }
 
+        weaponCtrl.gameObject.layer = 3;
         weaponCtrl.UnUseWeapon();
-        weaponCtrl.transform.gameObject.SetActive(false);
+        weaponTran.gameObject.SetActive(false);
+        weaponTran.SetParent(transform);
+        weaponTran.localPosition = weaponCtrl.PositionInBag;
+        weaponTran.localScale = weaponCtrl.ScaleInBag;
+        weaponTran.localRotation = Quaternion.Euler(weaponCtrl.RotationInBag);
         Weapons[weaponCtrl.WeaponType] = weaponCtrl;
         EventDispatcher.Instance.PostEvent(EventID.OnPickUpWeapon,
             new MsgWeapon
@@ -110,17 +134,15 @@ public class WeaponManager : MonoBehaviour
                 Bullets = Weapons[weaponCtrl.WeaponType].Bullets,
                 TotalBullets = Weapons[weaponCtrl.WeaponType].TotalBullets
             });
+        if (_curWeaponKey == WeaponKEY.None) ChangeWeapon(weaponCtrl.WeaponType);
         return true;
     }
 
     private bool DropWeapon(WeaponKEY weaponKey)
     {
-        if (!Weapons.ContainsKey(weaponKey) || !Weapons[weaponKey])
-        {
-            Debug.LogError($"weapon has key '{weaponKey}' not found!");
-            return false;
-        }
+        if (!Weapons.ContainsKey(weaponKey) || !Weapons[weaponKey]) return false;
 
+        Weapons[weaponKey].gameObject.layer = 6;
         Weapons[weaponKey].UnUseWeapon();
         Weapons[weaponKey].transform.SetParent(null, true);
         if (Weapons[weaponKey].transform.TryGetComponent(out Rigidbody rig))
@@ -130,20 +152,11 @@ public class WeaponManager : MonoBehaviour
             rig.useGravity = true;
         }
 
+        Weapons[weaponKey].gameObject.SetActive(true);
         Weapons[weaponKey] = null;
-        foreach (var dic in Weapons)
-            if (dic.Value)
-            {
-                ChangeWeapon(dic.Key);
-                break;
-            }
+        if (weaponKey == _curWeaponKey) _curWeaponKey = WeaponKEY.None;
 
         return true;
-    }
-
-    private void Update()
-    {
-        UpdateRotate();
     }
 
     private void UpdateRotate()
@@ -160,6 +173,61 @@ public class WeaponManager : MonoBehaviour
         transform.localRotation = Quaternion.Euler(curRotate);
     }
 
+    private void UpdateWeaponPickup()
+    {
+        var checkChangeWeaponCanPick = false;
+        foreach (var weapon in _weaponCanPickupList)
+        {
+            if (!_weaponCanPickup)
+            {
+                _weaponCanPickup = weapon;
+                checkChangeWeaponCanPick = true;
+                continue;
+            }
+
+            if (Vector3.Distance(_playerTf.position, _weaponCanPickup.transform.position) >
+                Vector3.Distance(_playerTf.position, weapon.transform.position))
+            {
+                checkChangeWeaponCanPick = true;
+                _weaponCanPickup = weapon;
+            }
+        }
+
+        if (checkChangeWeaponCanPick)
+        {
+            EventDispatcher.Instance.PostEvent(EventID.OnUpdateWeaponPickup, new MsgWeapon
+            {
+                WeaponKey = _weaponCanPickup.WeaponType,
+                WeaponName = _weaponCanPickup.WeaponName
+            });
+        }
+        else if (_weaponCanPickup && _weaponCanPickupList.Count == 0)
+        {
+            _weaponCanPickup = null;
+            EventDispatcher.Instance.PostEvent(EventID.OnUpdateWeaponPickup);
+        }
+    }
+
+    private void OnWeaponPickupAreaEnter(object obj)
+    {
+        var weapon = obj as Weapon;
+        if (_weaponCanPickupList.Contains(weapon)) return;
+        _weaponCanPickupList.Add(weapon);
+        Debug.Log($"{weapon.name} enter area");
+    }
+
+    private void OnWeaponPickupAreaExit(object obj)
+    {
+        var weapon = obj as Weapon;
+
+        if (_weaponCanPickupList.Contains(weapon))
+        {
+            _weaponCanPickupList.Remove(weapon);
+            Debug.Log($"{weapon.name} exit area");
+        }
+    }
+
+
     #region -Input handle-
 
     private void LinkInputSystem()
@@ -171,7 +239,12 @@ public class WeaponManager : MonoBehaviour
         inputBase.Weapon.ChangePrimaryWeapon.performed += context => ChangeWeapon(WeaponKEY.PrimaryWeapon);
         inputBase.Weapon.ChangeExplosives.performed += context => ChangeWeapon(WeaponKEY.Explosives);
         inputBase.Weapon.DropWeapon.performed += context => DropWeapon(_curWeaponKey);
-        inputBase.Weapon.PickUpWeapon.performed += context => PickUpWeapon(_weaponCanPickup);
+        inputBase.Weapon.PickUpWeapon.performed += context =>
+        {
+            PickUpWeapon(_weaponCanPickup);
+            _weaponCanPickupList.Remove(_weaponCanPickup);
+            EventDispatcher.Instance.PostEvent(EventID.OnUpdateWeaponPickup);
+        };
         inputBase.Weapon.ChangeFireMode.performed +=
             context => EventDispatcher.Instance.PostEvent(EventID.OnChangeFireMode);
         inputBase.Weapon.ReloadBullet.performed += context => EventDispatcher.Instance.PostEvent(EventID.ReloadBullet);
@@ -186,10 +259,31 @@ public class WeaponManager : MonoBehaviour
         inputBase.Weapon.ChangePrimaryWeapon.performed -= context => ChangeWeapon(WeaponKEY.PrimaryWeapon);
         inputBase.Weapon.ChangeExplosives.performed -= context => ChangeWeapon(WeaponKEY.Explosives);
         inputBase.Weapon.DropWeapon.performed -= context => DropWeapon(_curWeaponKey);
-        inputBase.Weapon.PickUpWeapon.performed -= context => PickUpWeapon(_weaponCanPickup);
+        inputBase.Weapon.PickUpWeapon.performed -= context =>
+        {
+            PickUpWeapon(_weaponCanPickup);
+            _weaponCanPickupList.Remove(_weaponCanPickup);
+            EventDispatcher.Instance.PostEvent(EventID.OnUpdateWeaponPickup);
+        };
         inputBase.Weapon.ChangeFireMode.performed -=
             context => EventDispatcher.Instance.PostEvent(EventID.OnChangeFireMode);
         inputBase.Weapon.ReloadBullet.performed -= context => EventDispatcher.Instance.PostEvent(EventID.ReloadBullet);
+    }
+
+    #endregion
+
+    #region -Event handle-
+
+    private void LinkEvent()
+    {
+        EventDispatcher.Instance.RegisterListener(EventID.OnWeaponPickupAreaExit, OnWeaponPickupAreaExit);
+        EventDispatcher.Instance.RegisterListener(EventID.OnWeaponPickupAreaEnter, OnWeaponPickupAreaEnter);
+    }
+
+    private void UnLinkEvent()
+    {
+        EventDispatcher.Instance.RemoveListener(EventID.OnWeaponPickupAreaExit, OnWeaponPickupAreaExit);
+        EventDispatcher.Instance.RemoveListener(EventID.OnWeaponPickupAreaEnter, OnWeaponPickupAreaEnter);
     }
 
     #endregion
@@ -198,6 +292,7 @@ public class WeaponManager : MonoBehaviour
 [Serializable]
 public enum WeaponKEY
 {
+    None = 9999,
     PrimaryWeapon = 1,
     SecondaryWeapon = 2,
     MeleeWeapon = 3,

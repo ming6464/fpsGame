@@ -2,10 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
+    [Header("Pivot Informaiton")] [SerializeField]
+    private Vector3 _localPosition;
+
+    [SerializeField] private Vector3 _localRotation;
+    [SerializeField] private Vector3 _localScale;
     [Header("Weapon Information")] public string CurrentFireMode;
     public float CurrentTimeResetFire;
     public int BulletsPerShot;
@@ -18,6 +24,10 @@ public class Weapon : MonoBehaviour
     public string WeaponName => _weaponInfo.WeaponName;
     public int TotalBullets => _weaponInfo.TotalBullets;
     public int Bullets => _weaponInfo.Bullets;
+
+    public Vector3 PositionInBag => _localPosition;
+    public Vector3 RotationInBag => _localRotation;
+    public Vector3 ScaleInBag => _localScale;
 
     private List<string> fireModeList = new();
 
@@ -219,5 +229,17 @@ public class Weapon : MonoBehaviour
                 Bullets = _weaponInfo.Bullets, TotalBullets = _weaponInfo.TotalBullets,
                 WeaponKey = _weaponInfo.WeaponType
             });
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("WeaponManager"))
+            EventDispatcher.Instance.PostEvent(EventID.OnWeaponPickupAreaEnter, this);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("WeaponManager"))
+            EventDispatcher.Instance.PostEvent(EventID.OnWeaponPickupAreaExit, this);
     }
 }

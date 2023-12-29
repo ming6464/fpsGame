@@ -196,7 +196,10 @@ public enum EventID
     OnDropWeapon,
     OnChangeWeapon,
     OnUpdateNumberBulletWeapon,
-    ReloadBullet
+    ReloadBullet,
+    OnWeaponPickupAreaEnter,
+    OnWeaponPickupAreaExit,
+    OnUpdateWeaponPickup
 }
 
 #endregion

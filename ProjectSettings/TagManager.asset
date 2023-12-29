@@ -8,15 +8,16 @@ TagManager:
   - SecondaryWeapon
   - MeleeWeapon
   - Explosives
+  - WeaponManager
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - ActiveWeapon
   - Water
   - UI
-  - 
-  - 
+  - DisableWeapon
+  - WeaponManger
   - 
   - 
   - 

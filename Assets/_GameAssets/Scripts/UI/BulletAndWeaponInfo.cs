@@ -39,6 +39,12 @@ public class BulletAndWeaponInfo : MonoBehaviour
     [SerializeField] private InfoWeaponUI _secondaryWeaponInfo;
     [SerializeField] private InfoWeaponUI _meleeWeaponInfo;
     [SerializeField] private InfoWeaponUI _explosivesInfo;
+
+    [Header("WeaponCanPickupUI")] [SerializeField]
+    private GameObject _uiPanel;
+
+    [SerializeField] private TextMeshProUGUI _weaponNameCanPickupText;
+    [SerializeField] private TextMeshProUGUI _weaponTypeCanPickupText;
     [Header("Bullet")] [SerializeField] private TextMeshProUGUI _bullets;
     [SerializeField] private TextMeshProUGUI _totalBullets;
     private WeaponKEY currentWeaponKey;
@@ -51,6 +57,7 @@ public class BulletAndWeaponInfo : MonoBehaviour
             EventDispatcher.Instance.RegisterListener(EventID.OnDropWeapon, OnDropWeapon);
             EventDispatcher.Instance.RegisterListener(EventID.OnChangeWeapon, OnChangeWeapon);
             EventDispatcher.Instance.RegisterListener(EventID.OnUpdateNumberBulletWeapon, OnUpdateNumberBulletWeapon);
+            EventDispatcher.Instance.RegisterListener(EventID.OnUpdateWeaponPickup, OnUpdateWeaponPickup);
         }
     }
 
@@ -62,6 +69,7 @@ public class BulletAndWeaponInfo : MonoBehaviour
             EventDispatcher.Instance.RemoveListener(EventID.OnDropWeapon, OnDropWeapon);
             EventDispatcher.Instance.RemoveListener(EventID.OnChangeWeapon, OnChangeWeapon);
             EventDispatcher.Instance.RemoveListener(EventID.OnUpdateNumberBulletWeapon, OnUpdateNumberBulletWeapon);
+            EventDispatcher.Instance.RemoveListener(EventID.OnUpdateWeaponPickup, OnUpdateWeaponPickup);
         }
     }
 
@@ -190,5 +198,20 @@ public class BulletAndWeaponInfo : MonoBehaviour
         _secondaryWeaponInfo.UnUseWeapon();
         _meleeWeaponInfo.UnUseWeapon();
         _explosivesInfo.UnUseWeapon();
+    }
+
+    private void OnUpdateWeaponPickup(object obj)
+    {
+        if (obj == null)
+        {
+            _uiPanel.SetActive(false);
+            return;
+        }
+
+        var msg = obj as MsgWeapon;
+
+        _uiPanel.SetActive(true);
+        _weaponNameCanPickupText.text = msg.WeaponName;
+        _weaponTypeCanPickupText.text = msg.WeaponKey.ToString();
     }
 }
