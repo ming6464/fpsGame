@@ -80,6 +80,7 @@ public class WeaponManager : MonoBehaviour
         Weapons[weaponKey].UseWeapon();
         _curWeaponKey = weaponKey;
         _curWeaponName = Weapons[weaponKey].name;
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeWeapon, weaponKey);
         return true;
     }
 
@@ -102,6 +103,8 @@ public class WeaponManager : MonoBehaviour
         weaponCtrl.UnUseWeapon();
         weaponCtrl.transform.gameObject.SetActive(false);
         Weapons[weaponCtrl.WeaponType] = weaponCtrl;
+        EventDispatcher.Instance.PostEvent(EventID.OnPickUpWeapon,
+            new MsgWeapon { WeaponKey = weaponCtrl.WeaponType, WeaponName = Weapons[weaponCtrl.WeaponType].name });
         return true;
     }
 

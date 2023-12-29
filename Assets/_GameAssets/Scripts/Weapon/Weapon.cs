@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponCtrl : MonoBehaviour
+public class Weapon : MonoBehaviour
 {
     [Header("Base Information")] [SerializeField]
     private Transform _pivotFireTf;
@@ -19,25 +19,24 @@ public class WeaponCtrl : MonoBehaviour
     [SerializeField] private float _totalNumberBullets = 100;
     [SerializeField] private float _totalNumberBulletsOfMagazine = 30;
     [SerializeField] private float _numberBulletsOfMagazine = 30;
-
     public WeaponKEY WeaponType => _weaponType;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _canFire = false;
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         if (_bulletPrefab) GObj_pooling.Instance.UpdateObjSpawn(PoolKEY.Bullet, _bulletPrefab.gameObject);
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (_isUsing && _isFiring) OnFire();
     }
 
-    public void UseWeapon()
+    public virtual void UseWeapon()
     {
         transform.gameObject.SetActive(true);
         EventDispatcher.Instance.RegisterListener(EventID.OnPullTrigger, OnPullTrigger);
@@ -46,7 +45,7 @@ public class WeaponCtrl : MonoBehaviour
         _canFire = true;
     }
 
-    public void UnUseWeapon()
+    public virtual void UnUseWeapon()
     {
         try
         {
@@ -63,22 +62,26 @@ public class WeaponCtrl : MonoBehaviour
         }
     }
 
-    private void OnDisable()
+    protected void OnEnable()
+    {
+    }
+
+    protected virtual void OnDisable()
     {
         UnUseWeapon();
     }
 
-    private void OnPullTrigger(object obj)
+    protected virtual void OnPullTrigger(object obj)
     {
         _isFiring = true;
     }
 
-    private void OnReleaseTrigger(object obj)
+    protected virtual void OnReleaseTrigger(object obj)
     {
         _isFiring = false;
     }
 
-    private void OnFire()
+    protected virtual void OnFire()
     {
         if (!_canFire || !_pivotFireTf) return;
         var curBullet = GObj_pooling.Instance.Pull(PoolKEY.Bullet);
@@ -100,7 +103,7 @@ public class WeaponCtrl : MonoBehaviour
     }
 
     // ReSharper disable Unity.PerformanceAnalysis
-    private IEnumerator SetTimeLifeBullet(GameObject bullet, float timeLife)
+    protected virtual IEnumerator SetTimeLifeBullet(GameObject bullet, float timeLife)
     {
         yield return new WaitForSeconds(timeLife);
         if (bullet.TryGetComponent(out Rigidbody rig))
@@ -113,7 +116,7 @@ public class WeaponCtrl : MonoBehaviour
         GObj_pooling.Instance.Push(PoolKEY.Bullet, bullet);
     }
 
-    private IEnumerator UpdateState()
+    protected virtual IEnumerator UpdateState()
     {
         _canFire = false;
         yield return new WaitForSeconds(_timeResetFire);

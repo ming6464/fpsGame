@@ -190,7 +190,11 @@ public enum EventID
 {
     None = 0,
     OnPullTrigger,
-    OnReleaseTrigger
+    OnReleaseTrigger,
+    OnPickUpWeapon,
+    OnDropWeapon,
+    OnChangeWeapon,
+    OnUpdateNumberBulletWeapon
 }
 
 #endregion
