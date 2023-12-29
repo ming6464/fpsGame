@@ -9,6 +9,8 @@ TagManager:
   - MeleeWeapon
   - Explosives
   - WeaponManager
+  - Wall
+  - Ground
   layers:
   - Default
   - TransparentFX

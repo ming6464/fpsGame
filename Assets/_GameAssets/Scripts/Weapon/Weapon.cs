@@ -16,7 +16,7 @@ public class Weapon : MonoBehaviour
     public float CurrentTimeResetFire;
     public int BulletsPerShot;
     [SerializeField] protected WeaponInfo _weaponInfo;
-    [SerializeField] protected BulletInfo _bulletInfo;
+    [SerializeField] protected GameObject _bulletPrefab;
     [Header("State")] [SerializeField] protected bool _canFire = false;
     [SerializeField] protected bool _isFiring;
     [SerializeField] protected bool _isUsing;
@@ -48,8 +48,8 @@ public class Weapon : MonoBehaviour
             UpdateFireMode();
         }
 
-        if (_bulletInfo.BulletPrefab)
-            GObj_pooling.Instance.UpdateObjSpawn(PoolKEY.Bullet, _bulletInfo.BulletPrefab.gameObject);
+        if (_bulletPrefab)
+            GObj_pooling.Instance.UpdateObjSpawn(PoolKEY.Bullet, _bulletPrefab);
         if (_weaponInfo.MagazineCapacity <= 0) _weaponInfo.MagazineCapacity = 1;
     }
 
@@ -134,20 +134,16 @@ public class Weapon : MonoBehaviour
         if (_weaponInfo.Bullets <= 0) ReloadBullet();
 
         var curBullet = GObj_pooling.Instance.Pull(PoolKEY.Bullet);
-        if (!curBullet.TryGetComponent(out Rigidbody rigidBullet))
-        {
-            Debug.LogError($"bullet of {transform.name} not has rigid body component!");
-            return;
-        }
-
         curBullet.transform.position = _weaponInfo.PivotFireTf.position;
         curBullet.transform.localRotation = _weaponInfo.PivotFireTf.rotation;
 
-        if (curBullet.TryGetComponent(out TrailRenderer trailRenderer)) trailRenderer.Clear();
+        if (!curBullet.TryGetComponent(out Bullet bullet))
+        {
+            Debug.LogError($"bullet of {transform.name} not has bullet component!");
+            return;
+        }
 
-        curBullet.SetActive(true);
-        rigidBullet.WakeUp();
-        rigidBullet.AddForce(curBullet.transform.forward.normalized * _bulletInfo.BulletVelocity, ForceMode.Impulse);
+        bullet.Play();
 
         EventDispatcher.Instance.PostEvent(EventID.OnUpdateNumberBulletWeapon,
             new MsgWeapon
@@ -156,21 +152,6 @@ public class Weapon : MonoBehaviour
                 WeaponKey = _weaponInfo.WeaponType
             });
         StartCoroutine(UpdateStateCanFire());
-        StartCoroutine(SetTimeLifeBullet(curBullet, _bulletInfo.BulletTimeLife));
-    }
-
-    // ReSharper disable Unity.PerformanceAnalysis
-    protected virtual IEnumerator SetTimeLifeBullet(GameObject bullet, float timeLife)
-    {
-        yield return new WaitForSeconds(timeLife);
-        if (bullet.TryGetComponent(out Rigidbody rig))
-        {
-            rig.velocity = Vector3.zero;
-            rig.angularVelocity = Vector3.zero;
-            rig.Sleep();
-        }
-
-        GObj_pooling.Instance.Push(PoolKEY.Bullet, bullet);
     }
 
     protected virtual IEnumerator UpdateStateCanFire()
