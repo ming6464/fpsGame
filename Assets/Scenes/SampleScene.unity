@@ -601,7 +601,7 @@ GameObject:
   - component: {fileID: 193791441}
   - component: {fileID: 193791440}
   m_Layer: 5
-  m_Name: NumberBulletsOfMagazine
+  m_Name: Bullets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5642,6 +5642,37 @@ Transform:
   m_Father: {fileID: 591214670}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1200731994
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1200731995}
+  m_Layer: 0
+  m_Name: PivotFire
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1200731995
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1200731994}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: 0.0256, z: -0.1568}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6275759577966528363}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &1209785537
 GameObject:
   m_ObjectHideFlags: 0
@@ -7007,25 +7038,25 @@ MonoBehaviour:
   _primaryWeaponInfo:
     TitleText: {fileID: 703321736}
     WeaponNameText: {fileID: 1715145204}
-    NumberBulletsOfMagazine: 0
-    TotalNumberBullets: 0
+    Bullets: 0
+    TotalBullets: 0
   _secondaryWeaponInfo:
     TitleText: {fileID: 2065920494}
     WeaponNameText: {fileID: 1029626458}
-    NumberBulletsOfMagazine: 0
-    TotalNumberBullets: 0
+    Bullets: 0
+    TotalBullets: 0
   _meleeWeaponInfo:
     TitleText: {fileID: 1481361183}
     WeaponNameText: {fileID: 1543722762}
-    NumberBulletsOfMagazine: 0
-    TotalNumberBullets: 0
+    Bullets: 0
+    TotalBullets: 0
   _explosivesInfo:
     TitleText: {fileID: 99292113}
     WeaponNameText: {fileID: 922113876}
-    NumberBulletsOfMagazine: 0
-    TotalNumberBullets: 0
-  _numberBulletsOfMagazine: {fileID: 193791440}
-  _totalNumberBullets: {fileID: 1804272833}
+    Bullets: 0
+    TotalBullets: 0
+  _bullets: {fileID: 193791440}
+  _totalBullets: {fileID: 1804272833}
 --- !u!43 &1694561389
 Mesh:
   m_ObjectHideFlags: 0
@@ -7411,7 +7442,7 @@ GameObject:
   - component: {fileID: 1804272834}
   - component: {fileID: 1804272833}
   m_Layer: 5
-  m_Name: TotalNumberBullets
+  m_Name: TotalBullets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8227,7 +8258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2133231269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8240,19 +8271,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15211a33f86644da8c599d756365cc8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pivotFireTf: {fileID: 1979121381}
-  _weaponType: 3
+  CurrentFireMode: 
+  CurrentTimeResetFire: 0
+  BulletsPerShot: 0
+  _weaponInfo:
+    PivotFireTf: {fileID: 1979121381}
+    WeaponType: 1
+    WeaponName: M4A1
+    TotalBullets: 100
+    Bullets: 30
+    MagazineCapacity: 30
+    Automatic: 1
+    TimeResetFireAutoMode: 0.2
+    Single: 1
+    TimeResetFireSingleMode: 0.1
+    Burst: 1
+    TimeResetFireBurstMode: 0.3
+    BulletsPerShotOfBurstMode: 4
+    UseScope: 0
+  _bulletInfo:
+    BulletPrefab: {fileID: 6546032397643880724, guid: fb13c55f092ec234abe34b792a79798d,
+      type: 3}
+    BulletVelocity: 30
+    BulletTimeLife: 4
   _canFire: 1
   _isFiring: 0
-  _timeResetFire: 0.4
   _isUsing: 0
-  _bulletPrefab: {fileID: 6546032397643880724, guid: fb13c55f092ec234abe34b792a79798d,
-    type: 3}
-  _bulletVelocity: 35
-  _bulletTimeLife: 2
-  _totalNumberBullets: 100
-  _totalNumberBulletsOfMagazine: 30
-  _numberBulletsOfMagazine: 30
 --- !u!1 &2133231270
 GameObject:
   m_ObjectHideFlags: 0
@@ -8547,18 +8591,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15211a33f86644da8c599d756365cc8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pivotFireTf: {fileID: 0}
-  _weaponType: 4
+  CurrentFireMode: 
+  CurrentTimeResetFire: 0
+  BulletsPerShot: 0
+  _weaponInfo:
+    PivotFireTf: {fileID: 0}
+    WeaponType: 4
+    WeaponName: RGD-5
+    TotalBullets: 100
+    Bullets: 30
+    MagazineCapacity: 30
+    Automatic: 0
+    TimeResetFireAutoMode: 0
+    Single: 0
+    TimeResetFireSingleMode: 0
+    Burst: 0
+    TimeResetFireBurstMode: 0
+    BulletsPerShotOfBurstMode: 0
+    UseScope: 0
+  _bulletInfo:
+    BulletPrefab: {fileID: 0}
+    BulletVelocity: 30
+    BulletTimeLife: 4
   _canFire: 0
   _isFiring: 0
-  _timeResetFire: 0
   _isUsing: 0
-  _bulletPrefab: {fileID: 0}
-  _bulletVelocity: 30
-  _bulletTimeLife: 4
-  _totalNumberBullets: 100
-  _totalNumberBulletsOfMagazine: 30
-  _numberBulletsOfMagazine: 30
 --- !u!23 &5292668498593347693
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8770,18 +8827,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15211a33f86644da8c599d756365cc8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pivotFireTf: {fileID: 0}
-  _weaponType: 1
+  CurrentFireMode: 
+  CurrentTimeResetFire: 0
+  BulletsPerShot: 0
+  _weaponInfo:
+    PivotFireTf: {fileID: 0}
+    WeaponType: 3
+    WeaponName: ELCAN
+    TotalBullets: 100
+    Bullets: 30
+    MagazineCapacity: 30
+    Automatic: 0
+    TimeResetFireAutoMode: 0
+    Single: 0
+    TimeResetFireSingleMode: 0
+    Burst: 0
+    TimeResetFireBurstMode: 0
+    BulletsPerShotOfBurstMode: 0
+    UseScope: 0
+  _bulletInfo:
+    BulletPrefab: {fileID: 0}
+    BulletVelocity: 30
+    BulletTimeLife: 4
   _canFire: 0
   _isFiring: 0
-  _timeResetFire: 0
   _isUsing: 0
-  _bulletPrefab: {fileID: 0}
-  _bulletVelocity: 30
-  _bulletTimeLife: 4
-  _totalNumberBullets: 100
-  _totalNumberBulletsOfMagazine: 30
-  _numberBulletsOfMagazine: 30
 --- !u!1 &6269053802215582945
 GameObject:
   m_ObjectHideFlags: 0
@@ -9015,6 +9085,7 @@ Transform:
   m_Children:
   - {fileID: 6271603513198624279}
   - {fileID: 6275560450221232181}
+  - {fileID: 1200731995}
   m_Father: {fileID: 273086446}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -9059,18 +9130,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15211a33f86644da8c599d756365cc8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pivotFireTf: {fileID: 0}
-  _weaponType: 2
+  CurrentFireMode: 
+  CurrentTimeResetFire: 0
+  BulletsPerShot: 0
+  _weaponInfo:
+    PivotFireTf: {fileID: 1200731995}
+    WeaponType: 2
+    WeaponName: M1911
+    TotalBullets: 100
+    Bullets: 30
+    MagazineCapacity: 30
+    Automatic: 0
+    TimeResetFireAutoMode: 0
+    Single: 1
+    TimeResetFireSingleMode: 0.15
+    Burst: 0
+    TimeResetFireBurstMode: 0
+    BulletsPerShotOfBurstMode: 0
+    UseScope: 0
+  _bulletInfo:
+    BulletPrefab: {fileID: 6546032397643880724, guid: fb13c55f092ec234abe34b792a79798d,
+      type: 3}
+    BulletVelocity: 30
+    BulletTimeLife: 4
   _canFire: 0
   _isFiring: 0
-  _timeResetFire: 0
   _isUsing: 0
-  _bulletPrefab: {fileID: 0}
-  _bulletVelocity: 30
-  _bulletTimeLife: 4
-  _totalNumberBullets: 100
-  _totalNumberBulletsOfMagazine: 30
-  _numberBulletsOfMagazine: 30
 --- !u!23 &6292094023259310737
 MeshRenderer:
   m_ObjectHideFlags: 0

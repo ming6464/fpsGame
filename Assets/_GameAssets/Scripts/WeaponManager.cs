@@ -52,7 +52,7 @@ public class WeaponManager : MonoBehaviour
             {
                 PickUpWeapon(weaponCtrl);
                 if (weaponCtrl.WeaponType == WeaponKEY.PrimaryWeapon ||
-                    (_curWeaponKey != WeaponKEY.PrimaryWeapon && weaponCtrl.WeaponType >= _curWeaponKey))
+                    (_curWeaponKey != WeaponKEY.PrimaryWeapon && weaponCtrl.WeaponType <= _curWeaponKey))
                     ChangeWeapon(weaponCtrl.WeaponType);
             }
     }
@@ -79,7 +79,7 @@ public class WeaponManager : MonoBehaviour
 
         Weapons[weaponKey].UseWeapon();
         _curWeaponKey = weaponKey;
-        _curWeaponName = Weapons[weaponKey].name;
+        _curWeaponName = Weapons[weaponKey].WeaponName;
         EventDispatcher.Instance.PostEvent(EventID.OnChangeWeapon, weaponKey);
         return true;
     }
@@ -104,7 +104,12 @@ public class WeaponManager : MonoBehaviour
         weaponCtrl.transform.gameObject.SetActive(false);
         Weapons[weaponCtrl.WeaponType] = weaponCtrl;
         EventDispatcher.Instance.PostEvent(EventID.OnPickUpWeapon,
-            new MsgWeapon { WeaponKey = weaponCtrl.WeaponType, WeaponName = Weapons[weaponCtrl.WeaponType].name });
+            new MsgWeapon
+            {
+                WeaponKey = weaponCtrl.WeaponType, WeaponName = Weapons[weaponCtrl.WeaponType].WeaponName,
+                Bullets = Weapons[weaponCtrl.WeaponType].Bullets,
+                TotalBullets = Weapons[weaponCtrl.WeaponType].TotalBullets
+            });
         return true;
     }
 
@@ -167,6 +172,9 @@ public class WeaponManager : MonoBehaviour
         inputBase.Weapon.ChangeExplosives.performed += context => ChangeWeapon(WeaponKEY.Explosives);
         inputBase.Weapon.DropWeapon.performed += context => DropWeapon(_curWeaponKey);
         inputBase.Weapon.PickUpWeapon.performed += context => PickUpWeapon(_weaponCanPickup);
+        inputBase.Weapon.ChangeFireMode.performed +=
+            context => EventDispatcher.Instance.PostEvent(EventID.OnChangeFireMode);
+        inputBase.Weapon.ReloadBullet.performed += context => EventDispatcher.Instance.PostEvent(EventID.ReloadBullet);
     }
 
     private void UnLinkInputSystem()
@@ -179,6 +187,9 @@ public class WeaponManager : MonoBehaviour
         inputBase.Weapon.ChangeExplosives.performed -= context => ChangeWeapon(WeaponKEY.Explosives);
         inputBase.Weapon.DropWeapon.performed -= context => DropWeapon(_curWeaponKey);
         inputBase.Weapon.PickUpWeapon.performed -= context => PickUpWeapon(_weaponCanPickup);
+        inputBase.Weapon.ChangeFireMode.performed -=
+            context => EventDispatcher.Instance.PostEvent(EventID.OnChangeFireMode);
+        inputBase.Weapon.ReloadBullet.performed -= context => EventDispatcher.Instance.PostEvent(EventID.ReloadBullet);
     }
 
     #endregion
@@ -187,8 +198,8 @@ public class WeaponManager : MonoBehaviour
 [Serializable]
 public enum WeaponKEY
 {
-    MeleeWeapon = 1,
+    PrimaryWeapon = 1,
     SecondaryWeapon = 2,
-    PrimaryWeapon = 3,
+    MeleeWeapon = 3,
     Explosives = 4
 }

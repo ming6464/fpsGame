@@ -191,10 +191,12 @@ public enum EventID
     None = 0,
     OnPullTrigger,
     OnReleaseTrigger,
+    OnChangeFireMode,
     OnPickUpWeapon,
     OnDropWeapon,
     OnChangeWeapon,
-    OnUpdateNumberBulletWeapon
+    OnUpdateNumberBulletWeapon,
+    ReloadBullet
 }
 
 #endregion

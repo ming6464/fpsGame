@@ -222,9 +222,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ChangeMeleeWeapon",
+                    "name": "ChangePrimaryWeapon",
                     "type": "Button",
-                    "id": "c993cac1-6850-47e3-a45c-d9b185407701",
+                    "id": "54bdc69c-e31e-4bd6-b295-d57feda3a4ea",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -240,9 +240,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ChangePrimaryWeapon",
+                    "name": "ChangeMeleeWeapon",
                     "type": "Button",
-                    "id": "54bdc69c-e31e-4bd6-b295-d57feda3a4ea",
+                    "id": "c993cac1-6850-47e3-a45c-d9b185407701",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -274,6 +274,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ChangeFireMode",
+                    "type": "Button",
+                    "id": "c0dc7251-d509-481a-97a9-67953d9a86af",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ReloadBullet",
+                    "type": "Button",
+                    "id": "b23cecfc-6330-4899-8389-4a7a548ff631",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -291,33 +309,11 @@
                 {
                     "name": "",
                     "id": "684a75e3-f705-4c7f-a1ac-6f32abdd90b6",
-                    "path": "<Keyboard>/1",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ChangeMeleeWeapon",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e44091b1-2895-4983-8a6c-a87e8a5be713",
-                    "path": "<Keyboard>/2",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ChangeSecondaryWeapon",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8c7cbbb7-a522-4c02-bb30-e4887fc8b57c",
                     "path": "<Keyboard>/3",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ChangePrimaryWeapon",
+                    "action": "ChangeMeleeWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -335,7 +331,7 @@
                 {
                     "name": "",
                     "id": "7d6054f0-c876-4736-939e-83210970e7ce",
-                    "path": "<Keyboard>/g",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -346,11 +342,55 @@
                 {
                     "name": "",
                     "id": "fbaa7363-3a5b-4fb6-abfc-89f97c4c28dd",
-                    "path": "<Keyboard>/r",
+                    "path": "<Keyboard>/g",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "DropWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b4f902be-7d86-4e9d-a135-7402233b3609",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeFireMode",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8c7cbbb7-a522-4c02-bb30-e4887fc8b57c",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangePrimaryWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e44091b1-2895-4983-8a6c-a87e8a5be713",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeSecondaryWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "19b4492e-4f6a-47d3-a613-0838e7c77dbc",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReloadBullet",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

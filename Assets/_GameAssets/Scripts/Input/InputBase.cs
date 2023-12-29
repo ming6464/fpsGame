@@ -244,9 +244,9 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ChangeMeleeWeapon"",
+                    ""name"": ""ChangePrimaryWeapon"",
                     ""type"": ""Button"",
-                    ""id"": ""c993cac1-6850-47e3-a45c-d9b185407701"",
+                    ""id"": ""54bdc69c-e31e-4bd6-b295-d57feda3a4ea"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -262,9 +262,9 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ChangePrimaryWeapon"",
+                    ""name"": ""ChangeMeleeWeapon"",
                     ""type"": ""Button"",
-                    ""id"": ""54bdc69c-e31e-4bd6-b295-d57feda3a4ea"",
+                    ""id"": ""c993cac1-6850-47e3-a45c-d9b185407701"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -296,6 +296,24 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeFireMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""c0dc7251-d509-481a-97a9-67953d9a86af"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ReloadBullet"",
+                    ""type"": ""Button"",
+                    ""id"": ""b23cecfc-6330-4899-8389-4a7a548ff631"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -313,33 +331,11 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""684a75e3-f705-4c7f-a1ac-6f32abdd90b6"",
-                    ""path"": ""<Keyboard>/1"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ChangeMeleeWeapon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""e44091b1-2895-4983-8a6c-a87e8a5be713"",
-                    ""path"": ""<Keyboard>/2"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ChangeSecondaryWeapon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""8c7cbbb7-a522-4c02-bb30-e4887fc8b57c"",
                     ""path"": ""<Keyboard>/3"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ChangePrimaryWeapon"",
+                    ""action"": ""ChangeMeleeWeapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -357,7 +353,7 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""7d6054f0-c876-4736-939e-83210970e7ce"",
-                    ""path"": ""<Keyboard>/g"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -368,11 +364,55 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""fbaa7363-3a5b-4fb6-abfc-89f97c4c28dd"",
-                    ""path"": ""<Keyboard>/r"",
+                    ""path"": ""<Keyboard>/g"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DropWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b4f902be-7d86-4e9d-a135-7402233b3609"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeFireMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8c7cbbb7-a522-4c02-bb30-e4887fc8b57c"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangePrimaryWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e44091b1-2895-4983-8a6c-a87e8a5be713"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeSecondaryWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""19b4492e-4f6a-47d3-a613-0838e7c77dbc"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ReloadBullet"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -391,12 +431,14 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
         // Weapon
         m_Weapon = asset.FindActionMap("Weapon", throwIfNotFound: true);
         m_Weapon_Fire = m_Weapon.FindAction("Fire", throwIfNotFound: true);
-        m_Weapon_ChangeMeleeWeapon = m_Weapon.FindAction("ChangeMeleeWeapon", throwIfNotFound: true);
-        m_Weapon_ChangeSecondaryWeapon = m_Weapon.FindAction("ChangeSecondaryWeapon", throwIfNotFound: true);
         m_Weapon_ChangePrimaryWeapon = m_Weapon.FindAction("ChangePrimaryWeapon", throwIfNotFound: true);
+        m_Weapon_ChangeSecondaryWeapon = m_Weapon.FindAction("ChangeSecondaryWeapon", throwIfNotFound: true);
+        m_Weapon_ChangeMeleeWeapon = m_Weapon.FindAction("ChangeMeleeWeapon", throwIfNotFound: true);
         m_Weapon_ChangeExplosives = m_Weapon.FindAction("ChangeExplosives", throwIfNotFound: true);
         m_Weapon_PickUpWeapon = m_Weapon.FindAction("PickUpWeapon", throwIfNotFound: true);
         m_Weapon_DropWeapon = m_Weapon.FindAction("DropWeapon", throwIfNotFound: true);
+        m_Weapon_ChangeFireMode = m_Weapon.FindAction("ChangeFireMode", throwIfNotFound: true);
+        m_Weapon_ReloadBullet = m_Weapon.FindAction("ReloadBullet", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -522,23 +564,27 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Weapon;
     private IWeaponActions m_WeaponActionsCallbackInterface;
     private readonly InputAction m_Weapon_Fire;
-    private readonly InputAction m_Weapon_ChangeMeleeWeapon;
-    private readonly InputAction m_Weapon_ChangeSecondaryWeapon;
     private readonly InputAction m_Weapon_ChangePrimaryWeapon;
+    private readonly InputAction m_Weapon_ChangeSecondaryWeapon;
+    private readonly InputAction m_Weapon_ChangeMeleeWeapon;
     private readonly InputAction m_Weapon_ChangeExplosives;
     private readonly InputAction m_Weapon_PickUpWeapon;
     private readonly InputAction m_Weapon_DropWeapon;
+    private readonly InputAction m_Weapon_ChangeFireMode;
+    private readonly InputAction m_Weapon_ReloadBullet;
     public struct WeaponActions
     {
         private @InputBase m_Wrapper;
         public WeaponActions(@InputBase wrapper) { m_Wrapper = wrapper; }
         public InputAction @Fire => m_Wrapper.m_Weapon_Fire;
-        public InputAction @ChangeMeleeWeapon => m_Wrapper.m_Weapon_ChangeMeleeWeapon;
-        public InputAction @ChangeSecondaryWeapon => m_Wrapper.m_Weapon_ChangeSecondaryWeapon;
         public InputAction @ChangePrimaryWeapon => m_Wrapper.m_Weapon_ChangePrimaryWeapon;
+        public InputAction @ChangeSecondaryWeapon => m_Wrapper.m_Weapon_ChangeSecondaryWeapon;
+        public InputAction @ChangeMeleeWeapon => m_Wrapper.m_Weapon_ChangeMeleeWeapon;
         public InputAction @ChangeExplosives => m_Wrapper.m_Weapon_ChangeExplosives;
         public InputAction @PickUpWeapon => m_Wrapper.m_Weapon_PickUpWeapon;
         public InputAction @DropWeapon => m_Wrapper.m_Weapon_DropWeapon;
+        public InputAction @ChangeFireMode => m_Wrapper.m_Weapon_ChangeFireMode;
+        public InputAction @ReloadBullet => m_Wrapper.m_Weapon_ReloadBullet;
         public InputActionMap Get() { return m_Wrapper.m_Weapon; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -551,15 +597,15 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                 @Fire.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnFire;
                 @Fire.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnFire;
                 @Fire.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnFire;
-                @ChangeMeleeWeapon.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeMeleeWeapon;
-                @ChangeMeleeWeapon.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeMeleeWeapon;
-                @ChangeMeleeWeapon.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeMeleeWeapon;
-                @ChangeSecondaryWeapon.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeSecondaryWeapon;
-                @ChangeSecondaryWeapon.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeSecondaryWeapon;
-                @ChangeSecondaryWeapon.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeSecondaryWeapon;
                 @ChangePrimaryWeapon.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangePrimaryWeapon;
                 @ChangePrimaryWeapon.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangePrimaryWeapon;
                 @ChangePrimaryWeapon.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangePrimaryWeapon;
+                @ChangeSecondaryWeapon.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeSecondaryWeapon;
+                @ChangeSecondaryWeapon.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeSecondaryWeapon;
+                @ChangeSecondaryWeapon.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeSecondaryWeapon;
+                @ChangeMeleeWeapon.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeMeleeWeapon;
+                @ChangeMeleeWeapon.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeMeleeWeapon;
+                @ChangeMeleeWeapon.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeMeleeWeapon;
                 @ChangeExplosives.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeExplosives;
                 @ChangeExplosives.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeExplosives;
                 @ChangeExplosives.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeExplosives;
@@ -569,6 +615,12 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                 @DropWeapon.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnDropWeapon;
                 @DropWeapon.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnDropWeapon;
                 @DropWeapon.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnDropWeapon;
+                @ChangeFireMode.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeFireMode;
+                @ChangeFireMode.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeFireMode;
+                @ChangeFireMode.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeFireMode;
+                @ReloadBullet.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnReloadBullet;
+                @ReloadBullet.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnReloadBullet;
+                @ReloadBullet.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnReloadBullet;
             }
             m_Wrapper.m_WeaponActionsCallbackInterface = instance;
             if (instance != null)
@@ -576,15 +628,15 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                 @Fire.started += instance.OnFire;
                 @Fire.performed += instance.OnFire;
                 @Fire.canceled += instance.OnFire;
-                @ChangeMeleeWeapon.started += instance.OnChangeMeleeWeapon;
-                @ChangeMeleeWeapon.performed += instance.OnChangeMeleeWeapon;
-                @ChangeMeleeWeapon.canceled += instance.OnChangeMeleeWeapon;
-                @ChangeSecondaryWeapon.started += instance.OnChangeSecondaryWeapon;
-                @ChangeSecondaryWeapon.performed += instance.OnChangeSecondaryWeapon;
-                @ChangeSecondaryWeapon.canceled += instance.OnChangeSecondaryWeapon;
                 @ChangePrimaryWeapon.started += instance.OnChangePrimaryWeapon;
                 @ChangePrimaryWeapon.performed += instance.OnChangePrimaryWeapon;
                 @ChangePrimaryWeapon.canceled += instance.OnChangePrimaryWeapon;
+                @ChangeSecondaryWeapon.started += instance.OnChangeSecondaryWeapon;
+                @ChangeSecondaryWeapon.performed += instance.OnChangeSecondaryWeapon;
+                @ChangeSecondaryWeapon.canceled += instance.OnChangeSecondaryWeapon;
+                @ChangeMeleeWeapon.started += instance.OnChangeMeleeWeapon;
+                @ChangeMeleeWeapon.performed += instance.OnChangeMeleeWeapon;
+                @ChangeMeleeWeapon.canceled += instance.OnChangeMeleeWeapon;
                 @ChangeExplosives.started += instance.OnChangeExplosives;
                 @ChangeExplosives.performed += instance.OnChangeExplosives;
                 @ChangeExplosives.canceled += instance.OnChangeExplosives;
@@ -594,6 +646,12 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                 @DropWeapon.started += instance.OnDropWeapon;
                 @DropWeapon.performed += instance.OnDropWeapon;
                 @DropWeapon.canceled += instance.OnDropWeapon;
+                @ChangeFireMode.started += instance.OnChangeFireMode;
+                @ChangeFireMode.performed += instance.OnChangeFireMode;
+                @ChangeFireMode.canceled += instance.OnChangeFireMode;
+                @ReloadBullet.started += instance.OnReloadBullet;
+                @ReloadBullet.performed += instance.OnReloadBullet;
+                @ReloadBullet.canceled += instance.OnReloadBullet;
             }
         }
     }
@@ -609,11 +667,13 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
     public interface IWeaponActions
     {
         void OnFire(InputAction.CallbackContext context);
-        void OnChangeMeleeWeapon(InputAction.CallbackContext context);
-        void OnChangeSecondaryWeapon(InputAction.CallbackContext context);
         void OnChangePrimaryWeapon(InputAction.CallbackContext context);
+        void OnChangeSecondaryWeapon(InputAction.CallbackContext context);
+        void OnChangeMeleeWeapon(InputAction.CallbackContext context);
         void OnChangeExplosives(InputAction.CallbackContext context);
         void OnPickUpWeapon(InputAction.CallbackContext context);
         void OnDropWeapon(InputAction.CallbackContext context);
+        void OnChangeFireMode(InputAction.CallbackContext context);
+        void OnReloadBullet(InputAction.CallbackContext context);
     }
 }

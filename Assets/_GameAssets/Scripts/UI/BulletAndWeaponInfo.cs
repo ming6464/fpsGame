@@ -1,24 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 
 public class BulletAndWeaponInfo : MonoBehaviour
 {
     [Serializable]
-    public struct InfoWeapon
+    public struct InfoWeaponUI
     {
         public TextMeshProUGUI TitleText;
         public TextMeshProUGUI WeaponNameText;
-        public int NumberBulletsOfMagazine;
-        public int TotalNumberBullets;
+        public int Bullets;
+        public int TotalBullets;
 
         public void ResetInfo()
         {
             WeaponNameText.text = "";
-            NumberBulletsOfMagazine = 0;
-            TotalNumberBullets = 0;
+            Bullets = 0;
+            TotalBullets = 0;
         }
 
         public void UseWeapon()
@@ -34,12 +35,13 @@ public class BulletAndWeaponInfo : MonoBehaviour
         }
     }
 
-    [Header("Weapon")] [SerializeField] private InfoWeapon _primaryWeaponInfo;
-    [SerializeField] private InfoWeapon _secondaryWeaponInfo;
-    [SerializeField] private InfoWeapon _meleeWeaponInfo;
-    [SerializeField] private InfoWeapon _explosivesInfo;
-    [Header("Bullet")] [SerializeField] private TextMeshProUGUI _numberBulletsOfMagazine;
-    [SerializeField] private TextMeshProUGUI _totalNumberBullets;
+    [Header("Weapon")] [SerializeField] private InfoWeaponUI _primaryWeaponInfo;
+    [SerializeField] private InfoWeaponUI _secondaryWeaponInfo;
+    [SerializeField] private InfoWeaponUI _meleeWeaponInfo;
+    [SerializeField] private InfoWeaponUI _explosivesInfo;
+    [Header("Bullet")] [SerializeField] private TextMeshProUGUI _bullets;
+    [SerializeField] private TextMeshProUGUI _totalBullets;
+    private WeaponKEY currentWeaponKey;
 
     private void OnEnable()
     {
@@ -70,14 +72,14 @@ public class BulletAndWeaponInfo : MonoBehaviour
         {
             case WeaponKEY.PrimaryWeapon:
                 _primaryWeaponInfo.WeaponNameText.text = msg.WeaponName;
-                _primaryWeaponInfo.TotalNumberBullets = msg.TotalNumberBullets;
-                _primaryWeaponInfo.NumberBulletsOfMagazine = msg.NumberBulletsOfMagazine;
+                _primaryWeaponInfo.TotalBullets = msg.TotalBullets;
+                _primaryWeaponInfo.Bullets = msg.Bullets;
                 _primaryWeaponInfo.UnUseWeapon();
                 break;
             case WeaponKEY.SecondaryWeapon:
                 _secondaryWeaponInfo.WeaponNameText.text = msg.WeaponName;
-                _secondaryWeaponInfo.TotalNumberBullets = msg.TotalNumberBullets;
-                _secondaryWeaponInfo.NumberBulletsOfMagazine = msg.NumberBulletsOfMagazine;
+                _secondaryWeaponInfo.TotalBullets = msg.TotalBullets;
+                _secondaryWeaponInfo.Bullets = msg.Bullets;
                 _secondaryWeaponInfo.UnUseWeapon();
                 break;
             case WeaponKEY.MeleeWeapon:
@@ -86,8 +88,8 @@ public class BulletAndWeaponInfo : MonoBehaviour
                 break;
             case WeaponKEY.Explosives:
                 _explosivesInfo.WeaponNameText.text = msg.WeaponName;
-                _explosivesInfo.TotalNumberBullets = msg.TotalNumberBullets;
-                _explosivesInfo.NumberBulletsOfMagazine = msg.NumberBulletsOfMagazine;
+                _explosivesInfo.TotalBullets = msg.TotalBullets;
+                _explosivesInfo.Bullets = msg.Bullets;
                 _explosivesInfo.UnUseWeapon();
                 break;
         }
@@ -115,7 +117,8 @@ public class BulletAndWeaponInfo : MonoBehaviour
     private void OnChangeWeapon(object obj)
     {
         UnSelectAllWeapon();
-        switch ((WeaponKEY)obj)
+        currentWeaponKey = (WeaponKEY)obj;
+        switch (currentWeaponKey)
         {
             case WeaponKEY.PrimaryWeapon:
                 _primaryWeaponInfo.UseWeapon();
@@ -130,6 +133,8 @@ public class BulletAndWeaponInfo : MonoBehaviour
                 _explosivesInfo.UseWeapon();
                 break;
         }
+
+        UpdateNumberBulletUI();
     }
 
     private void OnUpdateNumberBulletWeapon(object obj)
@@ -138,16 +143,43 @@ public class BulletAndWeaponInfo : MonoBehaviour
         switch (msg.WeaponKey)
         {
             case WeaponKEY.PrimaryWeapon:
-                _primaryWeaponInfo.TotalNumberBullets = msg.TotalNumberBullets;
-                _primaryWeaponInfo.NumberBulletsOfMagazine = msg.NumberBulletsOfMagazine;
+                _primaryWeaponInfo.TotalBullets = msg.TotalBullets;
+                _primaryWeaponInfo.Bullets = msg.Bullets;
                 break;
             case WeaponKEY.SecondaryWeapon:
-                _secondaryWeaponInfo.TotalNumberBullets = msg.TotalNumberBullets;
-                _secondaryWeaponInfo.NumberBulletsOfMagazine = msg.NumberBulletsOfMagazine;
+                _secondaryWeaponInfo.TotalBullets = msg.TotalBullets;
+                _secondaryWeaponInfo.Bullets = msg.Bullets;
                 break;
             case WeaponKEY.Explosives:
-                _explosivesInfo.TotalNumberBullets = msg.TotalNumberBullets;
-                _explosivesInfo.NumberBulletsOfMagazine = msg.NumberBulletsOfMagazine;
+                _explosivesInfo.TotalBullets = msg.TotalBullets;
+                _explosivesInfo.Bullets = msg.Bullets;
+                break;
+        }
+
+        if (msg.WeaponKey == currentWeaponKey) UpdateNumberBulletUI();
+    }
+
+    private void UpdateNumberBulletUI()
+    {
+        _totalBullets.gameObject.SetActive(true);
+        _bullets.gameObject.SetActive(true);
+        switch (currentWeaponKey)
+        {
+            case WeaponKEY.PrimaryWeapon:
+                _totalBullets.text = _primaryWeaponInfo.TotalBullets.ToString();
+                _bullets.text = _primaryWeaponInfo.Bullets.ToString();
+                break;
+            case WeaponKEY.SecondaryWeapon:
+                _totalBullets.text = _secondaryWeaponInfo.TotalBullets.ToString();
+                _bullets.text = _secondaryWeaponInfo.Bullets.ToString();
+                break;
+            case WeaponKEY.Explosives:
+                _totalBullets.text = _explosivesInfo.TotalBullets.ToString();
+                _bullets.text = _explosivesInfo.Bullets.ToString();
+                break;
+            case WeaponKEY.MeleeWeapon:
+                _totalBullets.gameObject.SetActive(false);
+                _bullets.gameObject.SetActive(false);
                 break;
         }
     }

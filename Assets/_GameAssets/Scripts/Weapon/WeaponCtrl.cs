@@ -5,4 +5,8 @@ using UnityEngine;
 
 public class WeaponCtrl : Weapon
 {
+    protected override void Start()
+    {
+        base.Start();
+    }
 }
