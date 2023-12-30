@@ -5,6 +5,7 @@ using UnityEngine;
 public class WeaponInfo
 {
     public Transform PivotFireTf;
+    public ParticleSystem EffectFire;
     public WeaponKEY WeaponType;
     public string WeaponName;
     public int TotalBullets = 100;

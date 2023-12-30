@@ -5,6 +5,14 @@ using UnityEngine;
 
 public class GObj_pooling : Singleton<GObj_pooling>
 {
+    [Serializable]
+    public struct RegisterPool
+    {
+        public PoolKEY PoolKey;
+        public GameObject ObjectRegister;
+    }
+
+    [Header("Register")] [SerializeField] private RegisterPool[] _registerPools;
     private Dictionary<PoolKEY, ObjectPool> gameObjectsDic = new();
     private static Transform myTran;
 
@@ -12,6 +20,7 @@ public class GObj_pooling : Singleton<GObj_pooling>
     {
         base.Awake();
         myTran = transform;
+        foreach (var objRegis in _registerPools) UpdateObjSpawn(objRegis.PoolKey, objRegis.ObjectRegister);
     }
 
     public bool UpdateObjSpawn(PoolKEY poolKey, GameObject gObj)
@@ -106,5 +115,6 @@ public class GObj_pooling : Singleton<GObj_pooling>
 [Serializable]
 public enum PoolKEY
 {
-    Bullet
+    Bullet,
+    EffectImpact
 }

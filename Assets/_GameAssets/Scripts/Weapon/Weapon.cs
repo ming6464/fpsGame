@@ -19,7 +19,6 @@ public class Weapon : MonoBehaviour
     [SerializeField] protected float _curTimeResetFire;
     [SerializeField] protected int _bulletsPerShot;
     [SerializeField] protected WeaponInfo _weaponInfo;
-    [Header("Bullet")] [SerializeField] protected GameObject _bulletPrefab;
     [Header("State")] [SerializeField] protected bool _canFire = false;
     [SerializeField] protected bool _isFiring;
     [SerializeField] protected bool _isUsing;
@@ -54,8 +53,6 @@ public class Weapon : MonoBehaviour
             UpdateFireMode();
         }
 
-        if (_bulletPrefab)
-            GObj_pooling.Instance.UpdateObjSpawn(PoolKEY.Bullet, _bulletPrefab);
         if (_weaponInfo.MagazineCapacity <= 0) _weaponInfo.MagazineCapacity = 1;
     }
 
@@ -192,6 +189,17 @@ public class Weapon : MonoBehaviour
             Debug.LogError($"bullet of {transform.name} not has bullet component!");
             return;
         }
+
+        if (_weaponInfo.EffectFire)
+        {
+            _weaponInfo.EffectFire.Stop();
+            _weaponInfo.EffectFire.Play();
+        }
+        else
+        {
+            Debug.LogError("_weaponInfo.EffectFire is null");
+        }
+
 
         bullet.Play(_weaponInfo.PivotFireTf.position, posEnd);
 

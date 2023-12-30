@@ -12,12 +12,21 @@ public class Bullet : MonoBehaviour
 
     protected Coroutine bulletTimeLife;
 
+    protected TrailRenderer trailRenderer;
+
+    private bool isCollision;
+
     protected virtual void Awake()
+    {
+    }
+
+    protected void Start()
     {
     }
 
     public void Play(Vector3 start, Vector3 end)
     {
+        isCollision = false;
         if (!_rigid)
             if (!transform.TryGetComponent(out _rigid))
             {
@@ -27,7 +36,14 @@ public class Bullet : MonoBehaviour
 
         transform.position = start;
         transform.LookAt(end);
-        if (transform.TryGetComponent(out TrailRenderer trailRenderer)) trailRenderer.Clear();
+        if (!trailRenderer) transform.TryGetComponent(out trailRenderer);
+
+        if (trailRenderer)
+        {
+            trailRenderer.Clear();
+            trailRenderer.enabled = true;
+        }
+
         gameObject.SetActive(true);
         _rigid.WakeUp();
         _rigid.AddForce((end - start).normalized * _bulletInfo.BulletVelocity, ForceMode.VelocityChange);
@@ -37,23 +53,32 @@ public class Bullet : MonoBehaviour
     protected virtual IEnumerator SetTimeLifeBullet(float timeLife)
     {
         yield return new WaitForSeconds(timeLife);
-        _rigid.velocity = Vector3.zero;
-        _rigid.angularVelocity = Vector3.zero;
-        _rigid.Sleep();
-        GObj_pooling.Instance.Push(PoolKEY.Bullet, gameObject);
+        StartCoroutine(GoToPool(0));
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        return;
+        if (isCollision) return;
+        isCollision = true;
         var tag = other.gameObject.tag;
         if (tag == "Wall" || tag == "Ground")
         {
             StopCoroutine(bulletTimeLife);
-            _rigid.velocity = Vector3.zero;
-            _rigid.angularVelocity = Vector3.zero;
-            _rigid.Sleep();
-            GObj_pooling.Instance.Push(PoolKEY.Bullet, gameObject);
+            ImpactManager.Instance.PlayImpactBullet(transform.position, transform.rotation.eulerAngles,
+                PoolKEY.EffectImpact);
+            StartCoroutine(GoToPool(0));
         }
+    }
+
+    protected IEnumerator GoToPool(float timeDelay)
+    {
+        yield return new WaitForSeconds(timeDelay);
+        if (!trailRenderer) transform.TryGetComponent(out trailRenderer);
+
+        if (trailRenderer) trailRenderer.enabled = false;
+        _rigid.velocity = Vector3.zero;
+        _rigid.angularVelocity = Vector3.zero;
+        _rigid.Sleep();
+        GObj_pooling.Instance.Push(PoolKEY.Bullet, gameObject);
     }
 }
