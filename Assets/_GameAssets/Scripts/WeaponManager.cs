@@ -12,6 +12,7 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] private WeaponKEY _curWeaponKey = WeaponKEY.MeleeWeapon;
     [SerializeField] private Weapon _weaponCanPickup = null;
     [SerializeField] private List<Weapon> _weaponCanPickupList = new();
+    [SerializeField] private Transform _cameraMain;
     [Header("Sway")] [SerializeField] private Vector2 _swaySensitive;
     [SerializeField] private float _swaySmoothTime;
     [SerializeField] private float _swayResetSmoothTime;
@@ -109,23 +110,8 @@ public class WeaponManager : MonoBehaviour
             return false;
         }
 
-        var weaponTran = weaponCtrl.transform;
-
         if (!Weapons.TryAdd(weaponCtrl.WeaponType, null)) DropWeapon(weaponCtrl.WeaponType);
-        if (weaponTran.TryGetComponent(out Rigidbody rig))
-        {
-            rig.Sleep();
-            rig.constraints = RigidbodyConstraints.FreezeAll;
-            rig.useGravity = false;
-        }
-
-        weaponCtrl.gameObject.layer = 3;
-        weaponCtrl.UnUseWeapon();
-        weaponTran.gameObject.SetActive(false);
-        weaponTran.SetParent(transform);
-        weaponTran.localPosition = weaponCtrl.PositionInBag;
-        weaponTran.localScale = weaponCtrl.ScaleInBag;
-        weaponTran.localRotation = Quaternion.Euler(weaponCtrl.RotationInBag);
+        weaponCtrl.PutToBag(transform, _cameraMain);
         Weapons[weaponCtrl.WeaponType] = weaponCtrl;
         EventDispatcher.Instance.PostEvent(EventID.OnPickUpWeapon,
             new MsgWeapon
@@ -141,21 +127,9 @@ public class WeaponManager : MonoBehaviour
     private bool DropWeapon(WeaponKEY weaponKey)
     {
         if (!Weapons.ContainsKey(weaponKey) || !Weapons[weaponKey]) return false;
-
-        Weapons[weaponKey].gameObject.layer = 6;
-        Weapons[weaponKey].UnUseWeapon();
-        Weapons[weaponKey].transform.SetParent(null, true);
-        if (Weapons[weaponKey].transform.TryGetComponent(out Rigidbody rig))
-        {
-            rig.WakeUp();
-            rig.constraints = RigidbodyConstraints.None;
-            rig.useGravity = true;
-        }
-
-        Weapons[weaponKey].gameObject.SetActive(true);
+        Weapons[weaponKey].RemoveFromBag();
         Weapons[weaponKey] = null;
         if (weaponKey == _curWeaponKey) _curWeaponKey = WeaponKEY.None;
-
         return true;
     }
 

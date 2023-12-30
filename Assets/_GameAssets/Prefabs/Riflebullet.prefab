@@ -133,7 +133,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bulletInfo:
-    BulletVelocity: 30
+    BulletVelocity: 100
     BulletTimeLife: 4
 --- !u!54 &8223114910123754027
 Rigidbody:

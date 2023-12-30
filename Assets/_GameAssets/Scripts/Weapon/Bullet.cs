@@ -16,7 +16,7 @@ public class Bullet : MonoBehaviour
     {
     }
 
-    public void Play()
+    public void Play(Vector3 start, Vector3 end)
     {
         if (!_rigid)
             if (!transform.TryGetComponent(out _rigid))
@@ -25,18 +25,12 @@ public class Bullet : MonoBehaviour
                 return;
             }
 
+        transform.position = start;
+        transform.LookAt(end);
         if (transform.TryGetComponent(out TrailRenderer trailRenderer)) trailRenderer.Clear();
         gameObject.SetActive(true);
         _rigid.WakeUp();
-        transform.position = Camera.main.transform.position;
-        transform.LookAt(CrossHair.Instance.transform);
-        if (Camera.main != null)
-        {
-            var vtF = (CrossHair.Instance.transform.position - Camera.main.transform.position).normalized;
-
-            _rigid.AddForce(vtF * _bulletInfo.BulletVelocity, ForceMode.Impulse);
-        }
-
+        _rigid.AddForce((end - start).normalized * _bulletInfo.BulletVelocity, ForceMode.VelocityChange);
         bulletTimeLife = StartCoroutine(SetTimeLifeBullet(_bulletInfo.BulletTimeLife));
     }
 

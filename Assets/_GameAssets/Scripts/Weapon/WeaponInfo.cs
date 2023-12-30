@@ -10,6 +10,8 @@ public class WeaponInfo
     public int TotalBullets = 100;
     public int Bullets = 30;
     public int MagazineCapacity = 30;
+    public float Dame = 10;
+    public float Range = 100f;
     [Header("Fire Mode")] public bool Automatic;
     public float TimeResetFireAutoMode;
     public bool Single;

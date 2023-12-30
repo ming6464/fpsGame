@@ -8,15 +8,18 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     [Header("Pivot Informaiton")] [SerializeField]
-    private Vector3 _localPosition;
+    protected Vector3 _localPosition;
 
-    [SerializeField] private Vector3 _localRotation;
-    [SerializeField] private Vector3 _localScale;
-    [Header("Weapon Information")] public string CurrentFireMode;
-    public float CurrentTimeResetFire;
-    public int BulletsPerShot;
+    [SerializeField] protected Vector3 _localRotation;
+    [SerializeField] protected Vector3 _localScale;
+
+    [Header("Weapon Information")] [SerializeField]
+    protected string _curFireMode;
+
+    [SerializeField] protected float _curTimeResetFire;
+    [SerializeField] protected int _bulletsPerShot;
     [SerializeField] protected WeaponInfo _weaponInfo;
-    [SerializeField] protected GameObject _bulletPrefab;
+    [Header("Bullet")] [SerializeField] protected GameObject _bulletPrefab;
     [Header("State")] [SerializeField] protected bool _canFire = false;
     [SerializeField] protected bool _isFiring;
     [SerializeField] protected bool _isUsing;
@@ -30,10 +33,13 @@ public class Weapon : MonoBehaviour
     public Vector3 ScaleInBag => _localScale;
 
     private List<string> fireModeList = new();
+    private Transform camera;
+    private Rigidbody rigid;
 
     protected virtual void Awake()
     {
         _canFire = false;
+        transform.TryGetComponent(out rigid);
     }
 
     protected virtual void Start()
@@ -44,7 +50,7 @@ public class Weapon : MonoBehaviour
 
         if (fireModeList.Count > 0)
         {
-            CurrentFireMode = fireModeList.Last();
+            _curFireMode = fireModeList.Last();
             UpdateFireMode();
         }
 
@@ -59,7 +65,7 @@ public class Weapon : MonoBehaviour
         {
             if (!_canFire || !_weaponInfo.PivotFireTf) return;
             StartCoroutine(PrepareFire());
-            if (CurrentFireMode != "Automatic") _isFiring = false;
+            if (_curFireMode != "Automatic") _isFiring = false;
         }
     }
 
@@ -102,6 +108,45 @@ public class Weapon : MonoBehaviour
         UnUseWeapon();
     }
 
+    public virtual void PutToBag(Transform bag, Transform cam)
+    {
+        if (!rigid) transform.TryGetComponent(out rigid);
+
+        if (rigid)
+        {
+            rigid.Sleep();
+            rigid.constraints = RigidbodyConstraints.FreezeAll;
+            rigid.useGravity = false;
+        }
+
+        transform.SetParent(bag);
+        camera = cam;
+        transform.gameObject.layer = 3;
+        transform.localPosition = PositionInBag;
+        transform.localScale = ScaleInBag;
+        transform.localRotation = Quaternion.Euler(RotationInBag);
+        UnUseWeapon();
+        gameObject.SetActive(false);
+    }
+
+    public virtual void RemoveFromBag()
+    {
+        camera = null;
+        transform.gameObject.layer = 6;
+        transform.SetParent(null, true);
+        if (!rigid) transform.TryGetComponent(out rigid);
+
+        if (rigid)
+        {
+            rigid.WakeUp();
+            rigid.constraints = RigidbodyConstraints.None;
+            rigid.useGravity = true;
+        }
+
+        UnUseWeapon();
+        gameObject.SetActive(true);
+    }
+
     protected virtual void OnPullTrigger(object obj)
     {
         _isFiring = true;
@@ -114,7 +159,7 @@ public class Weapon : MonoBehaviour
 
     protected virtual IEnumerator PrepareFire()
     {
-        for (var i = 0; i < BulletsPerShot; i++)
+        for (var i = 0; i < _bulletsPerShot; i++)
         {
             OnFire();
             yield return new WaitForSeconds(0.1f);
@@ -133,9 +178,14 @@ public class Weapon : MonoBehaviour
         _weaponInfo.Bullets--;
         if (_weaponInfo.Bullets <= 0) ReloadBullet();
 
+        Vector3 posEnd;
+
+        if (Physics.Raycast(camera.position, camera.forward, out var raycastHit, _weaponInfo.Range))
+            posEnd = raycastHit.point;
+        else
+            posEnd = camera.position + camera.forward * _weaponInfo.Range;
+
         var curBullet = GObj_pooling.Instance.Pull(PoolKEY.Bullet);
-        curBullet.transform.position = _weaponInfo.PivotFireTf.position;
-        curBullet.transform.localRotation = _weaponInfo.PivotFireTf.rotation;
 
         if (!curBullet.TryGetComponent(out Bullet bullet))
         {
@@ -143,7 +193,8 @@ public class Weapon : MonoBehaviour
             return;
         }
 
-        bullet.Play();
+        bullet.Play(_weaponInfo.PivotFireTf.position, posEnd);
+
 
         EventDispatcher.Instance.PostEvent(EventID.OnUpdateNumberBulletWeapon,
             new MsgWeapon
@@ -157,33 +208,33 @@ public class Weapon : MonoBehaviour
     protected virtual IEnumerator UpdateStateCanFire()
     {
         _canFire = false;
-        yield return new WaitForSeconds(CurrentTimeResetFire);
+        yield return new WaitForSeconds(_curTimeResetFire);
         _canFire = true;
     }
 
     protected virtual void OnChangeFireMode(object obj)
     {
         if (fireModeList.Count <= 1) return;
-        var nextIndex = fireModeList.IndexOf(CurrentFireMode) + 1;
+        var nextIndex = fireModeList.IndexOf(_curFireMode) + 1;
         if (nextIndex >= fireModeList.Count) nextIndex = 0;
-        CurrentFireMode = fireModeList[nextIndex];
+        _curFireMode = fireModeList[nextIndex];
         UpdateFireMode();
     }
 
     protected virtual void UpdateFireMode()
     {
-        BulletsPerShot = 1;
-        switch (CurrentFireMode)
+        _bulletsPerShot = 1;
+        switch (_curFireMode)
         {
             case "Single":
-                CurrentTimeResetFire = _weaponInfo.TimeResetFireSingleMode;
+                _curTimeResetFire = _weaponInfo.TimeResetFireSingleMode;
                 break;
             case "Burst":
-                CurrentTimeResetFire = _weaponInfo.TimeResetFireBurstMode;
-                BulletsPerShot = _weaponInfo.BulletsPerShotOfBurstMode;
+                _curTimeResetFire = _weaponInfo.TimeResetFireBurstMode;
+                _bulletsPerShot = _weaponInfo.BulletsPerShotOfBurstMode;
                 break;
             case "Automatic":
-                CurrentTimeResetFire = _weaponInfo.TimeResetFireAutoMode;
+                _curTimeResetFire = _weaponInfo.TimeResetFireAutoMode;
                 break;
         }
     }
