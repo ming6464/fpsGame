@@ -12,7 +12,9 @@ public class ImpactManager : Singleton<ImpactManager>
     public void PlayImpactBullet(Vector3 pos, PoolKEY poolKey)
     {
         var obj = GObj_pooling.Instance.Pull(poolKey);
+        obj.transform.SetParent(null, true);
         obj.transform.position = pos;
+        obj.gameObject.SetActive(true);
         if (obj.transform.TryGetComponent(out ParticleSystem particleSystem))
         {
             particleSystem.Stop();

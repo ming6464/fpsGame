@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,10 +6,11 @@ using UnityEngine.InputSystem;
 
 public class WeaponManager : MonoBehaviour
 {
-    [Header("Info")] [SerializeField] private Transform _playerTf;
+    [SerializeField] private Transform _playerTf;
+    [Header("TagName")] [SerializeField] private string[] _avoidTags;
     [Header("Weapon")] [SerializeField] private string _curWeaponName;
     [SerializeField] private WeaponKEY _curWeaponKey = WeaponKEY.MeleeWeapon;
-    [SerializeField] private Weapon _weaponCanPickup = null;
+    [SerializeField] private Weapon _weaponCanPickup;
     [SerializeField] private List<Weapon> _weaponCanPickupList = new();
     [SerializeField] private Transform _cameraMain;
     [Header("Sway")] [SerializeField] private Vector2 _swaySensitive;
@@ -26,6 +26,8 @@ public class WeaponManager : MonoBehaviour
     private Vector3 swayResetVelocity = Vector3.zero;
     private InputBase inputBase;
     private Dictionary<WeaponKEY, Weapon> Weapons = new();
+    public Transform StartPointRay => _cameraMain;
+    public string[] AvoidTags => _avoidTags;
 
     private void Awake()
     {
@@ -61,6 +63,11 @@ public class WeaponManager : MonoBehaviour
                     ChangeWeapon(dic.Key);
                     break;
                 }
+    }
+
+    public bool CheckTagOfAvoidTags(string tagCheck)
+    {
+        return _avoidTags.Contains(tagCheck);
     }
 
     private void LoadWeapons()
@@ -111,7 +118,7 @@ public class WeaponManager : MonoBehaviour
         }
 
         if (!Weapons.TryAdd(weaponCtrl.WeaponType, null)) DropWeapon(weaponCtrl.WeaponType);
-        weaponCtrl.PutToBag(transform, _cameraMain);
+        weaponCtrl.PutToBag(this);
         Weapons[weaponCtrl.WeaponType] = weaponCtrl;
         EventDispatcher.Instance.PostEvent(EventID.OnPickUpWeapon,
             new MsgWeapon
@@ -185,6 +192,7 @@ public class WeaponManager : MonoBehaviour
     private void OnWeaponPickupAreaEnter(object obj)
     {
         var weapon = obj as Weapon;
+        if (!weapon) return;
         if (_weaponCanPickupList.Contains(weapon)) return;
         _weaponCanPickupList.Add(weapon);
         Debug.Log($"{weapon.name} enter area");
@@ -193,7 +201,7 @@ public class WeaponManager : MonoBehaviour
     private void OnWeaponPickupAreaExit(object obj)
     {
         var weapon = obj as Weapon;
-
+        if (!weapon) return;
         if (_weaponCanPickupList.Contains(weapon))
         {
             _weaponCanPickupList.Remove(weapon);
@@ -206,42 +214,82 @@ public class WeaponManager : MonoBehaviour
 
     private void LinkInputSystem()
     {
-        inputBase.Weapon.Fire.performed += context => EventDispatcher.Instance.PostEvent(EventID.OnPullTrigger);
-        inputBase.Weapon.Fire.canceled += (context) => EventDispatcher.Instance.PostEvent(EventID.OnReleaseTrigger);
-        inputBase.Weapon.ChangeMeleeWeapon.performed += context => ChangeWeapon(WeaponKEY.MeleeWeapon);
-        inputBase.Weapon.ChangeSecondaryWeapon.performed += context => ChangeWeapon(WeaponKEY.SecondaryWeapon);
-        inputBase.Weapon.ChangePrimaryWeapon.performed += context => ChangeWeapon(WeaponKEY.PrimaryWeapon);
-        inputBase.Weapon.ChangeExplosives.performed += context => ChangeWeapon(WeaponKEY.Explosives);
-        inputBase.Weapon.DropWeapon.performed += context => DropWeapon(_curWeaponKey);
-        inputBase.Weapon.PickUpWeapon.performed += context =>
-        {
-            PickUpWeapon(_weaponCanPickup);
-            _weaponCanPickupList.Remove(_weaponCanPickup);
-            EventDispatcher.Instance.PostEvent(EventID.OnUpdateWeaponPickup);
-        };
-        inputBase.Weapon.ChangeFireMode.performed +=
-            context => EventDispatcher.Instance.PostEvent(EventID.OnChangeFireMode);
-        inputBase.Weapon.ReloadBullet.performed += context => EventDispatcher.Instance.PostEvent(EventID.ReloadBullet);
+        inputBase.Weapon.Fire.performed += FireOnperformed;
+        inputBase.Weapon.Fire.canceled += FireOncanceled;
+        inputBase.Weapon.ChangeMeleeWeapon.performed += ChangeMeleeWeaponOnperformed;
+        inputBase.Weapon.ChangeSecondaryWeapon.performed += ChangeSecondaryWeaponOnperformed;
+        inputBase.Weapon.ChangePrimaryWeapon.performed += ChangePrimaryWeaponOnperformed;
+        inputBase.Weapon.ChangeExplosives.performed += ChangeExplosivesOnperformed;
+        inputBase.Weapon.DropWeapon.performed += DropWeaponOnperformed;
+        inputBase.Weapon.PickUpWeapon.performed += PickUpWeaponOnperformed;
+        inputBase.Weapon.ChangeFireMode.performed += ChangeFireModeOnperformed;
+        inputBase.Weapon.ReloadBullet.performed += ReloadBulletOnperformed;
     }
 
     private void UnLinkInputSystem()
     {
-        inputBase.Weapon.Fire.performed -= context => EventDispatcher.Instance.PostEvent(EventID.OnPullTrigger);
-        inputBase.Weapon.Fire.canceled -= (context) => EventDispatcher.Instance.PostEvent(EventID.OnReleaseTrigger);
-        inputBase.Weapon.ChangeMeleeWeapon.performed -= context => ChangeWeapon(WeaponKEY.MeleeWeapon);
-        inputBase.Weapon.ChangeSecondaryWeapon.performed -= context => ChangeWeapon(WeaponKEY.SecondaryWeapon);
-        inputBase.Weapon.ChangePrimaryWeapon.performed -= context => ChangeWeapon(WeaponKEY.PrimaryWeapon);
-        inputBase.Weapon.ChangeExplosives.performed -= context => ChangeWeapon(WeaponKEY.Explosives);
-        inputBase.Weapon.DropWeapon.performed -= context => DropWeapon(_curWeaponKey);
-        inputBase.Weapon.PickUpWeapon.performed -= context =>
-        {
-            PickUpWeapon(_weaponCanPickup);
-            _weaponCanPickupList.Remove(_weaponCanPickup);
-            EventDispatcher.Instance.PostEvent(EventID.OnUpdateWeaponPickup);
-        };
-        inputBase.Weapon.ChangeFireMode.performed -=
-            context => EventDispatcher.Instance.PostEvent(EventID.OnChangeFireMode);
-        inputBase.Weapon.ReloadBullet.performed -= context => EventDispatcher.Instance.PostEvent(EventID.ReloadBullet);
+        inputBase.Weapon.Fire.performed -= FireOnperformed;
+        inputBase.Weapon.Fire.canceled -= FireOncanceled;
+        inputBase.Weapon.ChangeMeleeWeapon.performed -= ChangeMeleeWeaponOnperformed;
+        inputBase.Weapon.ChangeSecondaryWeapon.performed -= ChangeSecondaryWeaponOnperformed;
+        inputBase.Weapon.ChangePrimaryWeapon.performed -= ChangePrimaryWeaponOnperformed;
+        inputBase.Weapon.ChangeExplosives.performed -= ChangeExplosivesOnperformed;
+        inputBase.Weapon.DropWeapon.performed -= DropWeaponOnperformed;
+        inputBase.Weapon.PickUpWeapon.performed -= PickUpWeaponOnperformed;
+        inputBase.Weapon.ChangeFireMode.performed -= ChangeFireModeOnperformed;
+        inputBase.Weapon.ReloadBullet.performed -= ReloadBulletOnperformed;
+    }
+
+    private void ReloadBulletOnperformed(InputAction.CallbackContext obj)
+    {
+        EventDispatcher.Instance.PostEvent(EventID.ReloadBullet);
+    }
+
+    private void ChangeFireModeOnperformed(InputAction.CallbackContext obj)
+    {
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeFireMode);
+    }
+
+    private void PickUpWeaponOnperformed(InputAction.CallbackContext obj)
+    {
+        PickUpWeapon(_weaponCanPickup);
+        _weaponCanPickupList.Remove(_weaponCanPickup);
+        EventDispatcher.Instance.PostEvent(EventID.OnUpdateWeaponPickup);
+    }
+
+    private void DropWeaponOnperformed(InputAction.CallbackContext obj)
+    {
+        DropWeapon(_curWeaponKey);
+    }
+
+    private void ChangeExplosivesOnperformed(InputAction.CallbackContext obj)
+    {
+        ChangeWeapon(WeaponKEY.Explosives);
+    }
+
+    private void ChangePrimaryWeaponOnperformed(InputAction.CallbackContext obj)
+    {
+        ChangeWeapon(WeaponKEY.PrimaryWeapon);
+    }
+
+    private void ChangeSecondaryWeaponOnperformed(InputAction.CallbackContext obj)
+    {
+        ChangeWeapon(WeaponKEY.SecondaryWeapon);
+    }
+
+    private void ChangeMeleeWeaponOnperformed(InputAction.CallbackContext obj)
+    {
+        ChangeWeapon(WeaponKEY.MeleeWeapon);
+    }
+
+    private void FireOncanceled(InputAction.CallbackContext obj)
+    {
+        EventDispatcher.Instance.PostEvent(EventID.OnReleaseTrigger);
+    }
+
+    private void FireOnperformed(InputAction.CallbackContext obj)
+    {
+        EventDispatcher.Instance.PostEvent(EventID.OnPullTrigger);
     }
 
     #endregion

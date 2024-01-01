@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
@@ -19,7 +18,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] protected float _curTimeResetFire;
     [SerializeField] protected int _bulletsPerShot;
     [SerializeField] protected WeaponInfo _weaponInfo;
-    [Header("State")] [SerializeField] protected bool _canFire = false;
+    [Header("State")] [SerializeField] protected bool _canFire;
     [SerializeField] protected bool _isFiring;
     [SerializeField] protected bool _isUsing;
     public WeaponKEY WeaponType => _weaponInfo.WeaponType;
@@ -32,8 +31,8 @@ public class Weapon : MonoBehaviour
     public Vector3 ScaleInBag => _localScale;
 
     private List<string> fireModeList = new();
-    private Transform camera;
     private Rigidbody rigid;
+    private WeaponManager weaponManager;
 
     protected virtual void Awake()
     {
@@ -53,17 +52,28 @@ public class Weapon : MonoBehaviour
             UpdateFireMode();
         }
 
+
         if (_weaponInfo.MagazineCapacity <= 0) _weaponInfo.MagazineCapacity = 1;
     }
 
     protected virtual void Update()
     {
-        if (_isUsing && _isFiring)
+        if (!_isUsing) return;
+        if (_isFiring)
         {
             if (!_canFire || !_weaponInfo.PivotFireTf) return;
             StartCoroutine(PrepareFire());
             if (_curFireMode != "Automatic") _isFiring = false;
         }
+
+        DrawRay();
+    }
+
+    protected virtual void DrawRay()
+    {
+        var position = weaponManager.StartPointRay.position;
+        Debug.DrawRay(position, position + weaponManager.StartPointRay.forward.normalized * _weaponInfo.Range,
+            Color.red);
     }
 
     public virtual void UseWeapon()
@@ -105,8 +115,9 @@ public class Weapon : MonoBehaviour
         UnUseWeapon();
     }
 
-    public virtual void PutToBag(Transform bag, Transform cam)
+    public virtual void PutToBag(WeaponManager weaponManager)
     {
+        this.weaponManager = weaponManager;
         if (!rigid) transform.TryGetComponent(out rigid);
 
         if (rigid)
@@ -116,11 +127,11 @@ public class Weapon : MonoBehaviour
             rigid.useGravity = false;
         }
 
-        transform.SetParent(bag);
-        camera = cam;
-        transform.gameObject.layer = 3;
-        transform.localPosition = PositionInBag;
-        transform.localScale = ScaleInBag;
+        var myTransform = transform;
+        myTransform.SetParent(this.weaponManager.transform);
+        myTransform.gameObject.layer = 3;
+        myTransform.localPosition = PositionInBag;
+        myTransform.localScale = ScaleInBag;
         transform.localRotation = Quaternion.Euler(RotationInBag);
         UnUseWeapon();
         gameObject.SetActive(false);
@@ -128,7 +139,7 @@ public class Weapon : MonoBehaviour
 
     public virtual void RemoveFromBag()
     {
-        camera = null;
+        weaponManager = null;
         transform.gameObject.layer = 6;
         transform.SetParent(null, true);
         if (!rigid) transform.TryGetComponent(out rigid);
@@ -154,6 +165,7 @@ public class Weapon : MonoBehaviour
         _isFiring = false;
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     protected virtual IEnumerator PrepareFire()
     {
         for (var i = 0; i < _bulletsPerShot; i++)
@@ -175,20 +187,18 @@ public class Weapon : MonoBehaviour
         _weaponInfo.Bullets--;
         if (_weaponInfo.Bullets <= 0) ReloadBullet();
 
-        Vector3 posEnd;
-
-        if (Physics.Raycast(camera.position, camera.forward, out var raycastHit, _weaponInfo.Range))
-            posEnd = raycastHit.point;
-        else
-            posEnd = camera.position + camera.forward * _weaponInfo.Range;
-
-        var curBullet = GObj_pooling.Instance.Pull(PoolKEY.Bullet);
-
-        if (!curBullet.TryGetComponent(out Bullet bullet))
-        {
-            Debug.LogError($"bullet of {transform.name} not has bullet component!");
-            return;
-        }
+        // Vector3 posEnd;
+        var raycastHits = new RaycastHit[weaponManager.AvoidTags.Length + 1];
+        if (Physics.RaycastNonAlloc(weaponManager.StartPointRay.position, weaponManager.StartPointRay.forward,
+                raycastHits, _weaponInfo.Range) > 0)
+            foreach (var ray in raycastHits)
+                if (ray.transform && !weaponManager.CheckTagOfAvoidTags(ray.transform.tag))
+                {
+                    Debug.Log($"Ray impact {ray.transform.name}");
+                    ImpactManager.Instance.PlayImpactBullet(ray.point,
+                        PoolKEY.EffectImpact);
+                    break;
+                }
 
         if (_weaponInfo.EffectFire)
         {
@@ -199,10 +209,6 @@ public class Weapon : MonoBehaviour
         {
             Debug.LogError("_weaponInfo.EffectFire is null");
         }
-
-
-        bullet.Play(_weaponInfo.PivotFireTf.position, posEnd);
-
 
         EventDispatcher.Instance.PostEvent(EventID.OnUpdateNumberBulletWeapon,
             new MsgWeapon
@@ -273,13 +279,13 @@ public class Weapon : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("WeaponManager"))
+        if (other.CompareTag("RangePickUpWeapon"))
             EventDispatcher.Instance.PostEvent(EventID.OnWeaponPickupAreaEnter, this);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("WeaponManager"))
+        if (other.CompareTag("RangePickUpWeapon"))
             EventDispatcher.Instance.PostEvent(EventID.OnWeaponPickupAreaExit, this);
     }
 }

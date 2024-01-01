@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System;
 
@@ -25,7 +24,6 @@ public class EventDispatcher : MonoBehaviour
 
             return s_instance;
         }
-        private set { }
     }
 
     public static bool HasInstance()
@@ -45,7 +43,7 @@ public class EventDispatcher : MonoBehaviour
         else
         {
             // set instance
-            s_instance = this as EventDispatcher;
+            s_instance = this;
             DontDestroyOnLoad(gameObject);
         }
     }
@@ -76,17 +74,8 @@ public class EventDispatcher : MonoBehaviour
 
     #region Add Listeners, Post events, Remove listener
 
-    /// <summary>
-    /// Register to listen for eventID
-    /// </summary>
-    /// <param name="eventID">EventID that object want to listen</param>
-    /// <param name="callback">Callback will be invoked when this eventID be raised</para	m>
     public void RegisterListener(EventID eventID, Action<object> callback)
     {
-        // checking params
-        // Common.Assert(callback != null, "AddListener, event {0}, callback = null !!", eventID.ToString());
-        // Common.Assert(eventID != EventID.None, "RegisterListener, event = None !!");
-
         // check if listener exist in distionary
         if (_listeners.ContainsKey(eventID))
         {
@@ -101,12 +90,6 @@ public class EventDispatcher : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Posts the event. This will notify all listener that register for this event
-    /// </summary>
-    /// <param name="eventID">EventID.</param>
-    /// <param name="sender">Sender, in some case, the Listener will need to know who send this message.</param>
-    /// <param name="param">Parameter. Can be anything (struct, class ...), Listener will make a cast to get the data</param>
     public void PostEvent(EventID eventID, object param = null)
     {
         if (!_listeners.ContainsKey(eventID))

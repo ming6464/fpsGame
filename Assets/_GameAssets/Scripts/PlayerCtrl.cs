@@ -1,11 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.ProBuilder.Shapes;
 
 public class PlayerCtrl : MonoBehaviour
 {
@@ -20,7 +15,6 @@ public class PlayerCtrl : MonoBehaviour
     [Header("Rotation")] [SerializeField] private Vector2 _viewSensitive;
     [SerializeField] private Transform _camera;
     [SerializeField] private Transform _player;
-    [SerializeField] private float _rotateSmoothTime;
 
 
     [Header("Jumping")] [SerializeField] private Vector3 _jumpingHeight;
@@ -44,10 +38,10 @@ public class PlayerCtrl : MonoBehaviour
     private Vector2 inputView = Vector2.zero;
     public Vector2 InputView => inputView;
 
-    private StanceInfo curStanceInfo = null;
+    private StanceInfo curStanceInfo;
     private Vector3 vtSmoothCam = Vector3.zero;
     private Vector3 vtSmoothCrtCenter = Vector3.zero;
-    private float vtSmoothCrtHeight = 0f;
+    private float vtSmoothCrtHeight;
 
     private Vector3 vtRotate;
     private Vector2 curRotate;

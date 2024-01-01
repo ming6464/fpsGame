@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 
@@ -75,7 +72,7 @@ public class BulletAndWeaponInfo : MonoBehaviour
 
     private void OnPickUpWeapon(object obj)
     {
-        var msg = obj as MsgWeapon;
+        if (obj is not MsgWeapon msg) return;
         switch (msg.WeaponKey)
         {
             case WeaponKEY.PrimaryWeapon:
@@ -147,7 +144,7 @@ public class BulletAndWeaponInfo : MonoBehaviour
 
     private void OnUpdateNumberBulletWeapon(object obj)
     {
-        var msg = obj as MsgWeapon;
+        if (obj is not MsgWeapon msg) return;
         switch (msg.WeaponKey)
         {
             case WeaponKEY.PrimaryWeapon:
@@ -202,13 +199,11 @@ public class BulletAndWeaponInfo : MonoBehaviour
 
     private void OnUpdateWeaponPickup(object obj)
     {
-        if (obj == null)
+        if (obj is not MsgWeapon msg)
         {
             _uiPanel.SetActive(false);
             return;
         }
-
-        var msg = obj as MsgWeapon;
 
         _uiPanel.SetActive(true);
         _weaponNameCanPickupText.text = msg.WeaponName;

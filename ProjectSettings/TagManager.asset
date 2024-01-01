@@ -11,6 +11,7 @@ TagManager:
   - WeaponManager
   - Wall
   - Ground
+  - RangePickUpWeapon
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - Water
   - UI
   - DisableWeapon
-  - WeaponManger
+  - RangePickUpWeapon
   - 
   - 
   - 

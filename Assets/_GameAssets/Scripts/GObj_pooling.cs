@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,7 +31,7 @@ public class GObj_pooling : Singleton<GObj_pooling>
         }
 
         if (!gameObjectsDic.ContainsKey(poolKey)) gameObjectsDic.Add(poolKey, new ObjectPool());
-        gameObjectsDic[poolKey].UpDateGObjSpawn(gObj, poolKey);
+        gameObjectsDic[poolKey].UpDateGObjSpawn(gObj);
         return true;
     }
 
@@ -70,11 +69,12 @@ public class GObj_pooling : Singleton<GObj_pooling>
         public List<Transform> gameObjectsTf = new();
         private Transform gObj_SpawnTf;
 
-        public void UpDateGObjSpawn(GameObject gObj, PoolKEY poolKey)
+        public void UpDateGObjSpawn(GameObject gObj)
         {
             if (gObj_SpawnTf) return;
-            gObj.SetActive(false);
-            gObj_SpawnTf = gObj.transform;
+            var obj = Instantiate(gObj, myTran, true);
+            obj.SetActive(false);
+            gObj_SpawnTf = obj.transform;
         }
 
         public GameObject GetObj(PoolKEY poolKey)
