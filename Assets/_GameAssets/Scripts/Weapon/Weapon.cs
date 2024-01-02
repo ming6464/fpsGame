@@ -188,17 +188,28 @@ public class Weapon : MonoBehaviour
         if (_weaponInfo.Bullets <= 0) ReloadBullet();
 
         // Vector3 posEnd;
+        var haveHit = false;
+        var hitDistance = _weaponInfo.Range;
+        var endPos = weaponManager.StartPointRay.position + weaponManager.StartPointRay.forward * hitDistance;
         var raycastHits = new RaycastHit[weaponManager.AvoidTags.Length + 1];
         if (Physics.RaycastNonAlloc(weaponManager.StartPointRay.position, weaponManager.StartPointRay.forward,
-                raycastHits, _weaponInfo.Range) > 0)
+                raycastHits, hitDistance) > 0)
             foreach (var ray in raycastHits)
                 if (ray.transform && !weaponManager.CheckTagOfAvoidTags(ray.transform.tag))
                 {
                     Debug.Log($"Ray impact {ray.transform.name}");
-                    ImpactManager.Instance.PlayImpactBullet(ray.point,
-                        PoolKEY.EffectImpact);
+                    endPos = ray.point;
+                    haveHit = true;
+                    hitDistance = ray.distance;
                     break;
                 }
+
+        if (haveHit)
+            ImpactManager.Instance.PlayImpactBullet(endPos,
+                PoolKEY.EffectImpact);
+
+        ImpactManager.Instance.PlayBullet(weaponManager.StartPointRay.position, weaponManager.StartPointRay.forward,
+            hitDistance);
 
         if (_weaponInfo.EffectFire)
         {
