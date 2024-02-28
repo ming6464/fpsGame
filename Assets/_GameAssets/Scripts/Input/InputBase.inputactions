@@ -253,7 +253,7 @@
             "id": "f054b914-7577-45ed-b3ab-12df381ebf42",
             "actions": [
                 {
-                    "name": "Fire",
+                    "name": "Trigger",
                     "type": "Button",
                     "id": "ba7d127e-3e57-4e1a-a25d-2c7d0dfb9eb4",
                     "expectedControlType": "Button",
@@ -262,7 +262,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ChangePrimaryWeapon",
+                    "name": "ChangeGun1",
                     "type": "Button",
                     "id": "54bdc69c-e31e-4bd6-b295-d57feda3a4ea",
                     "expectedControlType": "Button",
@@ -271,7 +271,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ChangeSecondaryWeapon",
+                    "name": "ChangeGun2",
                     "type": "Button",
                     "id": "3aad5a5a-e1a5-4ebd-ba52-2fdc076dc693",
                     "expectedControlType": "Button",
@@ -280,7 +280,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ChangeMeleeWeapon",
+                    "name": "ChangeGun3",
                     "type": "Button",
                     "id": "c993cac1-6850-47e3-a45c-d9b185407701",
                     "expectedControlType": "Button",
@@ -332,15 +332,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Aim",
-                    "type": "Button",
-                    "id": "4750f789-e1b8-4869-b3e9-ddef05dcee35",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -351,7 +342,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Fire",
+                    "action": "Trigger",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -362,7 +353,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ChangeMeleeWeapon",
+                    "action": "ChangeGun3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -417,7 +408,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ChangePrimaryWeapon",
+                    "action": "ChangeGun1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -428,7 +419,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ChangeSecondaryWeapon",
+                    "action": "ChangeGun2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -440,17 +431,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "ReloadBullet",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c49adb60-afcd-4c2b-a813-7cfd02036a72",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

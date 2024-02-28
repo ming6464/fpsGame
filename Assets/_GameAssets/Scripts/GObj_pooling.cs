@@ -15,13 +15,13 @@ public class GObj_pooling : Singleton<GObj_pooling>
     [SerializeField]
     private RegisterPool[] _registerPools;
 
-    private Dictionary<PoolKEY, ObjectPool> _gameObjectsDic = new();
-    private static Transform _myTran;
+    private Dictionary<PoolKEY, ObjectPool> m_gameObjectsDic = new();
+    private static Transform m_myTran;
 
     public override void Awake()
     {
         base.Awake();
-        _myTran = transform;
+        m_myTran = transform;
         foreach (RegisterPool objRegis in _registerPools)
         {
             UpdateObjSpawn(objRegis.PoolKey, objRegis.ObjectRegister);
@@ -36,12 +36,12 @@ public class GObj_pooling : Singleton<GObj_pooling>
             return false;
         }
 
-        if (!_gameObjectsDic.ContainsKey(poolKey))
+        if (!m_gameObjectsDic.ContainsKey(poolKey))
         {
-            _gameObjectsDic.Add(poolKey, new ObjectPool());
+            m_gameObjectsDic.Add(poolKey, new ObjectPool());
         }
 
-        _gameObjectsDic[poolKey].UpDateGObjSpawn(gObj);
+        m_gameObjectsDic[poolKey].UpDateGObjSpawn(gObj);
         return true;
     }
 
@@ -64,13 +64,13 @@ public class GObj_pooling : Singleton<GObj_pooling>
             return false;
         }
 
-        if (!_gameObjectsDic.ContainsKey(poolKey))
+        if (!m_gameObjectsDic.ContainsKey(poolKey))
         {
             Debug.LogError($"Not found key '{poolKey}'");
             return false;
         }
 
-        _gameObjectsDic[poolKey].PushObj(gObj.transform, poolKey);
+        m_gameObjectsDic[poolKey].PushObj(gObj.transform, poolKey);
         return true;
     }
 
@@ -87,13 +87,13 @@ public class GObj_pooling : Singleton<GObj_pooling>
 
     public GameObject Pull(PoolKEY poolKey)
     {
-        if (!_gameObjectsDic.ContainsKey(poolKey))
+        if (!m_gameObjectsDic.ContainsKey(poolKey))
         {
             Debug.LogError($"Not found key '{poolKey}'");
             return null;
         }
 
-        return _gameObjectsDic[poolKey].GetObj(poolKey);
+        return m_gameObjectsDic[poolKey].GetObj(poolKey);
     }
 
     private class ObjectPool
@@ -108,7 +108,7 @@ public class GObj_pooling : Singleton<GObj_pooling>
                 return;
             }
 
-            GameObject obj = Instantiate(gObj, _myTran, true);
+            GameObject obj = Instantiate(gObj, m_myTran, true);
             obj.SetActive(false);
             gObj_SpawnTf = obj.transform;
         }
@@ -123,7 +123,7 @@ public class GObj_pooling : Singleton<GObj_pooling>
                     return null;
                 }
 
-                if (!PushObj(Instantiate(gObj_SpawnTf, _myTran, true), poolKey))
+                if (!PushObj(Instantiate(gObj_SpawnTf, m_myTran, true), poolKey))
                 {
                     return null;
                 }
@@ -144,7 +144,7 @@ public class GObj_pooling : Singleton<GObj_pooling>
             }
 
             gObjTf.gameObject.SetActive(false);
-            gObjTf.SetParent(_myTran);
+            gObjTf.SetParent(m_myTran);
             gameObjectsTf.Add(gObjTf);
             return true;
         }

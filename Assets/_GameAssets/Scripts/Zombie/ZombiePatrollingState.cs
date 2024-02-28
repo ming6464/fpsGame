@@ -11,36 +11,36 @@ public class ZombiePatrollingState : StateMachineBehaviour
     [SerializeField]
     private float _detectionAreaRadius;
 
-    private Transform player;
-    private float startTime;
-    private Transform patrolPoints;
-    private NavMeshAgent agent;
-    private Vector3 nextPatrolPoint;
+    private Transform m_player;
+    private float m_startTime;
+    private Transform m_patrolPoints;
+    private NavMeshAgent m_agent;
+    private Vector3 m_nextPatrolPoint;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        patrolPoints = GameObject.FindGameObjectWithTag("PatrolPoints")?.transform;
-        startTime = Time.time;
-        animator.transform.TryGetComponent(out agent);
+        m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        m_patrolPoints = GameObject.FindGameObjectWithTag("PatrolPoints")?.transform;
+        m_startTime = Time.time;
+        animator.transform.TryGetComponent(out m_agent);
 
-        if (patrolPoints && agent)
+        if (m_patrolPoints && m_agent)
         {
-            nextPatrolPoint = animator.transform.position;
+            m_nextPatrolPoint = animator.transform.position;
 
-            while (Vector3.Distance(animator.transform.position, nextPatrolPoint) < 1.5f)
+            while (Vector3.Distance(animator.transform.position, m_nextPatrolPoint) < 1.5f)
             {
-                nextPatrolPoint = patrolPoints.GetChild(Random.Range(0, patrolPoints.childCount)).position;
+                m_nextPatrolPoint = m_patrolPoints.GetChild(Random.Range(0, m_patrolPoints.childCount)).position;
             }
 
-            agent.SetDestination(nextPatrolPoint);
+            m_agent.SetDestination(m_nextPatrolPoint);
         }
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (player && Vector3.Distance(animator.transform.position, player.position) <= _detectionAreaRadius)
+        if (m_player && Vector3.Distance(animator.transform.position, m_player.position) <= _detectionAreaRadius)
         {
             animator.SetBool("IsChasing", true);
             animator.SetBool("IsPatrolling", false);
@@ -48,9 +48,9 @@ public class ZombiePatrollingState : StateMachineBehaviour
         }
 
 
-        if (Time.time > startTime + _timePatrol || agent.remainingDistance <= agent.radius)
+        if (Time.time > m_startTime + _timePatrol || m_agent.remainingDistance <= m_agent.radius)
         {
-            agent.ResetPath();
+            m_agent.ResetPath();
             animator.SetBool("IsPatrolling", false);
         }
     }

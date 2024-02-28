@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
@@ -40,38 +39,37 @@ public class WeaponHolder : MonoBehaviour
     [SerializeField]
     private AimAndPivotScript _aimAndPivotScript;
 
-    private InputBase _inputBase;
+    private InputBase m_inputBase;
 
     public Transform PivotRay => _aimAndPivotScript.PivotRay;
-    private float _rotationVelocity;
-    private int _grenadeSlotIndex;
+    private int m_grenadeSlotIndex;
 
 
     private void Awake()
     {
-        _inputBase = new InputBase();
+        m_inputBase = new InputBase();
+        LinkInputSystem();
         if (GameConfig.Instance)
         {
             TotalBullet = GameConfig.Instance.GetBagInfo().TotalBullet;
-            _grenadeSlotIndex = _bagInfo.Length - 1;
+            m_grenadeSlotIndex = _bagInfo.Length - 1;
         }
     }
 
     private void OnEnable()
     {
-        _inputBase.Enable();
+        m_inputBase.Enable();
         LinkEvent();
     }
 
     private void OnDisable()
     {
         UnLinkEvent();
-        _inputBase.Disable();
+        m_inputBase.Disable();
     }
 
     private void Start()
     {
-        LinkInputSystem();
         LoadWeaponInBag();
     }
 
@@ -155,12 +153,12 @@ public class WeaponHolder : MonoBehaviour
 
     private bool CheckEmptyGrenadeSlot()
     {
-        return _bagInfo[_grenadeSlotIndex].BagTf.childCount == 0;
+        return _bagInfo[m_grenadeSlotIndex].BagTf.childCount == 0;
     }
 
     private bool CheckUsingGrande()
     {
-        return _curWeaponIndex == _grenadeSlotIndex;
+        return _curWeaponIndex == m_grenadeSlotIndex;
     }
 
     private void PickUpWeapon(Weapon weapon)
@@ -177,14 +175,14 @@ public class WeaponHolder : MonoBehaviour
             bool grenadeUsing = CheckUsingGrande();
             if (!CheckEmptyGrenadeSlot())
             {
-                DropWeapon(_grenadeSlotIndex);
+                DropWeapon(m_grenadeSlotIndex);
             }
 
             weapon.PutToBag(this,
-                _bagInfo[_grenadeSlotIndex]);
+                _bagInfo[m_grenadeSlotIndex]);
             if (_curWeaponIndex < 0)
             {
-                ChangeWeapon(_grenadeSlotIndex);
+                ChangeWeapon(m_grenadeSlotIndex);
             }
 
             return;
@@ -263,27 +261,12 @@ public class WeaponHolder : MonoBehaviour
 
     private void LinkInputSystem()
     {
-        _inputBase.Weapon.Fire.performed += FireOnPerformed;
-        _inputBase.Weapon.Fire.canceled += FireOncanceled;
-        _inputBase.Weapon.ChangeMeleeWeapon.performed += ChangeMeleeWeaponOnPerformed;
-        _inputBase.Weapon.ChangeSecondaryWeapon.performed += ChangeSecondaryWeaponOnPerformed;
-        _inputBase.Weapon.ChangePrimaryWeapon.performed += ChangePrimaryWeaponOnPerformed;
-        _inputBase.Weapon.ChangeGrenade.performed += ChangeGrenadeOnPerformed;
-        _inputBase.Weapon.DropWeapon.performed += DropWeaponOnPerformed;
-        _inputBase.Weapon.PickUpWeapon.performed += PickUpWeaponOnPerformed;
-        _inputBase.Weapon.ChangeFireMode.performed += ChangeFireModeOnPerformed;
-        _inputBase.Weapon.ReloadBullet.performed += ReloadBulletOnPerformed;
-    }
-
-
-    private void ReloadBulletOnPerformed(InputAction.CallbackContext obj)
-    {
-        EventDispatcher.Instance.PostEvent(EventID.ReloadBullet);
-    }
-
-    private void ChangeFireModeOnPerformed(InputAction.CallbackContext obj)
-    {
-        EventDispatcher.Instance.PostEvent(EventID.OnChangeFireMode);
+        m_inputBase.Weapon.ChangeGun3.performed += ChangeGun3;
+        m_inputBase.Weapon.ChangeGun2.performed += ChangeGun2;
+        m_inputBase.Weapon.ChangeGun1.performed += ChangeGun1;
+        m_inputBase.Weapon.ChangeGrenade.performed += ChangeGrenadeOnPerformed;
+        m_inputBase.Weapon.DropWeapon.performed += DropWeaponOnPerformed;
+        m_inputBase.Weapon.PickUpWeapon.performed += PickUpWeaponOnPerformed;
     }
 
     private void PickUpWeaponOnPerformed(InputAction.CallbackContext obj)
@@ -305,32 +288,22 @@ public class WeaponHolder : MonoBehaviour
 
     private void ChangeGrenadeOnPerformed(InputAction.CallbackContext obj)
     {
-        ChangeWeapon(_grenadeSlotIndex);
+        ChangeWeapon(m_grenadeSlotIndex);
     }
 
-    private void ChangePrimaryWeaponOnPerformed(InputAction.CallbackContext obj)
+    private void ChangeGun1(InputAction.CallbackContext obj)
     {
         ChangeWeapon(0);
     }
 
-    private void ChangeSecondaryWeaponOnPerformed(InputAction.CallbackContext obj)
+    private void ChangeGun2(InputAction.CallbackContext obj)
     {
         ChangeWeapon(1);
     }
 
-    private void ChangeMeleeWeaponOnPerformed(InputAction.CallbackContext obj)
+    private void ChangeGun3(InputAction.CallbackContext obj)
     {
         ChangeWeapon(2);
-    }
-
-    private void FireOncanceled(InputAction.CallbackContext obj)
-    {
-        EventDispatcher.Instance.PostEvent(EventID.OnReleaseTrigger);
-    }
-
-    private void FireOnPerformed(InputAction.CallbackContext obj)
-    {
-        EventDispatcher.Instance.PostEvent(EventID.OnPullTrigger);
     }
 
 #endregion

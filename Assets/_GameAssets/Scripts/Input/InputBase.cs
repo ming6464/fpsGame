@@ -275,7 +275,7 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
             ""id"": ""f054b914-7577-45ed-b3ab-12df381ebf42"",
             ""actions"": [
                 {
-                    ""name"": ""Fire"",
+                    ""name"": ""Trigger"",
                     ""type"": ""Button"",
                     ""id"": ""ba7d127e-3e57-4e1a-a25d-2c7d0dfb9eb4"",
                     ""expectedControlType"": ""Button"",
@@ -284,7 +284,7 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ChangePrimaryWeapon"",
+                    ""name"": ""ChangeGun1"",
                     ""type"": ""Button"",
                     ""id"": ""54bdc69c-e31e-4bd6-b295-d57feda3a4ea"",
                     ""expectedControlType"": ""Button"",
@@ -293,7 +293,7 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ChangeSecondaryWeapon"",
+                    ""name"": ""ChangeGun2"",
                     ""type"": ""Button"",
                     ""id"": ""3aad5a5a-e1a5-4ebd-ba52-2fdc076dc693"",
                     ""expectedControlType"": ""Button"",
@@ -302,7 +302,7 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ChangeMeleeWeapon"",
+                    ""name"": ""ChangeGun3"",
                     ""type"": ""Button"",
                     ""id"": ""c993cac1-6850-47e3-a45c-d9b185407701"",
                     ""expectedControlType"": ""Button"",
@@ -354,15 +354,6 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Aim"",
-                    ""type"": ""Button"",
-                    ""id"": ""4750f789-e1b8-4869-b3e9-ddef05dcee35"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -373,7 +364,7 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Fire"",
+                    ""action"": ""Trigger"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -384,7 +375,7 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ChangeMeleeWeapon"",
+                    ""action"": ""ChangeGun3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -439,7 +430,7 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ChangePrimaryWeapon"",
+                    ""action"": ""ChangeGun1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -450,7 +441,7 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ChangeSecondaryWeapon"",
+                    ""action"": ""ChangeGun2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -462,17 +453,6 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ReloadBullet"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""c49adb60-afcd-4c2b-a813-7cfd02036a72"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -492,16 +472,15 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
         m_Character_SwitchCamera = m_Character.FindAction("SwitchCamera", throwIfNotFound: true);
         // Weapon
         m_Weapon = asset.FindActionMap("Weapon", throwIfNotFound: true);
-        m_Weapon_Fire = m_Weapon.FindAction("Fire", throwIfNotFound: true);
-        m_Weapon_ChangePrimaryWeapon = m_Weapon.FindAction("ChangePrimaryWeapon", throwIfNotFound: true);
-        m_Weapon_ChangeSecondaryWeapon = m_Weapon.FindAction("ChangeSecondaryWeapon", throwIfNotFound: true);
-        m_Weapon_ChangeMeleeWeapon = m_Weapon.FindAction("ChangeMeleeWeapon", throwIfNotFound: true);
+        m_Weapon_Trigger = m_Weapon.FindAction("Trigger", throwIfNotFound: true);
+        m_Weapon_ChangeGun1 = m_Weapon.FindAction("ChangeGun1", throwIfNotFound: true);
+        m_Weapon_ChangeGun2 = m_Weapon.FindAction("ChangeGun2", throwIfNotFound: true);
+        m_Weapon_ChangeGun3 = m_Weapon.FindAction("ChangeGun3", throwIfNotFound: true);
         m_Weapon_ChangeGrenade = m_Weapon.FindAction("ChangeGrenade", throwIfNotFound: true);
         m_Weapon_PickUpWeapon = m_Weapon.FindAction("PickUpWeapon", throwIfNotFound: true);
         m_Weapon_DropWeapon = m_Weapon.FindAction("DropWeapon", throwIfNotFound: true);
         m_Weapon_ChangeFireMode = m_Weapon.FindAction("ChangeFireMode", throwIfNotFound: true);
         m_Weapon_ReloadBullet = m_Weapon.FindAction("ReloadBullet", throwIfNotFound: true);
-        m_Weapon_Aim = m_Weapon.FindAction("Aim", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -642,30 +621,28 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
     // Weapon
     private readonly InputActionMap m_Weapon;
     private IWeaponActions m_WeaponActionsCallbackInterface;
-    private readonly InputAction m_Weapon_Fire;
-    private readonly InputAction m_Weapon_ChangePrimaryWeapon;
-    private readonly InputAction m_Weapon_ChangeSecondaryWeapon;
-    private readonly InputAction m_Weapon_ChangeMeleeWeapon;
+    private readonly InputAction m_Weapon_Trigger;
+    private readonly InputAction m_Weapon_ChangeGun1;
+    private readonly InputAction m_Weapon_ChangeGun2;
+    private readonly InputAction m_Weapon_ChangeGun3;
     private readonly InputAction m_Weapon_ChangeGrenade;
     private readonly InputAction m_Weapon_PickUpWeapon;
     private readonly InputAction m_Weapon_DropWeapon;
     private readonly InputAction m_Weapon_ChangeFireMode;
     private readonly InputAction m_Weapon_ReloadBullet;
-    private readonly InputAction m_Weapon_Aim;
     public struct WeaponActions
     {
         private @InputBase m_Wrapper;
         public WeaponActions(@InputBase wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Fire => m_Wrapper.m_Weapon_Fire;
-        public InputAction @ChangePrimaryWeapon => m_Wrapper.m_Weapon_ChangePrimaryWeapon;
-        public InputAction @ChangeSecondaryWeapon => m_Wrapper.m_Weapon_ChangeSecondaryWeapon;
-        public InputAction @ChangeMeleeWeapon => m_Wrapper.m_Weapon_ChangeMeleeWeapon;
+        public InputAction @Trigger => m_Wrapper.m_Weapon_Trigger;
+        public InputAction @ChangeGun1 => m_Wrapper.m_Weapon_ChangeGun1;
+        public InputAction @ChangeGun2 => m_Wrapper.m_Weapon_ChangeGun2;
+        public InputAction @ChangeGun3 => m_Wrapper.m_Weapon_ChangeGun3;
         public InputAction @ChangeGrenade => m_Wrapper.m_Weapon_ChangeGrenade;
         public InputAction @PickUpWeapon => m_Wrapper.m_Weapon_PickUpWeapon;
         public InputAction @DropWeapon => m_Wrapper.m_Weapon_DropWeapon;
         public InputAction @ChangeFireMode => m_Wrapper.m_Weapon_ChangeFireMode;
         public InputAction @ReloadBullet => m_Wrapper.m_Weapon_ReloadBullet;
-        public InputAction @Aim => m_Wrapper.m_Weapon_Aim;
         public InputActionMap Get() { return m_Wrapper.m_Weapon; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -675,18 +652,18 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
         {
             if (m_Wrapper.m_WeaponActionsCallbackInterface != null)
             {
-                @Fire.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnFire;
-                @Fire.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnFire;
-                @Fire.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnFire;
-                @ChangePrimaryWeapon.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangePrimaryWeapon;
-                @ChangePrimaryWeapon.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangePrimaryWeapon;
-                @ChangePrimaryWeapon.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangePrimaryWeapon;
-                @ChangeSecondaryWeapon.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeSecondaryWeapon;
-                @ChangeSecondaryWeapon.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeSecondaryWeapon;
-                @ChangeSecondaryWeapon.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeSecondaryWeapon;
-                @ChangeMeleeWeapon.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeMeleeWeapon;
-                @ChangeMeleeWeapon.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeMeleeWeapon;
-                @ChangeMeleeWeapon.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeMeleeWeapon;
+                @Trigger.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnTrigger;
+                @Trigger.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnTrigger;
+                @Trigger.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnTrigger;
+                @ChangeGun1.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeGun1;
+                @ChangeGun1.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeGun1;
+                @ChangeGun1.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeGun1;
+                @ChangeGun2.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeGun2;
+                @ChangeGun2.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeGun2;
+                @ChangeGun2.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeGun2;
+                @ChangeGun3.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeGun3;
+                @ChangeGun3.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeGun3;
+                @ChangeGun3.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeGun3;
                 @ChangeGrenade.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeGrenade;
                 @ChangeGrenade.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeGrenade;
                 @ChangeGrenade.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnChangeGrenade;
@@ -702,25 +679,22 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                 @ReloadBullet.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnReloadBullet;
                 @ReloadBullet.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnReloadBullet;
                 @ReloadBullet.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnReloadBullet;
-                @Aim.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnAim;
-                @Aim.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnAim;
-                @Aim.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnAim;
             }
             m_Wrapper.m_WeaponActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Fire.started += instance.OnFire;
-                @Fire.performed += instance.OnFire;
-                @Fire.canceled += instance.OnFire;
-                @ChangePrimaryWeapon.started += instance.OnChangePrimaryWeapon;
-                @ChangePrimaryWeapon.performed += instance.OnChangePrimaryWeapon;
-                @ChangePrimaryWeapon.canceled += instance.OnChangePrimaryWeapon;
-                @ChangeSecondaryWeapon.started += instance.OnChangeSecondaryWeapon;
-                @ChangeSecondaryWeapon.performed += instance.OnChangeSecondaryWeapon;
-                @ChangeSecondaryWeapon.canceled += instance.OnChangeSecondaryWeapon;
-                @ChangeMeleeWeapon.started += instance.OnChangeMeleeWeapon;
-                @ChangeMeleeWeapon.performed += instance.OnChangeMeleeWeapon;
-                @ChangeMeleeWeapon.canceled += instance.OnChangeMeleeWeapon;
+                @Trigger.started += instance.OnTrigger;
+                @Trigger.performed += instance.OnTrigger;
+                @Trigger.canceled += instance.OnTrigger;
+                @ChangeGun1.started += instance.OnChangeGun1;
+                @ChangeGun1.performed += instance.OnChangeGun1;
+                @ChangeGun1.canceled += instance.OnChangeGun1;
+                @ChangeGun2.started += instance.OnChangeGun2;
+                @ChangeGun2.performed += instance.OnChangeGun2;
+                @ChangeGun2.canceled += instance.OnChangeGun2;
+                @ChangeGun3.started += instance.OnChangeGun3;
+                @ChangeGun3.performed += instance.OnChangeGun3;
+                @ChangeGun3.canceled += instance.OnChangeGun3;
                 @ChangeGrenade.started += instance.OnChangeGrenade;
                 @ChangeGrenade.performed += instance.OnChangeGrenade;
                 @ChangeGrenade.canceled += instance.OnChangeGrenade;
@@ -736,9 +710,6 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                 @ReloadBullet.started += instance.OnReloadBullet;
                 @ReloadBullet.performed += instance.OnReloadBullet;
                 @ReloadBullet.canceled += instance.OnReloadBullet;
-                @Aim.started += instance.OnAim;
-                @Aim.performed += instance.OnAim;
-                @Aim.canceled += instance.OnAim;
             }
         }
     }
@@ -755,15 +726,14 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
     }
     public interface IWeaponActions
     {
-        void OnFire(InputAction.CallbackContext context);
-        void OnChangePrimaryWeapon(InputAction.CallbackContext context);
-        void OnChangeSecondaryWeapon(InputAction.CallbackContext context);
-        void OnChangeMeleeWeapon(InputAction.CallbackContext context);
+        void OnTrigger(InputAction.CallbackContext context);
+        void OnChangeGun1(InputAction.CallbackContext context);
+        void OnChangeGun2(InputAction.CallbackContext context);
+        void OnChangeGun3(InputAction.CallbackContext context);
         void OnChangeGrenade(InputAction.CallbackContext context);
         void OnPickUpWeapon(InputAction.CallbackContext context);
         void OnDropWeapon(InputAction.CallbackContext context);
         void OnChangeFireMode(InputAction.CallbackContext context);
         void OnReloadBullet(InputAction.CallbackContext context);
-        void OnAim(InputAction.CallbackContext context);
     }
 }

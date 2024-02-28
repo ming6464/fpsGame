@@ -9,7 +9,7 @@ public class PlayerDamageReceiver : DamageReceiver
 
     private void PostEventChangeHp()
     {
-        EventDispatcher.Instance.PostEvent(EventID.OnChangeHealth, hp.ToString());
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeHealth, _hp.ToString());
     }
 
     public override void Add(float add)

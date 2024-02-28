@@ -10,43 +10,43 @@ public class Zombie : MonoBehaviour
     [SerializeField]
     private NavMeshAgent _navMeshAgent;
 
-    private Collider collider;
-    private ZombieDamageSender zombieDamageSender;
-    private ZombieInfo zombieInfo;
-    private Transform player;
+    private Collider m_collider;
+    private ZombieDamageSender m_zombieDamageSender;
+    private ZombieInfo m_zombieInfo;
+    private Transform m_player;
     public bool UpdateRotate;
 
     private void Awake()
     {
-        zombieInfo = GameConfig.Instance.GetZombieInfo(Name);
+        m_zombieInfo = GameConfig.Instance.GetZombieInfo(Name);
         if (TryGetComponent(out _navMeshAgent))
         {
             _navMeshAgent.updateRotation = false;
         }
 
-        TryGetComponent(out collider);
-        TryGetComponent(out zombieDamageSender);
+        TryGetComponent(out m_collider);
+        TryGetComponent(out m_zombieDamageSender);
     }
 
     private void OnEnable()
     {
-        if (collider)
+        if (m_collider)
         {
-            collider.enabled = true;
+            m_collider.enabled = true;
         }
 
         UpdateRotate = true;
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        if (zombieInfo != null)
+        m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        if (m_zombieInfo != null)
         {
             if (TryGetComponent(out DamageReceiver damageReceiver))
             {
-                damageReceiver.UpdateHpInfo(zombieInfo.HP, zombieInfo.MaxHP);
+                damageReceiver.UpdateHpInfo(m_zombieInfo.HP, m_zombieInfo.MaxHP);
             }
 
             if (TryGetComponent(out DamageSender damageSender))
             {
-                damageSender.SetDamage(zombieInfo.Damage);
+                damageSender.SetDamage(m_zombieInfo.Damage);
             }
         }
     }
@@ -65,13 +65,13 @@ public class Zombie : MonoBehaviour
 
     public bool CheckCanAttack()
     {
-        if (!player)
+        if (!m_player)
         {
             return false;
         }
 
         Vector3 Point1 = transform.position + Vector3.up;
-        Vector3 Point2 = player.transform.position + Vector3.up;
+        Vector3 Point2 = m_player.transform.position + Vector3.up;
         Vector3 dir = Point2 - Point1;
         RaycastHit[] result = new RaycastHit[3];
         Physics.RaycastNonAlloc(Point1, dir, result, dir.magnitude);
@@ -91,12 +91,12 @@ public class Zombie : MonoBehaviour
 
     private void OnAttack()
     {
-        if (!player || !zombieDamageSender)
+        if (!m_player || !m_zombieDamageSender)
         {
             return;
         }
 
-        // float angleY = Quaternion.FromToRotation(player.position - transform.position, transform.forward).eulerAngles.y;
+        // float angleY = Quaternion.FromToRotation(m_player.position - transform.position, transform.forward).eulerAngles.y;
         // if (angleY > 180f)
         // {
         //     angleY -= 360f;
@@ -109,12 +109,12 @@ public class Zombie : MonoBehaviour
         // }
 
         float distance = Vector2.Distance(new Vector2(transform.position.x, transform.position.z),
-            new Vector2(player.position.x, player.position.z));
+            new Vector2(m_player.position.x, m_player.position.z));
 
-        if (distance <= zombieInfo.AttackRange)
+        if (distance <= m_zombieInfo.AttackRange)
         {
-            zombieDamageSender.Send(player);
-            Debug.Log("player is damaged");
+            m_zombieDamageSender.Send(m_player);
+            Debug.Log("m_player is damaged");
         }
     }
 

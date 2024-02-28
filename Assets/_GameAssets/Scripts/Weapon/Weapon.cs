@@ -1,5 +1,4 @@
 ﻿using System;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -27,9 +26,11 @@ public class Weapon : MonoBehaviour
 
     public WeaponKEY WeaponType => m_weaponInfo.WeaponType;
     protected bool m_canPickupWeapon;
+    private InputBase m_inputBase;
 
     protected virtual void Awake()
     {
+        m_inputBase = new InputBase();
         m_canPickupWeapon = true;
         gameObject.layer = 8;
         if (GameConfig.Instance)
@@ -40,6 +41,15 @@ public class Weapon : MonoBehaviour
         m_rigid = GetComponent<Rigidbody>();
         m_damageSender = GetComponent<DamageSender>();
         m_damageSender.SetDamage(m_weaponInfo.Dame / m_weaponInfo.BulletsPerShot);
+        LinkInput();
+    }
+
+    private void LinkInput()
+    {
+        m_inputBase.Weapon.Trigger.performed += _ => { OnPullTrigger(); };
+        m_inputBase.Weapon.Trigger.canceled += _ => { OnReleaseTrigger(); };
+        m_inputBase.Weapon.ChangeFireMode.performed += _ => { OnChangeFireMode(); };
+        m_inputBase.Weapon.ReloadBullet.performed += _ => { ReloadBullet(); };
     }
 
     protected virtual void OnEnable()
@@ -113,32 +123,16 @@ public class Weapon : MonoBehaviour
 
     public virtual void UseWeapon()
     {
+        m_inputBase.Enable();
         UpdateParent(1);
         IsUsing = true;
-        EventDispatcher.Instance.RegisterListener(EventID.OnPullTrigger, OnPullTrigger);
-        EventDispatcher.Instance.RegisterListener(EventID.OnReleaseTrigger, OnReleaseTrigger);
-        EventDispatcher.Instance.RegisterListener(EventID.OnChangeFireMode, OnChangeFireMode);
-        EventDispatcher.Instance.RegisterListener(EventID.ReloadBullet, ReloadBullet);
-        EventDispatcher.Instance.RegisterListener(EventID.AimScope, AimScope);
     }
 
     public virtual void UnUseWeapon()
     {
+        m_inputBase.Disable();
         UpdateParent(0);
         IsUsing = false;
-        try
-        {
-            EventDispatcher.Instance.RemoveListener(EventID.OnChangeFireMode, OnChangeFireMode);
-            EventDispatcher.Instance.RemoveListener(EventID.OnPullTrigger, OnPullTrigger);
-            EventDispatcher.Instance.RemoveListener(EventID.OnReleaseTrigger, OnReleaseTrigger);
-            EventDispatcher.Instance.RemoveListener(EventID.ReloadBullet, ReloadBullet);
-            EventDispatcher.Instance.RemoveListener(EventID.AimScope, AimScope);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
     }
 
     private void UpdateParent(int index)
@@ -187,23 +181,19 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    protected virtual void OnPullTrigger(object obj)
+    protected virtual void OnPullTrigger()
     {
     }
 
-    protected virtual void OnReleaseTrigger(object obj)
+    protected virtual void OnReleaseTrigger()
     {
     }
 
-    protected virtual void AimScope(object obj)
+    protected virtual void OnChangeFireMode()
     {
     }
 
-    protected virtual void OnChangeFireMode(object obj)
-    {
-    }
-
-    protected virtual void ReloadBullet(object obj = null)
+    protected virtual void ReloadBullet()
     {
     }
 }

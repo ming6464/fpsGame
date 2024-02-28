@@ -7,53 +7,53 @@ public class ZombieAttackState : StateMachineBehaviour
     [SerializeField]
     private float _attackAreaRadius;
 
-    private NavMeshAgent agent;
+    private NavMeshAgent m_agent;
 
-    private Transform player;
+    private Transform m_player;
 
-    private Zombie zombie;
+    private Zombie m_zombie;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        animator.TryGetComponent(out zombie);
-        animator.TryGetComponent(out agent);
+        m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        animator.TryGetComponent(out m_zombie);
+        animator.TryGetComponent(out m_agent);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (!player || !agent || !zombie)
+        if (!m_player || !m_agent || !m_zombie)
         {
             animator.SetBool("IsAttacking", false);
             animator.SetBool("IsChasing", false);
             return;
         }
 
-        agent.SetDestination(player.position);
+        m_agent.SetDestination(m_player.position);
 
         if (stateInfo.normalizedTime > 0.9f)
         {
-            if (agent.remainingDistance > _attackAreaRadius || !zombie.CheckCanAttack())
+            if (m_agent.remainingDistance > _attackAreaRadius || !m_zombie.CheckCanAttack())
             {
                 animator.SetBool("IsAttacking", false);
             }
         }
 
-        zombie.UpdateRotate = zombie.CheckCanAttack();
+        m_zombie.UpdateRotate = m_zombie.CheckCanAttack();
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (agent)
+        if (m_agent)
         {
-            agent.ResetPath();
+            m_agent.ResetPath();
         }
 
-        if (zombie)
+        if (m_zombie)
         {
-            zombie.UpdateRotate = true;
+            m_zombie.UpdateRotate = true;
         }
     }
 }

@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class SfxManager : Singleton<SfxManager>
 {
-    [SerializeField] private GameObject _efxBulletPrefab;
+    [SerializeField]
+    private GameObject _efxBulletPrefab;
 
-    private List<EfxObject> efxObjects = new();
+    private List<EfxObject> m_efxObjects = new();
 
     private class EfxObject
     {
@@ -19,14 +20,17 @@ public class SfxManager : Singleton<SfxManager>
         {
             this.obj = obj;
             haveParticle = obj.TryGetComponent(out ParticleSystem particleSystem);
-            if (haveParticle) particle = particleSystem;
+            if (haveParticle)
+            {
+                particle = particleSystem;
+            }
         }
 
         public bool IsPlaying => obj.activeSelf && (!haveParticle || particle.time < particle.main.duration);
 
         public void SetPosRot(Vector3 pos, Vector3 dir)
         {
-            var transform = obj.transform;
+            Transform transform = obj.transform;
             transform.position = pos;
             transform.rotation = Quaternion.LookRotation(dir);
         }
@@ -34,14 +38,17 @@ public class SfxManager : Singleton<SfxManager>
         public void Emit(int count)
         {
             obj.SetActive(true);
-            if (haveParticle) particle.Emit(count);
+            if (haveParticle)
+            {
+                particle.Emit(count);
+            }
         }
 
         public void SetLifeTime(float lifeTime)
         {
             if (haveParticle)
             {
-                var main = particle.main;
+                ParticleSystem.MainModule main = particle.main;
                 main.startLifetimeMultiplier = lifeTime;
             }
         }
@@ -50,7 +57,7 @@ public class SfxManager : Singleton<SfxManager>
         {
             if (haveParticle)
             {
-                var main = particle.main;
+                ParticleSystem.MainModule main = particle.main;
                 main.startLifetimeMultiplier = distance / main.startSpeedMultiplier;
             }
         }
@@ -63,11 +70,11 @@ public class SfxManager : Singleton<SfxManager>
 
     public void PlayBullet(Vector3 pos, Vector3 dir, float distance)
     {
-        var efxObj = efxObjects.Find(x => !x.IsPlaying);
+        EfxObject efxObj = m_efxObjects.Find(x => !x.IsPlaying);
         if (efxObj == null)
         {
             efxObj = new EfxObject(Instantiate(_efxBulletPrefab));
-            efxObjects.Add(efxObj);
+            m_efxObjects.Add(efxObj);
         }
 
         efxObj.SetPosRot(pos, dir);
@@ -77,11 +84,11 @@ public class SfxManager : Singleton<SfxManager>
 
     public void PlayBullet(Vector3 start, Vector3 end)
     {
-        var efxObj = efxObjects.Find(x => !x.IsPlaying);
+        EfxObject efxObj = m_efxObjects.Find(x => !x.IsPlaying);
         if (efxObj == null)
         {
             efxObj = new EfxObject(Instantiate(_efxBulletPrefab));
-            efxObjects.Add(efxObj);
+            m_efxObjects.Add(efxObj);
         }
 
         efxObj.SetPosRot(start, end - start);
@@ -91,7 +98,7 @@ public class SfxManager : Singleton<SfxManager>
 
     public void PlayImpactBullet(Vector3 pos, PoolKEY poolKey)
     {
-        var obj = GObj_pooling.Instance.Pull(poolKey);
+        GameObject obj = GObj_pooling.Instance.Pull(poolKey);
         obj.transform.SetParent(null, true);
         obj.transform.position = pos;
         obj.gameObject.SetActive(true);
@@ -105,7 +112,7 @@ public class SfxManager : Singleton<SfxManager>
 
     public void PlayImpactBullet(Vector3 pos, Vector3 rotate, PoolKEY poolKey)
     {
-        var obj = GObj_pooling.Instance.Pull(poolKey);
+        GameObject obj = GObj_pooling.Instance.Pull(poolKey);
         obj.transform.SetParent(null, true);
         obj.transform.position = pos;
         obj.transform.rotation = Quaternion.Euler(rotate);

@@ -9,46 +9,46 @@ public class ZombieChaseState : StateMachineBehaviour
     [SerializeField]
     private float _attackAreaRadius;
 
-    private Transform player;
+    private Transform m_player;
 
-    private NavMeshAgent agent;
+    private NavMeshAgent m_agent;
 
-    private Zombie zombie;
+    private Zombie m_zombie;
 
-    private bool isFirstFrameExecuted;
+    private bool m_isFirstFrameExecuted;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        animator.transform.TryGetComponent(out agent);
-        animator.TryGetComponent(out zombie);
-        isFirstFrameExecuted = false;
+        m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        animator.transform.TryGetComponent(out m_agent);
+        animator.TryGetComponent(out m_zombie);
+        m_isFirstFrameExecuted = false;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (!player || !agent)
+        if (!m_player || !m_agent)
         {
             animator.SetBool("IsChasing", false);
             return;
         }
 
-        agent.SetDestination(player.position);
-        if (!isFirstFrameExecuted)
+        m_agent.SetDestination(m_player.position);
+        if (!m_isFirstFrameExecuted)
         {
-            isFirstFrameExecuted = true;
+            m_isFirstFrameExecuted = true;
             return;
         }
 
-        if (Vector3.Distance(animator.transform.position, player.position) > _detectionAreaRadius)
+        if (Vector3.Distance(animator.transform.position, m_player.position) > _detectionAreaRadius)
         {
             animator.SetBool("IsChasing", false);
             return;
         }
 
-        if (agent.remainingDistance < _attackAreaRadius && zombie.CheckCanAttack())
+        if (m_agent.remainingDistance < _attackAreaRadius && m_zombie.CheckCanAttack())
         {
             animator.SetBool("IsAttacking", true);
         }
@@ -56,9 +56,9 @@ public class ZombieChaseState : StateMachineBehaviour
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (agent)
+        if (m_agent)
         {
-            agent.ResetPath();
+            m_agent.ResetPath();
         }
     }
 }

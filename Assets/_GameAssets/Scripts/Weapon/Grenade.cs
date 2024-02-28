@@ -16,9 +16,9 @@ public class Grenade : Weapon
         m_grenadeDamageSender.UpdateExplosionRadius(m_weaponInfo.ExplosionRadius);
     }
 
-    protected override void OnPullTrigger(object obj)
+    protected override void OnPullTrigger()
     {
-        base.OnPullTrigger(obj);
+        base.OnPullTrigger();
         m_pinPulled = true;
     }
 
@@ -34,9 +34,9 @@ public class Grenade : Weapon
         m_pinPulled = false;
     }
 
-    protected override void OnReleaseTrigger(object obj)
+    protected override void OnReleaseTrigger()
     {
-        base.OnReleaseTrigger(obj);
+        base.OnReleaseTrigger();
         if (!m_pinPulled)
         {
             return;

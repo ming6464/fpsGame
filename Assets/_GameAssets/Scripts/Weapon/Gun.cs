@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -170,9 +168,9 @@ public class Gun : Weapon
         return false;
     }
 
-    protected override void OnChangeFireMode(object obj)
+    protected override void OnChangeFireMode()
     {
-        base.OnChangeFireMode(obj);
+        base.OnChangeFireMode();
         int nextIndex = m_weaponInfo.FireModeOption.IndexOf(CurrrentFireMode) + 1;
         if (nextIndex >= m_weaponInfo.FireModeOption.Count)
         {
@@ -182,27 +180,27 @@ public class Gun : Weapon
         CurrrentFireMode = m_weaponInfo.FireModeOption[nextIndex];
     }
 
-    protected override void OnPullTrigger(object obj)
+    protected override void OnPullTrigger()
     {
-        base.OnPullTrigger(obj);
+        base.OnPullTrigger();
         m_isTrigger = true;
     }
 
-    protected override void OnReleaseTrigger(object obj)
+    protected override void OnReleaseTrigger()
     {
-        base.OnReleaseTrigger(obj);
+        base.OnReleaseTrigger();
         m_isTrigger = false;
         m_isCanFire = true;
     }
 
-    protected override void ReloadBullet(object obj = null)
+    protected override void ReloadBullet()
     {
         if (m_isReloading)
         {
             return;
         }
 
-        base.ReloadBullet(obj);
+        base.ReloadBullet();
         if (TotalBullet <= 0)
         {
             return;

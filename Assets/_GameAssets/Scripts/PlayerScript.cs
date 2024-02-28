@@ -5,8 +5,6 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(PlayerDamageReceiver))]
 public class PlayerScript : MonoBehaviour
 {
-    public bool useSpeed;
-
     [Header("Player")]
     public float MoveSpeed;
 
@@ -421,10 +419,6 @@ public class PlayerScript : MonoBehaviour
         }
 
         Vector3 dirNormalized = (Quaternion.Euler(0, rotationY, 0) * transform.forward).normalized;
-        if (!useSpeed)
-        {
-            _speed = 0;
-        }
 
         _controller.Move(dirNormalized * (_speed * Time.deltaTime) +
                          new Vector3(0f, _verticalVelocity * Time.deltaTime, 0f));
