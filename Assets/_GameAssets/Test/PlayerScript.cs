@@ -58,9 +58,7 @@ public class PlayerScript : MonoBehaviour
     public Vector3 PositionTargetFollow;
 
     [Header("Aim")]
-    public MultiAimConstraint HeadAim;
-
-    public MultiAimConstraint WeaponAim;
+    public AimAndPivotScript AimAndPivotScript;
 
     // cinemachine
     private float _cinemachineTargetYaw;
@@ -68,7 +66,6 @@ public class PlayerScript : MonoBehaviour
     private Vector2 _lookView;
     private int _cameraView;
     private bool _isFinishLoadViewV2;
-    private bool _isFinishLoadViewV1;
 
     //player
     private float _speed;
@@ -116,6 +113,7 @@ public class PlayerScript : MonoBehaviour
         CameraSwitcher.RegisterCamera(cameraView1);
         CameraSwitcher.RegisterCamera(cameraView2);
         CameraSwitcher.SwitchCamera(cameraView2);
+        AimAndPivotScript.SetUpAim(1);
     }
 
     private void OnDisable()
@@ -136,16 +134,6 @@ public class PlayerScript : MonoBehaviour
         _inputBase.Character.SwitchCamera.performed += _ =>
         {
             CameraSwitcher.SwitchNextCamera();
-            if (HeadAim)
-            {
-                HeadAim.weight = CameraSwitcher.IsActiveCamera(cameraView1) ? 1f : 0f;
-            }
-
-            if (WeaponAim)
-            {
-                WeaponAim.weight = CameraSwitcher.IsActiveCamera(cameraView1) ? 1f : 0f;
-            }
-
             if (CameraSwitcher.IsActiveCamera(cameraView2))
             {
                 _isFinishLoadViewV2 = false;
@@ -155,15 +143,7 @@ public class PlayerScript : MonoBehaviour
                     UIManager.Instance.HandleCrossHair(true);
                 }
 
-                if (HeadAim)
-                {
-                    HeadAim.weight = 1f;
-                }
-
-                if (WeaponAim)
-                {
-                    WeaponAim.weight = 1f;
-                }
+                AimAndPivotScript.SetUpAim(1);
             }
             else
             {
@@ -172,25 +152,8 @@ public class PlayerScript : MonoBehaviour
                     UIManager.Instance.HandleCrossHair(false);
                 }
 
-                if (HeadAim)
-                {
-                    HeadAim.weight = 0f;
-                }
-
-                if (WeaponAim)
-                {
-                    WeaponAim.weight = 0f;
-                }
+                AimAndPivotScript.SetUpAim(0);
             }
-        };
-        _inputBase.Weapon.Fire.performed += _ =>
-        {
-            if (!CameraSwitcher.IsActiveCamera(cameraView1))
-            {
-                return;
-            }
-
-            _isFinishLoadViewV1 = false;
         };
     }
 
@@ -272,20 +235,8 @@ public class PlayerScript : MonoBehaviour
         else
         {
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
+            AimAndPivotScript.SetUpAim(_move != Vector2.zero ? 1f : 0f);
         }
-
-        if (!_isFinishLoadViewV1)
-        {
-            float rotationAngleY = Mathf.SmoothDampAngle(transform.eulerAngles.y, _mainCam.eulerAngles.y,
-                ref _rotationVelocity,
-                0.08f);
-            transform.rotation = Quaternion.Euler(0f, rotationAngleY, 0f);
-            if (Mathf.Abs(transform.eulerAngles.y - _mainCam.eulerAngles.y) <= 2f)
-            {
-                _isFinishLoadViewV1 = true;
-            }
-        }
-
 
         CinemachineTargetFollow.rotation = Quaternion.Euler(_cinemachineTargetPitch, _cinemachineTargetYaw, 0f);
     }

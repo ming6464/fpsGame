@@ -36,10 +36,13 @@ public class WeaponHolder : MonoBehaviour
     [Space(10)]
     public int TotalBullet;
 
-    private InputBase _inputBase;
-    private Transform _mainCam;
+    [Header("References")]
+    [SerializeField]
+    private AimAndPivotScript _aimAndPivotScript;
 
-    public Transform PivotRay => _mainCam;
+    private InputBase _inputBase;
+
+    public Transform PivotRay => _aimAndPivotScript.PivotRay;
     private float _rotationVelocity;
     private int _grenadeSlotIndex;
 
@@ -59,7 +62,6 @@ public class WeaponHolder : MonoBehaviour
         _inputBase.Enable();
         LinkInputSystem();
         LinkEvent();
-        _mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
     }
 
     private void OnDisable()

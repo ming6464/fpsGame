@@ -87,11 +87,14 @@ public class Gun_2 : Weapon_2
     {
         for (int i = 0; i < CurrrentFireMode.FireTimes; i++)
         {
-            Bullets--;
             OnFire();
-            if (Bullets <= 0)
+            if (!GameConfig.Instance || !GameConfig.Instance.UnlimitedBullet)
             {
-                yield break;
+                Bullets--;
+                if (Bullets <= 0)
+                {
+                    yield break;
+                }
             }
 
             yield return new WaitForEndOfFrame();
@@ -117,7 +120,7 @@ public class Gun_2 : Weapon_2
     {
         Transform pivotTf = _weaponHolder.PivotRay;
         Vector3 startPosRay = pivotTf.position;
-        Vector3 dirRay;
+        Vector3 dirRay = pivotTf.forward;
         float spreadBullet = CurrrentFireMode.Spread;
         for (int i = 0; i < _weaponInfo.BulletsPerShot; i++)
         {
@@ -126,58 +129,15 @@ public class Gun_2 : Weapon_2
                 dirRay = Quaternion.Euler(Random.Range(-spreadBullet, spreadBullet),
                     Random.Range(-spreadBullet, spreadBullet), 0f) * pivotTf.forward;
             }
-            else
-            {
-                dirRay = pivotTf.forward;
-            }
-
-            //Physics.ray
 
             Ray ray = new(startPosRay, dirRay);
             int layerMask = ~LayerMask.GetMask(_weaponHolder.AvoidTags);
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
             {
+                Debug.Log($"fire {hit.transform.name}");
                 _damageSender.Send(hit.transform);
                 SfxManager.Instance.PlayImpactBullet(hit.point, PoolKEY.EffectImpact);
             }
-
-            // if (Physics.RaycastNonAlloc(startPosRay, dirRay,
-            //         raycastHits, Mathf.Infinity) > 0)
-            // {
-            //     Array.Sort(raycastHits, (x, y) =>
-            //     {
-            //         if (!x.transform && !y.transform)
-            //         {
-            //             return 0;
-            //         }
-            //
-            //         if (!x.transform)
-            //         {
-            //             return 1;
-            //         }
-            //
-            //         if (!y.transform)
-            //         {
-            //             return -1;
-            //         }
-            //
-            //         float distanceX = Vector3.Distance(x.transform.position, startPosRay);
-            //         float distanceY = Vector3.Distance(y.transform.position, startPosRay);
-            //
-            //         return distanceX.CompareTo(distanceY);
-            //     });
-            //     foreach (RaycastHit ray in raycastHits)
-            //     {
-            //         // if (ray.transform && !weaponManager.CheckTagOfAvoidTags(ray.transform.tag))
-            //         // {
-            //         //     Debug.Log($"Ray impact {ray.transform.name}");
-            //         //     _damageSender.Send(ray.transform);
-            //         //     SfxManager.Instance.PlayImpactBullet(ray.point,
-            //         //         PoolKEY.EffectImpact);
-            //         //     break;
-            //         // }
-            //     }
-            // }
         }
 
         // if (_effectFire)
@@ -196,7 +156,7 @@ public class Gun_2 : Weapon_2
 
     private bool CheckMagazine()
     {
-        if (GameConfig.Instance.UnlimitedBullet)
+        if (GameConfig.Instance && GameConfig.Instance.UnlimitedBullet)
         {
             return true;
         }

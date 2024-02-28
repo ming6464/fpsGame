@@ -198,11 +198,11 @@ MonoBehaviour:
     WeaponPrefab: {fileID: 4774832003211078635, guid: efed959c642ddb44e906c402cdb1c7ce,
       type: 3}
     Dame: 60
-    MagazineCapacity: 13
+    MagazineCapacity: 40
     BulletsPerShot: 1
     FireModeOption:
     - FireModeType: 2
-      TimeResetFire: 0.5
+      TimeResetFire: 0.05
       FireTimes: 1
       Spread: 0
     MinRecoilPercentage: 0.121
