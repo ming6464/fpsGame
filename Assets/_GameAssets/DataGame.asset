@@ -1,0 +1,232 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75ef935d15254d4bb21ce0796faf5893, type: 3}
+  m_Name: DataGame
+  m_EditorClassIdentifier: 
+  WeaponInfos:
+  - WeaponName: AK12
+    WeaponType: 1
+    WeaponPrefab: {fileID: 3807816867564140896, guid: d1cde00170448c34aaf1a741c1c3d312,
+      type: 3}
+    Dame: 60
+    MagazineCapacity: 30
+    BulletsPerShot: 1
+    FireModeOption:
+    - FireModeType: 0
+      TimeResetFire: 0.1
+      FireTimes: 1
+      Spread: 5
+    - FireModeType: 2
+      TimeResetFire: 0.2
+      FireTimes: 1
+      Spread: 5
+    MinRecoilPercentage: 0.35
+    MaxRecoilTime: 0.35
+    RecoilAmountX: 1.11
+    RecoilAmountY: 2.9
+    RecoilAmountZ: 0.17
+    UseScope: 0
+    ThrowForce: 0
+    ThrowAngle: 0
+    ExplosionTime: 0
+    ExplosionRadius: 0
+  - WeaponName: M9
+    WeaponType: 2
+    WeaponPrefab: {fileID: 8260071292302502556, guid: c0cfd59511406644d8510c7cae0b844b,
+      type: 3}
+    Dame: 10
+    MagazineCapacity: 13
+    BulletsPerShot: 1
+    FireModeOption:
+    - FireModeType: 0
+      TimeResetFire: 0.14
+      FireTimes: 1
+      Spread: 0
+    MinRecoilPercentage: 0.064
+    MaxRecoilTime: 0.31
+    RecoilAmountX: 0.82
+    RecoilAmountY: 2.1
+    RecoilAmountZ: 0.178
+    UseScope: 0
+    ThrowForce: 0
+    ThrowAngle: 0
+    ExplosionTime: 0
+    ExplosionRadius: 0
+  - WeaponName: G36C
+    WeaponType: 1
+    WeaponPrefab: {fileID: 5494813602892714075, guid: a63d50da764a85e4ea6344665eef580c,
+      type: 3}
+    Dame: 6
+    MagazineCapacity: 40
+    BulletsPerShot: 1
+    FireModeOption:
+    - FireModeType: 2
+      TimeResetFire: 0.06
+      FireTimes: 1
+      Spread: 0
+    MinRecoilPercentage: 0.35
+    MaxRecoilTime: 0.303
+    RecoilAmountX: 1.54
+    RecoilAmountY: 0.74
+    RecoilAmountZ: 0.1
+    UseScope: 0
+    ThrowForce: 0
+    ThrowAngle: 0
+    ExplosionTime: 0
+    ExplosionRadius: 0
+  - WeaponName: M249
+    WeaponType: 1
+    WeaponPrefab: {fileID: 5928023087873038570, guid: 204e50b9c6c20c649a46376ba0d3e4fd,
+      type: 3}
+    Dame: 10
+    MagazineCapacity: 50
+    BulletsPerShot: 1
+    FireModeOption:
+    - FireModeType: 2
+      TimeResetFire: 0.1
+      FireTimes: 1
+      Spread: 0
+    MinRecoilPercentage: 0
+    MaxRecoilTime: 0.2
+    RecoilAmountX: 0
+    RecoilAmountY: 0
+    RecoilAmountZ: 0.326
+    UseScope: 0
+    ThrowForce: 0
+    ThrowAngle: 0
+    ExplosionTime: 0
+    ExplosionRadius: 0
+  - WeaponName: AA12
+    WeaponType: 1
+    WeaponPrefab: {fileID: 8743199441388106943, guid: 4a021a80d6dca9341bd10f85e80569f7,
+      type: 3}
+    Dame: 5
+    MagazineCapacity: 13
+    BulletsPerShot: 60
+    FireModeOption:
+    - FireModeType: 0
+      TimeResetFire: 0.3
+      FireTimes: 1
+      Spread: 9
+    MinRecoilPercentage: 0.35
+    MaxRecoilTime: 0.35
+    RecoilAmountX: 3.42
+    RecoilAmountY: 4.92
+    RecoilAmountZ: 0.326
+    UseScope: 0
+    ThrowForce: 0
+    ThrowAngle: 0
+    ExplosionTime: 0
+    ExplosionRadius: 0
+  - WeaponName: Bennelli_M4
+    WeaponType: 1
+    WeaponPrefab: {fileID: 365352305583647258, guid: da60848543f509c4db434344d56cb1aa,
+      type: 3}
+    Dame: 60
+    MagazineCapacity: 13
+    BulletsPerShot: 1
+    FireModeOption:
+    - FireModeType: 2
+      TimeResetFire: 0.5
+      FireTimes: 1
+      Spread: 0
+    MinRecoilPercentage: 0.121
+    MaxRecoilTime: 0.31
+    RecoilAmountX: 1.77
+    RecoilAmountY: 2.1
+    RecoilAmountZ: 0.254
+    UseScope: 1
+    ThrowForce: 0
+    ThrowAngle: 0
+    ExplosionTime: 0
+    ExplosionRadius: 0
+  - WeaponName: Famas
+    WeaponType: 1
+    WeaponPrefab: {fileID: 2306746107097191957, guid: e904f5f78b792f04fab92ec67bd09faa,
+      type: 3}
+    Dame: 60
+    MagazineCapacity: 13
+    BulletsPerShot: 1
+    FireModeOption:
+    - FireModeType: 2
+      TimeResetFire: 0.5
+      FireTimes: 1
+      Spread: 0
+    MinRecoilPercentage: 0.121
+    MaxRecoilTime: 0.31
+    RecoilAmountX: 1.77
+    RecoilAmountY: 2.1
+    RecoilAmountZ: 0.254
+    UseScope: 1
+    ThrowForce: 0
+    ThrowAngle: 0
+    ExplosionTime: 0
+    ExplosionRadius: 0
+  - WeaponName: Glock_17
+    WeaponType: 1
+    WeaponPrefab: {fileID: 662556939011561000, guid: 0ad4176e9e398a54a93ad1390911eef1,
+      type: 3}
+    Dame: 60
+    MagazineCapacity: 13
+    BulletsPerShot: 1
+    FireModeOption:
+    - FireModeType: 0
+      TimeResetFire: 0.5
+      FireTimes: 1
+      Spread: 0
+    MinRecoilPercentage: 0.121
+    MaxRecoilTime: 0.31
+    RecoilAmountX: 1.77
+    RecoilAmountY: 2.1
+    RecoilAmountZ: 0.254
+    UseScope: 1
+    ThrowForce: 0
+    ThrowAngle: 0
+    ExplosionTime: 0
+    ExplosionRadius: 0
+  - WeaponName: SCAR_H
+    WeaponType: 1
+    WeaponPrefab: {fileID: 4774832003211078635, guid: efed959c642ddb44e906c402cdb1c7ce,
+      type: 3}
+    Dame: 60
+    MagazineCapacity: 13
+    BulletsPerShot: 1
+    FireModeOption:
+    - FireModeType: 2
+      TimeResetFire: 0.5
+      FireTimes: 1
+      Spread: 0
+    MinRecoilPercentage: 0.121
+    MaxRecoilTime: 0.31
+    RecoilAmountX: 1.77
+    RecoilAmountY: 2.1
+    RecoilAmountZ: 0.254
+    UseScope: 1
+    ThrowForce: 0
+    ThrowAngle: 0
+    ExplosionTime: 0
+    ExplosionRadius: 0
+  BagInfo:
+    WeaponNames: []
+    TotalBullet: 100
+    BagCapacity: 4
+  ZoombieInfos:
+  - Name: ZombieV1
+    Damage: 20
+    MaxHP: 40
+    HP: 300
+    AttackRange: 2
+  - Name: ZombieV2
+    Damage: 15
+    MaxHP: 0
+    HP: 0
+    AttackRange: 0
