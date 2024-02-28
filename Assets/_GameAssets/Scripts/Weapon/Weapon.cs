@@ -1,99 +1,50 @@
 ﻿using System;
-using System.Collections;
-using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using UnityEngine.Animations.Rigging;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Weapon : MonoBehaviour
 {
-    [Header("Weapon Information")]
+    [Header("Weapon")]
     public string WeaponName;
 
-    [SerializeField]
-    protected WeaponInfo _curWeaponInfo;
+    public bool IsUsing;
 
-    [Header("References")]
-    [SerializeField]
-    protected Collider _collider;
+    //bag
+    protected Bag m_slot;
 
-    [SerializeField]
-    protected Animator _animator;
+    //References
+    protected DamageSender m_damageSender;
 
-    [SerializeField]
-    protected DamageSender _damageSender;
+    protected Rigidbody m_rigid;
+
+    protected WeaponHolder m_weaponHolder;
 
 
-    protected bool inBag;
-    protected bool isUsing;
-    protected WeaponManager weaponManager;
-    protected Rigidbody rigid;
-    public WeaponKEY WeaponType => _curWeaponInfo.WeaponType;
+    //weapon
+    protected WeaponInfo m_weaponInfo;
+
+    public WeaponKEY WeaponType => m_weaponInfo.WeaponType;
+    protected bool m_canPickupWeapon;
 
     protected virtual void Awake()
     {
-        _curWeaponInfo = GameConfig.Instance.GetWeaponInfo(WeaponName);
-        TryGetComponent(out rigid);
-        TryGetComponent(out _animator);
-        TryGetComponent(out _damageSender);
-        if (!_collider)
+        m_canPickupWeapon = true;
+        gameObject.layer = 8;
+        if (GameConfig.Instance)
         {
-            TryGetComponent(out _collider);
+            m_weaponInfo = GameConfig.Instance.GetWeaponInfo(WeaponName);
         }
 
-        if (_damageSender)
-        {
-            _damageSender.SetDamage(_curWeaponInfo.Dame / _curWeaponInfo.BulletsPerShot);
-        }
-    }
-
-    public virtual void UseWeapon()
-    {
-        Transform myTransform = transform;
-        myTransform.localPosition = Vector3.zero;
-        myTransform.localRotation = Quaternion.identity;
-        myTransform.localScale = Vector3.one;
-        gameObject.layer = 3;
-        ResetData();
-        gameObject.SetActive(true);
-    }
-
-    public virtual void UnUseWeapon()
-    {
-        try
-        {
-            transform.gameObject.layer = 6;
-            isUsing = false;
-            EventDispatcher.Instance.RemoveListener(EventID.OnChangeFireMode, OnChangeFireMode);
-            EventDispatcher.Instance.RemoveListener(EventID.OnPullTrigger, OnPullTrigger);
-            EventDispatcher.Instance.RemoveListener(EventID.OnReleaseTrigger, OnReleaseTrigger);
-            EventDispatcher.Instance.RemoveListener(EventID.ReloadBullet, ReloadBullet);
-            EventDispatcher.Instance.RemoveListener(EventID.AimScope, AimScope);
-            ResetData();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    public virtual void OnUseWeapon()
-    {
-        EventDispatcher.Instance.RegisterListener(EventID.OnPullTrigger, OnPullTrigger);
-        EventDispatcher.Instance.RegisterListener(EventID.OnReleaseTrigger, OnReleaseTrigger);
-        EventDispatcher.Instance.RegisterListener(EventID.OnChangeFireMode, OnChangeFireMode);
-        EventDispatcher.Instance.RegisterListener(EventID.ReloadBullet, ReloadBullet);
-        EventDispatcher.Instance.RegisterListener(EventID.AimScope, AimScope);
-        isUsing = true;
-    }
-
-    public virtual void OnUnUseWeapon()
-    {
-        gameObject.SetActive(!inBag);
+        m_rigid = GetComponent<Rigidbody>();
+        m_damageSender = GetComponent<DamageSender>();
+        m_damageSender.SetDamage(m_weaponInfo.Dame / m_weaponInfo.BulletsPerShot);
     }
 
     protected virtual void OnEnable()
     {
+        ResetData();
     }
 
     protected virtual void OnDisable()
@@ -102,26 +53,138 @@ public class Weapon : MonoBehaviour
 
     protected virtual void ResetData()
     {
+        m_canPickupWeapon = true;
     }
 
-    public virtual void PutToBag(WeaponManager wManager, Transform bag)
+    protected virtual void Start()
     {
-        weaponManager = wManager;
-        Transform myTransform = transform;
-        myTransform.SetParent(bag);
-        inBag = true;
-        gameObject.layer = 6;
-        gameObject.SetActive(false);
+    }
+
+    protected virtual void Update()
+    {
+    }
+
+    protected virtual void LateUpdate()
+    {
+    }
+
+    public virtual void PutToBag(WeaponHolder weaponHolder, Bag slot)
+    {
+        gameObject.layer = 3;
+        m_weaponHolder = weaponHolder;
+        m_slot = slot;
+        Transform myTf = transform;
+        myTf.parent = slot.BagTf;
+        myTf.localPosition = Vector3.zero;
+        myTf.localRotation = Quaternion.identity;
+        if (TryGetComponent(out Collider collider))
+        {
+            collider.enabled = false;
+        }
+
+        m_rigid.isKinematic = true;
+        m_rigid.useGravity = false;
+        UnUseWeapon();
     }
 
     public virtual void RemoveFromBag()
     {
-        UnUseWeapon();
-        inBag = false;
-        weaponManager = null;
-        transform.SetParent(null, false);
-        gameObject.SetActive(true);
+        m_weaponHolder = null;
+        m_slot = null;
+        if (TryGetComponent(out Collider collider))
+        {
+            collider.enabled = true;
+        }
+
+        m_rigid.isKinematic = false;
+        m_rigid.useGravity = true;
+        transform.parent = null;
         gameObject.layer = 8;
+        UnUseWeapon();
+        m_canPickupWeapon = false;
+        Invoke(nameof(DelayCanPickUp), 0.5f);
+        m_rigid.AddForce(transform.forward * 30f, ForceMode.Impulse);
+    }
+
+    protected void DelayCanPickUp()
+    {
+        m_canPickupWeapon = true;
+    }
+
+    public virtual void UseWeapon()
+    {
+        UpdateParent(1);
+        IsUsing = true;
+        EventDispatcher.Instance.RegisterListener(EventID.OnPullTrigger, OnPullTrigger);
+        EventDispatcher.Instance.RegisterListener(EventID.OnReleaseTrigger, OnReleaseTrigger);
+        EventDispatcher.Instance.RegisterListener(EventID.OnChangeFireMode, OnChangeFireMode);
+        EventDispatcher.Instance.RegisterListener(EventID.ReloadBullet, ReloadBullet);
+        EventDispatcher.Instance.RegisterListener(EventID.AimScope, AimScope);
+    }
+
+    public virtual void UnUseWeapon()
+    {
+        UpdateParent(0);
+        IsUsing = false;
+        try
+        {
+            EventDispatcher.Instance.RemoveListener(EventID.OnChangeFireMode, OnChangeFireMode);
+            EventDispatcher.Instance.RemoveListener(EventID.OnPullTrigger, OnPullTrigger);
+            EventDispatcher.Instance.RemoveListener(EventID.OnReleaseTrigger, OnReleaseTrigger);
+            EventDispatcher.Instance.RemoveListener(EventID.ReloadBullet, ReloadBullet);
+            EventDispatcher.Instance.RemoveListener(EventID.AimScope, AimScope);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private void UpdateParent(int index)
+    {
+        if (m_slot == null)
+        {
+            return;
+        }
+
+        MultiParentConstraint constraint = m_slot.Constraint;
+        if (constraint.data.sourceObjects.Count <= index)
+        {
+            return;
+        }
+
+        WeightedTransformArray sourceObjects = constraint.data.sourceObjects;
+
+        for (int i = 0; i < constraint.data.sourceObjects.Count; i++)
+        {
+            sourceObjects.SetWeight(i, 0f);
+        }
+
+        sourceObjects.SetWeight(index, 1);
+
+        constraint.data.sourceObjects = sourceObjects;
+    }
+
+    protected virtual void OnTriggerEnter(Collider other)
+    {
+        if (!m_canPickupWeapon)
+        {
+            return;
+        }
+
+        if (other.CompareTag("RangePickUpWeapon"))
+        {
+            EventDispatcher.Instance.PostEvent(EventID.OnWeaponPickupAreaEnter, this);
+        }
+    }
+
+    protected virtual void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("RangePickUpWeapon"))
+        {
+            EventDispatcher.Instance.PostEvent(EventID.OnWeaponPickupAreaExit, this);
+        }
     }
 
     protected virtual void OnPullTrigger(object obj)
@@ -142,21 +205,5 @@ public class Weapon : MonoBehaviour
 
     protected virtual void ReloadBullet(object obj = null)
     {
-    }
-
-    protected virtual void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("RangePickUpWeapon") && !inBag)
-        {
-            EventDispatcher.Instance.PostEvent(EventID.OnWeaponPickupAreaEnter, this);
-        }
-    }
-
-    protected virtual void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("RangePickUpWeapon") && !inBag)
-        {
-            EventDispatcher.Instance.PostEvent(EventID.OnWeaponPickupAreaExit, this);
-        }
     }
 }

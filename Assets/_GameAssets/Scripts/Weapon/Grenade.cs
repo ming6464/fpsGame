@@ -6,152 +6,55 @@ using UnityEngine;
 [RequireComponent(typeof(GrenadeDamageSender))]
 public class Grenade : Weapon
 {
-    [SerializeField]
-    private Transform _main;
-
-    private bool isReleaseTrigger;
-    private bool canThrow;
-    private bool pinPulled;
-    private GrenadeDamageSender grenadeDamageSender;
+    private bool m_pinPulled;
+    private GrenadeDamageSender m_grenadeDamageSender;
 
     protected override void Awake()
     {
         base.Awake();
-        if (_animator)
-        {
-            _animator.enabled = false;
-        }
-
-        if (_damageSender && _damageSender.TryGetComponent(out grenadeDamageSender))
-        {
-            grenadeDamageSender.UpdateExplosionRadius(_curWeaponInfo.ExplosionRadius);
-        }
+        m_grenadeDamageSender = (GrenadeDamageSender)m_damageSender;
+        m_grenadeDamageSender.UpdateExplosionRadius(m_weaponInfo.ExplosionRadius);
     }
 
     protected override void OnPullTrigger(object obj)
     {
         base.OnPullTrigger(obj);
-        if (pinPulled)
-        {
-            return;
-        }
-
-        pinPulled = true;
-        _animator.SetTrigger("Throw");
+        m_pinPulled = true;
     }
 
     protected override void ResetData()
     {
         base.ResetData();
-        pinPulled = false;
-        isReleaseTrigger = false;
-        canThrow = false;
-    }
-
-    protected override void OnReleaseTrigger(object obj)
-    {
-        base.OnReleaseTrigger(obj);
-        if (!rigid || !pinPulled)
-        {
-            return;
-        }
-
-        isReleaseTrigger = true;
-    }
-
-    private void OnFinishAnimThrow()
-    {
-        canThrow = true;
-    }
-
-    private void Update()
-    {
-        if (canThrow && isReleaseTrigger && _animator)
-        {
-            weaponManager.DropWeapon(WeaponType);
-            transform.position = _main.position;
-            _main.localPosition = Vector3.zero;
-            if (_collider.TryGetComponent(out BoxCollider boxCollider))
-            {
-                boxCollider.center = Vector3.zero;
-            }
-
-            pinPulled = true;
-
-            Vector3 dir = Quaternion.Euler(Vector3.left * _curWeaponInfo.ThrowAngle) * transform.forward;
-
-            rigid.AddForce(dir * _curWeaponInfo.ThrowForce, ForceMode.VelocityChange);
-
-            StartCoroutine(DelayDetonation());
-        }
-    }
-
-    private IEnumerator DelayDetonation()
-    {
-        yield return new WaitForSeconds(_curWeaponInfo.ExplosionTime);
-        if (grenadeDamageSender)
-        {
-            grenadeDamageSender.Explosive();
-        }
+        m_pinPulled = false;
     }
 
     public override void UnUseWeapon()
     {
         base.UnUseWeapon();
-        _animator.Play("UnUsedWeapon");
+        m_pinPulled = false;
     }
 
-    public override void OnUnUseWeapon()
+    protected override void OnReleaseTrigger(object obj)
     {
-        base.OnUnUseWeapon();
-    }
-
-    public override void PutToBag(WeaponManager wManager, Transform bag)
-    {
-        base.PutToBag(wManager, bag);
-        if (!rigid)
+        base.OnReleaseTrigger(obj);
+        if (!m_pinPulled)
         {
             return;
         }
 
-        rigid.isKinematic = true;
-        rigid.useGravity = false;
-        if (_collider)
-        {
-            _collider.enabled = false;
-        }
-
-        if (_animator)
-        {
-            _animator.enabled = true;
-        }
+        OnThrow();
     }
 
-    public override void RemoveFromBag()
+
+    private void DelayDetonation()
     {
-        base.RemoveFromBag();
-        if (!rigid)
-        {
-            return;
-        }
-
-        rigid.isKinematic = false;
-        rigid.useGravity = true;
-        if (_collider)
-        {
-            _collider.enabled = true;
-        }
-
-        if (_animator)
-        {
-            _animator.enabled = false;
-        }
+        m_grenadeDamageSender.Explosive();
     }
 
 
     protected override void OnTriggerEnter(Collider other)
     {
-        if (pinPulled)
+        if (m_pinPulled)
         {
             return;
         }
@@ -159,13 +62,23 @@ public class Grenade : Weapon
         base.OnTriggerEnter(other);
     }
 
-    protected override void OnTriggerExit(Collider other)
+    private void OnThrow()
     {
-        if (pinPulled)
+        Debug.Log("On Throw");
+        m_weaponHolder = null;
+        m_slot = null;
+        if (TryGetComponent(out Collider collider))
         {
-            return;
+            collider.enabled = true;
         }
 
-        base.OnTriggerExit(other);
+        m_rigid.isKinematic = false;
+        m_rigid.useGravity = true;
+        transform.parent = null;
+        gameObject.layer = 8;
+        UnUseWeapon();
+        m_rigid.AddForce(transform.forward * 50f, ForceMode.Impulse);
+        m_pinPulled = true;
+        Invoke(nameof(DelayDetonation), m_weaponInfo.ExplosionTime);
     }
 }

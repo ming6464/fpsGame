@@ -22,33 +22,8 @@ public class WeaponInfo
     [Header("Fire Mode")]
     public List<FireModeInfo> FireModeOption;
 
-    [Header("Recoil")]
-    [Range(0, 1f)]
-    public float MinRecoilPercentage;
-
-    [Range(0.2f, 1)]
-    public float MaxRecoilTime = 0.2f;
-
-    [Range(0, 10)]
-    public float RecoilAmountX;
-
-    [Range(0, 10)]
-    public float RecoilAmountY;
-
-    [Range(0, 1)]
-    public float RecoilAmountZ;
-
-    [Header("Scope")]
-    public bool UseScope;
-
     [Space(3)]
     [Header("Grenade Information")]
-    [Min(0f)]
-    public float ThrowForce;
-
-    [Min(0f)]
-    public float ThrowAngle;
-
     [Min(0f)]
     public float ExplosionTime;
 

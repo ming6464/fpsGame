@@ -29,18 +29,10 @@ MonoBehaviour:
       TimeResetFire: 0.2
       FireTimes: 1
       Spread: 5
-    MinRecoilPercentage: 0.35
-    MaxRecoilTime: 0.35
-    RecoilAmountX: 1.11
-    RecoilAmountY: 2.9
-    RecoilAmountZ: 0.17
-    UseScope: 0
-    ThrowForce: 0
-    ThrowAngle: 0
     ExplosionTime: 0
     ExplosionRadius: 0
   - WeaponName: M9
-    WeaponType: 2
+    WeaponType: 1
     WeaponPrefab: {fileID: 8260071292302502556, guid: c0cfd59511406644d8510c7cae0b844b,
       type: 3}
     Dame: 10
@@ -51,14 +43,6 @@ MonoBehaviour:
       TimeResetFire: 0.14
       FireTimes: 1
       Spread: 0
-    MinRecoilPercentage: 0.064
-    MaxRecoilTime: 0.31
-    RecoilAmountX: 0.82
-    RecoilAmountY: 2.1
-    RecoilAmountZ: 0.178
-    UseScope: 0
-    ThrowForce: 0
-    ThrowAngle: 0
     ExplosionTime: 0
     ExplosionRadius: 0
   - WeaponName: G36C
@@ -73,14 +57,6 @@ MonoBehaviour:
       TimeResetFire: 0.06
       FireTimes: 1
       Spread: 0
-    MinRecoilPercentage: 0.35
-    MaxRecoilTime: 0.303
-    RecoilAmountX: 1.54
-    RecoilAmountY: 0.74
-    RecoilAmountZ: 0.1
-    UseScope: 0
-    ThrowForce: 0
-    ThrowAngle: 0
     ExplosionTime: 0
     ExplosionRadius: 0
   - WeaponName: M249
@@ -95,14 +71,6 @@ MonoBehaviour:
       TimeResetFire: 0.1
       FireTimes: 1
       Spread: 0
-    MinRecoilPercentage: 0
-    MaxRecoilTime: 0.2
-    RecoilAmountX: 0
-    RecoilAmountY: 0
-    RecoilAmountZ: 0.326
-    UseScope: 0
-    ThrowForce: 0
-    ThrowAngle: 0
     ExplosionTime: 0
     ExplosionRadius: 0
   - WeaponName: AA12
@@ -117,14 +85,6 @@ MonoBehaviour:
       TimeResetFire: 0.3
       FireTimes: 1
       Spread: 9
-    MinRecoilPercentage: 0.35
-    MaxRecoilTime: 0.35
-    RecoilAmountX: 3.42
-    RecoilAmountY: 4.92
-    RecoilAmountZ: 0.326
-    UseScope: 0
-    ThrowForce: 0
-    ThrowAngle: 0
     ExplosionTime: 0
     ExplosionRadius: 0
   - WeaponName: Bennelli_M4
@@ -139,14 +99,6 @@ MonoBehaviour:
       TimeResetFire: 0.5
       FireTimes: 1
       Spread: 0
-    MinRecoilPercentage: 0.121
-    MaxRecoilTime: 0.31
-    RecoilAmountX: 1.77
-    RecoilAmountY: 2.1
-    RecoilAmountZ: 0.254
-    UseScope: 1
-    ThrowForce: 0
-    ThrowAngle: 0
     ExplosionTime: 0
     ExplosionRadius: 0
   - WeaponName: Famas
@@ -161,14 +113,6 @@ MonoBehaviour:
       TimeResetFire: 0.5
       FireTimes: 1
       Spread: 0
-    MinRecoilPercentage: 0.121
-    MaxRecoilTime: 0.31
-    RecoilAmountX: 1.77
-    RecoilAmountY: 2.1
-    RecoilAmountZ: 0.254
-    UseScope: 1
-    ThrowForce: 0
-    ThrowAngle: 0
     ExplosionTime: 0
     ExplosionRadius: 0
   - WeaponName: Glock_17
@@ -183,14 +127,6 @@ MonoBehaviour:
       TimeResetFire: 0.5
       FireTimes: 1
       Spread: 0
-    MinRecoilPercentage: 0.121
-    MaxRecoilTime: 0.31
-    RecoilAmountX: 1.77
-    RecoilAmountY: 2.1
-    RecoilAmountZ: 0.254
-    UseScope: 1
-    ThrowForce: 0
-    ThrowAngle: 0
     ExplosionTime: 0
     ExplosionRadius: 0
   - WeaponName: SCAR_H
@@ -205,16 +141,22 @@ MonoBehaviour:
       TimeResetFire: 0.05
       FireTimes: 1
       Spread: 0
-    MinRecoilPercentage: 0.121
-    MaxRecoilTime: 0.31
-    RecoilAmountX: 1.77
-    RecoilAmountY: 2.1
-    RecoilAmountZ: 0.254
-    UseScope: 1
-    ThrowForce: 0
-    ThrowAngle: 0
     ExplosionTime: 0
     ExplosionRadius: 0
+  - WeaponName: Grenade_M67
+    WeaponType: 2
+    WeaponPrefab: {fileID: 2144646879024034014, guid: d9aed640024628142a19736d25a111df,
+      type: 3}
+    Dame: 60
+    MagazineCapacity: 40
+    BulletsPerShot: 1
+    FireModeOption:
+    - FireModeType: 2
+      TimeResetFire: 0.05
+      FireTimes: 1
+      Spread: 0
+    ExplosionTime: 3
+    ExplosionRadius: 10
   BagInfo:
     WeaponNames: []
     TotalBullet: 100
