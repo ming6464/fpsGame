@@ -154,8 +154,6 @@ public class GObj_pooling : Singleton<GObj_pooling>
 [Serializable]
 public enum PoolKEY
 {
-    Bullet,
-    EffectImpact,
     Grenade,
     Zombie
 }

@@ -452,6 +452,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3595631706664531394}
+  - {fileID: 3313317723078869914}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -497,7 +498,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponName: M249
-  InBag: 0
   IsUsing: 0
   Bullets: 0
   CurrrentFireMode:
@@ -505,6 +505,8 @@ MonoBehaviour:
     TimeResetFire: 0
     FireTimes: 0
     Spread: 0
+  MuzzleFlashTf: {fileID: 3313317723078869914}
+  MuzzleFlashKey: 0
 --- !u!65 &9218167986742631889
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -518,3 +520,34 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.14536506, y: 0.2257837, z: 0.8615608}
   m_Center: {x: 0.005249936, y: -0.093221426, z: 0.38379276}
+--- !u!1 &8309364187332970741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3313317723078869914}
+  m_Layer: 8
+  m_Name: MuzzleFlash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3313317723078869914
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8309364187332970741}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.0026, y: -0.0331, z: 0.7877}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5928023087873038571}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

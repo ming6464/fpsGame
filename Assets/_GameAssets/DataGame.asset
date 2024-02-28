@@ -78,13 +78,13 @@ MonoBehaviour:
     WeaponPrefab: {fileID: 8743199441388106943, guid: 4a021a80d6dca9341bd10f85e80569f7,
       type: 3}
     Dame: 5
-    MagazineCapacity: 13
-    BulletsPerShot: 60
+    MagazineCapacity: 1000
+    BulletsPerShot: 10
     FireModeOption:
     - FireModeType: 0
-      TimeResetFire: 0.3
+      TimeResetFire: 0.1
       FireTimes: 1
-      Spread: 9
+      Spread: 5
     ExplosionTime: 0
     ExplosionRadius: 0
   - WeaponName: Bennelli_M4
@@ -138,7 +138,7 @@ MonoBehaviour:
     BulletsPerShot: 1
     FireModeOption:
     - FireModeType: 2
-      TimeResetFire: 0.05
+      TimeResetFire: 0.08
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
@@ -158,9 +158,10 @@ MonoBehaviour:
     ExplosionTime: 3
     ExplosionRadius: 10
   BagInfo:
-    WeaponNames: []
+    WeaponNames:
+    - SCAR_H
+    - AA12
     TotalBullet: 100
-    BagCapacity: 4
   ZoombieInfos:
   - Name: ZombieV1
     Damage: 20

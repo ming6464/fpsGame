@@ -17,6 +17,10 @@ TagManager:
   - Enemy
   - Environment
   - FollowTarget
+  - Metal
+  - Wood
+  - Sand
+  - Stone
   layers:
   - Default
   - TransparentFX

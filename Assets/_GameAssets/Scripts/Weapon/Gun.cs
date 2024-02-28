@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.VFX;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(DamageSender))]
@@ -15,12 +16,19 @@ public class Gun : Weapon
     public int Bullets;
     public FireModeInfo CurrrentFireMode;
 
+    [Header("MuzzleFlash")]
+    public Transform MuzzleFlashTf;
+
+    public VFXKEY MuzzleFlashKey;
+
     //gun
     private bool m_isTrigger;
     private bool m_isReloading;
     private bool m_isCanFire;
     private bool m_isResetFire;
     private Coroutine m_reloadingCrt;
+
+    public ParticleSystem[] MuzzleFlashs;
 
 
     protected override void Awake()
@@ -116,8 +124,23 @@ public class Gun : Weapon
 
     protected virtual void OnFire()
     {
+        // if (MuzzleFlashs.Length > 0)
+        // {
+        //     foreach (ParticleSystem particleSystem in MuzzleFlashs)
+        //     {
+        //         particleSystem.Emit(1);
+        //     }
+        // }
+        // else if (VFX_manager.Instance)
+        // {
+        //     VFX_manager.Instance.PlayEffect(MuzzleFlashTf.position, MuzzleFlashTf.forward, MuzzleFlashKey);
+        // }
+
+        VFX_manager.Instance.PlayEffect(MuzzleFlashTf.position, MuzzleFlashTf.forward, MuzzleFlashKey);
+
         Transform pivotTf = m_weaponHolder.PivotRay;
         Vector3 startPosRay = pivotTf.position;
+        Vector3 endPos;
         Vector3 dirRay = pivotTf.forward;
         float spreadBullet = CurrrentFireMode.Spread;
         for (int i = 0; i < m_weaponInfo.BulletsPerShot; i++)
@@ -129,21 +152,41 @@ public class Gun : Weapon
             }
 
             Ray ray = new(startPosRay, dirRay);
-            int layerMask = ~LayerMask.GetMask(m_weaponHolder.AvoidTags);
-            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~LayerMask.GetMask(m_weaponHolder.AvoidTags)))
             {
                 Debug.Log($"fire {hit.transform.name}");
+                endPos = hit.point;
                 m_damageSender.Send(hit.transform);
-                SfxManager.Instance.PlayImpactBullet(hit.point, PoolKEY.EffectImpact);
+                if (VFX_manager.Instance)
+                {
+                    VFXKEY key = VFXKEY.None;
+                    switch (hit.transform.tag.ToLower())
+                    {
+                        case "metal":
+                            key = VFXKEY.MetalImpact;
+                            break;
+                        case "stone":
+                            key = VFXKEY.StoneImpact;
+                            break;
+                        case "wood":
+                            key = VFXKEY.WoodImpact;
+                            break;
+                        case "sand":
+                            key = VFXKEY.SandImpact;
+                            break;
+                    }
+
+                    VFX_manager.Instance.PlayEffect(endPos, hit.normal, key);
+                }
             }
+            else
+            {
+                endPos = startPosRay + dirRay * 100;
+            }
+
+            VFX_manager.Instance.PlayBullet(MuzzleFlashTf.position, endPos, VFXKEY.Bullet);
         }
 
-        // if (_effectFire)
-        // {
-        //     _effectFire.Stop();
-        //     _effectFire.Play();
-        // }
-        //
         // EventDispatcher.Instance.PostEvent(EventID.OnUpdateNumberBulletWeapon,
         //     new MsgWeapon
         //     {
