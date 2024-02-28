@@ -613,27 +613,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _vfxInfos:
-  - VFXPrefab: {fileID: 2193249748509964965, guid: dfe09cfeca275834ba4504b957c1e806,
-      type: 3}
-    Vfxkey: 1
-  - VFXPrefab: {fileID: 8362530480936465875, guid: 146b99aa98635e64f8c483927a59427a,
-      type: 3}
-    Vfxkey: 0
   - VFXPrefab: {fileID: 4242778507358656395, guid: 239a1d6b89e0ed04db7ff3c9e258fc1c,
       type: 3}
-    Vfxkey: 2
+    Vfxkey: 0
   - VFXPrefab: {fileID: 908181730689526681, guid: 2f4605c9a0a343c4fb6c2912a0895d15,
       type: 3}
-    Vfxkey: 6
+    Vfxkey: 4
   - VFXPrefab: {fileID: 4500958773196129608, guid: 82b5f26a1d5ce9040b54794d534cc9b5,
       type: 3}
-    Vfxkey: 3
+    Vfxkey: 1
   - VFXPrefab: {fileID: 6591095155496860728, guid: 7ba607b9750c51043bdf22b900778798,
       type: 3}
-    Vfxkey: 4
+    Vfxkey: 2
   - VFXPrefab: {fileID: 5701144861459909986, guid: c4919e00adfda4447960d28bd7e018c8,
       type: 3}
-    Vfxkey: 5
+    Vfxkey: 3
 --- !u!4 &221676516
 Transform:
   m_ObjectHideFlags: 0

@@ -179,19 +179,11 @@ public static class EventDispatcherExtension
 public enum EventID
 {
     None = 0,
-    OnPullTrigger,
-    OnReleaseTrigger,
-    OnChangeFireMode,
-    OnPickUpWeapon,
-    OnDropWeapon,
-    OnChangeWeapon,
-    OnUpdateNumberBulletWeapon,
-    ReloadBullet,
     OnWeaponPickupAreaEnter,
     OnWeaponPickupAreaExit,
     OnUpdateWeaponPickup,
-    AimScope,
-    OnChangeHealth
+    OnChangeHealth,
+    OnRelaxedHands
 }
 
 #endregion

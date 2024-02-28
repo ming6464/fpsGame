@@ -18,15 +18,15 @@ MonoBehaviour:
     WeaponPrefab: {fileID: 3807816867564140896, guid: d1cde00170448c34aaf1a741c1c3d312,
       type: 3}
     Dame: 60
-    MagazineCapacity: 30
+    MagazineCapacity: 50
     BulletsPerShot: 1
     FireModeOption:
     - FireModeType: 0
-      TimeResetFire: 0.1
+      TimeResetFire: 0.08
       FireTimes: 1
       Spread: 5
     - FireModeType: 2
-      TimeResetFire: 0.2
+      TimeResetFire: 0.11
       FireTimes: 1
       Spread: 5
     ExplosionTime: 0
@@ -35,12 +35,12 @@ MonoBehaviour:
     WeaponType: 1
     WeaponPrefab: {fileID: 8260071292302502556, guid: c0cfd59511406644d8510c7cae0b844b,
       type: 3}
-    Dame: 10
-    MagazineCapacity: 13
+    Dame: 30
+    MagazineCapacity: 20
     BulletsPerShot: 1
     FireModeOption:
     - FireModeType: 0
-      TimeResetFire: 0.14
+      TimeResetFire: 0.08
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
@@ -49,8 +49,8 @@ MonoBehaviour:
     WeaponType: 1
     WeaponPrefab: {fileID: 5494813602892714075, guid: a63d50da764a85e4ea6344665eef580c,
       type: 3}
-    Dame: 6
-    MagazineCapacity: 40
+    Dame: 45
+    MagazineCapacity: 50
     BulletsPerShot: 1
     FireModeOption:
     - FireModeType: 2
@@ -63,12 +63,12 @@ MonoBehaviour:
     WeaponType: 1
     WeaponPrefab: {fileID: 5928023087873038570, guid: 204e50b9c6c20c649a46376ba0d3e4fd,
       type: 3}
-    Dame: 10
-    MagazineCapacity: 50
+    Dame: 50
+    MagazineCapacity: 120
     BulletsPerShot: 1
     FireModeOption:
     - FireModeType: 2
-      TimeResetFire: 0.1
+      TimeResetFire: 0.11
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
@@ -77,40 +77,40 @@ MonoBehaviour:
     WeaponType: 1
     WeaponPrefab: {fileID: 8743199441388106943, guid: 4a021a80d6dca9341bd10f85e80569f7,
       type: 3}
-    Dame: 5
-    MagazineCapacity: 1000
+    Dame: 120
+    MagazineCapacity: 20
     BulletsPerShot: 10
     FireModeOption:
     - FireModeType: 0
-      TimeResetFire: 0.1
+      TimeResetFire: 0.14
       FireTimes: 1
-      Spread: 5
+      Spread: 4
     ExplosionTime: 0
     ExplosionRadius: 0
   - WeaponName: Bennelli_M4
     WeaponType: 1
     WeaponPrefab: {fileID: 365352305583647258, guid: da60848543f509c4db434344d56cb1aa,
       type: 3}
-    Dame: 60
-    MagazineCapacity: 13
-    BulletsPerShot: 1
+    Dame: 120
+    MagazineCapacity: 20
+    BulletsPerShot: 15
     FireModeOption:
-    - FireModeType: 2
-      TimeResetFire: 0.5
+    - FireModeType: 0
+      TimeResetFire: 0.14
       FireTimes: 1
-      Spread: 0
+      Spread: 2
     ExplosionTime: 0
     ExplosionRadius: 0
   - WeaponName: Famas
     WeaponType: 1
     WeaponPrefab: {fileID: 2306746107097191957, guid: e904f5f78b792f04fab92ec67bd09faa,
       type: 3}
-    Dame: 60
-    MagazineCapacity: 13
+    Dame: 50
+    MagazineCapacity: 40
     BulletsPerShot: 1
     FireModeOption:
     - FireModeType: 2
-      TimeResetFire: 0.5
+      TimeResetFire: 0.1
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
@@ -119,12 +119,12 @@ MonoBehaviour:
     WeaponType: 1
     WeaponPrefab: {fileID: 662556939011561000, guid: 0ad4176e9e398a54a93ad1390911eef1,
       type: 3}
-    Dame: 60
-    MagazineCapacity: 13
+    Dame: 30
+    MagazineCapacity: 20
     BulletsPerShot: 1
     FireModeOption:
     - FireModeType: 0
-      TimeResetFire: 0.5
+      TimeResetFire: 0.08
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
@@ -147,14 +147,10 @@ MonoBehaviour:
     WeaponType: 2
     WeaponPrefab: {fileID: 2144646879024034014, guid: d9aed640024628142a19736d25a111df,
       type: 3}
-    Dame: 60
+    Dame: 80
     MagazineCapacity: 40
     BulletsPerShot: 1
-    FireModeOption:
-    - FireModeType: 2
-      TimeResetFire: 0.05
-      FireTimes: 1
-      Spread: 0
+    FireModeOption: []
     ExplosionTime: 3
     ExplosionRadius: 10
   BagInfo:
@@ -165,11 +161,6 @@ MonoBehaviour:
   ZoombieInfos:
   - Name: ZombieV1
     Damage: 20
-    MaxHP: 40
-    HP: 300
-    AttackRange: 2
-  - Name: ZombieV2
-    Damage: 15
-    MaxHP: 0
-    HP: 0
-    AttackRange: 0
+    MaxHP: 2000
+    HP: 2000
+    AttackRange: 2.5

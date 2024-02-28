@@ -19,7 +19,7 @@ public class Gun : Weapon
     [Header("MuzzleFlash")]
     public Transform MuzzleFlashTf;
 
-    public VFXKEY MuzzleFlashKey;
+    public ParticleSystem[] MuzzleFlashs;
 
     //gun
     private bool m_isTrigger;
@@ -27,8 +27,6 @@ public class Gun : Weapon
     private bool m_isCanFire;
     private bool m_isResetFire;
     private Coroutine m_reloadingCrt;
-
-    public ParticleSystem[] MuzzleFlashs;
 
 
     protected override void Awake()
@@ -124,19 +122,14 @@ public class Gun : Weapon
 
     protected virtual void OnFire()
     {
-        // if (MuzzleFlashs.Length > 0)
-        // {
-        //     foreach (ParticleSystem particleSystem in MuzzleFlashs)
-        //     {
-        //         particleSystem.Emit(1);
-        //     }
-        // }
-        // else if (VFX_manager.Instance)
-        // {
-        //     VFX_manager.Instance.PlayEffect(MuzzleFlashTf.position, MuzzleFlashTf.forward, MuzzleFlashKey);
-        // }
+        if (MuzzleFlashs.Length > 0)
+        {
+            foreach (ParticleSystem particleSystem in MuzzleFlashs)
+            {
+                particleSystem.Emit(1);
+            }
+        }
 
-        VFX_manager.Instance.PlayEffect(MuzzleFlashTf.position, MuzzleFlashTf.forward, MuzzleFlashKey);
 
         Transform pivotTf = m_weaponHolder.PivotRay;
         Vector3 startPosRay = pivotTf.position;
@@ -173,6 +166,9 @@ public class Gun : Weapon
                             break;
                         case "sand":
                             key = VFXKEY.SandImpact;
+                            break;
+                        case "enemy":
+                            key = VFXKEY.FleshImpact;
                             break;
                     }
 

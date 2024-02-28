@@ -71,6 +71,8 @@ public class WeaponHolder : MonoBehaviour
     private void Start()
     {
         LoadWeaponInBag();
+        _handIk.weight = CheckNearestBagWeapon() < 0 ? 0f : 1f;
+        EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands, CheckNearestBagWeapon() < 0);
     }
 
     private void Update()
@@ -82,15 +84,25 @@ public class WeaponHolder : MonoBehaviour
     {
         if (_curWeaponIndex < 0)
         {
-            for (int i = 0; i < _bagInfo.Length; i++)
+            int index = CheckNearestBagWeapon();
+            if (index > 0)
             {
-                if (GetWeaponFromBag(i) != null)
-                {
-                    ChangeWeapon(i);
-                    break;
-                }
+                ChangeWeapon(index);
             }
         }
+    }
+
+    private int CheckNearestBagWeapon()
+    {
+        for (int i = 0; i < _bagInfo.Length; i++)
+        {
+            if (GetWeaponFromBag(i) != null)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     private void UpdateWeaponPickup()
@@ -167,6 +179,9 @@ public class WeaponHolder : MonoBehaviour
         {
             return;
         }
+
+        _handIk.weight = 1f;
+        EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands, false);
 
         OnWeaponPickupAreaExit(weapon);
 
@@ -253,6 +268,12 @@ public class WeaponHolder : MonoBehaviour
         if (_curWeaponIndex == index)
         {
             _curWeaponIndex = -1;
+        }
+
+        if (CheckNearestBagWeapon() < 0)
+        {
+            _handIk.weight = 0f;
+            EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands, true);
         }
     }
 

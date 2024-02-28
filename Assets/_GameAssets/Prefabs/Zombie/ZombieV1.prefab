@@ -952,7 +952,7 @@ GameObject:
   - component: {fileID: 4611767801336167484}
   - component: {fileID: 4611767801336167459}
   m_Layer: 0
-  m_Name: Yaku J Ignite
+  m_Name: ZombieV1
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1003,8 +1003,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4611767801336167463}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_AgentTypeID: -1372625422
+  m_Radius: 0.25
   m_Speed: 0
   m_Acceleration: 8
   avoidancePriority: 50
@@ -1031,8 +1031,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: ZombieV1
   _navMeshAgent: {fileID: 4611767801336167456}
-  _animator: {fileID: 2138002669006257383}
-  _collider: {fileID: 0}
   UpdateRotate: 0
 --- !u!136 &4611767801336167458
 CapsuleCollider:
@@ -1044,7 +1042,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0.99, z: 0}
@@ -1060,8 +1058,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b376d5c0d684dd38c87a5bd1e4d128c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 0
-  hp: 0
+  _maxHp: 1000
+  _hp: 1000
 --- !u!114 &4611767801336167459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1074,7 +1072,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c1b525e77e54c958ef4274173d8c946, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 0
+  _damage: 15
 --- !u!1 &4805144307101919235
 GameObject:
   m_ObjectHideFlags: 0

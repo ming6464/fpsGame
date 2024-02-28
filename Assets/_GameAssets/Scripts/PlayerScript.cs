@@ -107,15 +107,36 @@ public class PlayerScript : MonoBehaviour
     {
         _inputBase.Enable();
         LinkInput();
+        LinkEvent();
         CameraSwitcher.RegisterCamera(cameraView1);
         CameraSwitcher.RegisterCamera(cameraView2);
         CameraSwitcher.SwitchCamera(cameraView2);
         AimAndPivotScript.SetUpAim(1);
     }
 
+    private void LinkEvent()
+    {
+        EventDispatcher.Instance.RegisterListener(EventID.OnRelaxedHands, OnRelaxedHands);
+    }
+
+    private void UnLinkEvent()
+    {
+        EventDispatcher.Instance.RemoveListener(EventID.OnRelaxedHands, OnRelaxedHands);
+    }
+
+    private void OnRelaxedHands(object obj)
+    {
+        bool check = (bool)obj;
+        if (_animator)
+        {
+            _animator.SetLayerWeight(1, check ? 1 : 0);
+        }
+    }
+
     private void OnDisable()
     {
         _inputBase.Disable();
+        UnLinkEvent();
         CameraSwitcher.UnRegisterCamera(cameraView1);
         CameraSwitcher.UnRegisterCamera(cameraView2);
     }
