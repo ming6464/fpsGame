@@ -16,9 +16,11 @@ public class ZombiePatrollingState : StateMachineBehaviour
     private Transform m_patrolPoints;
     private NavMeshAgent m_agent;
     private Vector3 m_nextPatrolPoint;
+    private bool m_isFirstFrameExecuted;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        m_isFirstFrameExecuted = false;
         m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
         m_patrolPoints = GameObject.FindGameObjectWithTag("PatrolPoints")?.transform;
         m_startTime = Time.time;
@@ -26,12 +28,11 @@ public class ZombiePatrollingState : StateMachineBehaviour
 
         if (m_patrolPoints && m_agent)
         {
-            m_nextPatrolPoint = animator.transform.position;
-
-            while (Vector3.Distance(animator.transform.position, m_nextPatrolPoint) < 1.5f)
+            do
             {
                 m_nextPatrolPoint = m_patrolPoints.GetChild(Random.Range(0, m_patrolPoints.childCount)).position;
             }
+            while (Vector3.Distance(animator.transform.position, m_nextPatrolPoint) < 1.5f);
 
             m_agent.SetDestination(m_nextPatrolPoint);
         }
@@ -40,6 +41,12 @@ public class ZombiePatrollingState : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (!m_isFirstFrameExecuted)
+        {
+            m_isFirstFrameExecuted = true;
+            return;
+        }
+
         if (m_player && Vector3.Distance(animator.transform.position, m_player.position) <= _detectionAreaRadius)
         {
             animator.SetBool("IsChasing", true);
@@ -52,6 +59,7 @@ public class ZombiePatrollingState : StateMachineBehaviour
         {
             m_agent.ResetPath();
             animator.SetBool("IsPatrolling", false);
+            Debug.Log("IsPatrolling : false");
         }
     }
 }

@@ -947,8 +947,8 @@ GameObject:
   - component: {fileID: 5425600381550438045}
   - component: {fileID: 2138002669006257383}
   - component: {fileID: 4611767801336167456}
-  - component: {fileID: 4611767801336167457}
   - component: {fileID: 4611767801336167458}
+  - component: {fileID: 4611767801336167457}
   - component: {fileID: 4611767801336167484}
   - component: {fileID: 4611767801336167459}
   m_Layer: 0
@@ -1017,6 +1017,20 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!136 &4611767801336167458
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4611767801336167463}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.25
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.99, z: 0}
 --- !u!114 &4611767801336167457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1032,20 +1046,6 @@ MonoBehaviour:
   Name: ZombieV1
   _navMeshAgent: {fileID: 4611767801336167456}
   UpdateRotate: 0
---- !u!136 &4611767801336167458
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4611767801336167463}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.25
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.99, z: 0}
 --- !u!114 &4611767801336167484
 MonoBehaviour:
   m_ObjectHideFlags: 0

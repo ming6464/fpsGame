@@ -13,18 +13,6 @@ public class PlayerScript : MonoBehaviour
     public float SpeedChangeRate;
 
     [Space(10)]
-    public AudioClip LandingAudioClip;
-
-    public AudioClip[] FootstepWalkAudioClips;
-    public AudioClip[] FootstepRunAudioClips;
-
-    [Range(0, 1)]
-    public float FootstepAudioVolume = 0.5f;
-
-    [Range(0, 2)]
-    public float LandingAudioVolume = 1f;
-
-    [Space(10)]
     public float JumpHeight;
 
     public float Gravity;
@@ -56,6 +44,9 @@ public class PlayerScript : MonoBehaviour
 
     [Header("Aim")]
     public AimAndPivotScript AimAndPivotScript;
+
+    [Header("Audio")]
+    public AudioScript AudioScript;
 
     // cinemachine
     private float _cinemachineTargetYaw;
@@ -114,25 +105,6 @@ public class PlayerScript : MonoBehaviour
         AimAndPivotScript.SetUpAim(1);
     }
 
-    private void LinkEvent()
-    {
-        EventDispatcher.Instance.RegisterListener(EventID.OnRelaxedHands, OnRelaxedHands);
-    }
-
-    private void UnLinkEvent()
-    {
-        EventDispatcher.Instance.RemoveListener(EventID.OnRelaxedHands, OnRelaxedHands);
-    }
-
-    private void OnRelaxedHands(object obj)
-    {
-        bool check = (bool)obj;
-        if (_animator)
-        {
-            _animator.SetLayerWeight(1, check ? 1 : 0);
-        }
-    }
-
     private void OnDisable()
     {
         _inputBase.Disable();
@@ -173,6 +145,25 @@ public class PlayerScript : MonoBehaviour
                 AimAndPivotScript.SetUpAim(0);
             }
         };
+    }
+
+    private void LinkEvent()
+    {
+        EventDispatcher.Instance.RegisterListener(EventID.OnRelaxedHands, OnRelaxedHands);
+    }
+
+    private void UnLinkEvent()
+    {
+        EventDispatcher.Instance.RemoveListener(EventID.OnRelaxedHands, OnRelaxedHands);
+    }
+
+    private void OnRelaxedHands(object obj)
+    {
+        bool check = (bool)obj;
+        if (_animator)
+        {
+            _animator.SetLayerWeight(1, check ? 1 : 0);
+        }
     }
 
     // Start is called before the first frame update
@@ -449,32 +440,19 @@ public class PlayerScript : MonoBehaviour
 
     private void OnFootStep(int state)
     {
-        if ((state == 0 && FootstepWalkAudioClips.Length == 0) || (state == 1 && FootstepRunAudioClips.Length == 0))
-        {
-            return;
-        }
-
-        AudioClip clip;
         if (state == 0)
         {
-            clip = FootstepWalkAudioClips[Random.Range(0, FootstepWalkAudioClips.Length)];
+            AudioScript.PlaySfx(KeySound.WalkFootStepStone);
         }
         else
         {
-            clip = FootstepRunAudioClips[Random.Range(0, FootstepRunAudioClips.Length)];
+            AudioScript.PlaySfx(KeySound.RunFootStepStone);
         }
-
-        AudioSource.PlayClipAtPoint(clip, transform.TransformPoint(_controller.center),
-            FootstepAudioVolume);
     }
 
     private void OnLand()
     {
-        if (LandingAudioClip)
-        {
-            AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center),
-                LandingAudioVolume);
-        }
+        AudioScript.PlaySfx(KeySound.Landing);
     }
 
     private void OnStartJumpDown()

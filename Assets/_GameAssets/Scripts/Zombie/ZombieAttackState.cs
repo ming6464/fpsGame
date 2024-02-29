@@ -4,8 +4,7 @@ using UnityEngine.Animations;
 
 public class ZombieAttackState : StateMachineBehaviour
 {
-    [SerializeField]
-    private float _attackAreaRadius;
+    private float m_attackAreaRadius;
 
     private NavMeshAgent m_agent;
 
@@ -17,8 +16,9 @@ public class ZombieAttackState : StateMachineBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        animator.TryGetComponent(out m_zombie);
-        animator.TryGetComponent(out m_agent);
+        m_zombie = animator.GetComponent<Zombie>();
+        m_agent = animator.GetComponent<NavMeshAgent>();
+        m_attackAreaRadius = m_zombie.AttackRange;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -35,7 +35,7 @@ public class ZombieAttackState : StateMachineBehaviour
 
         if (stateInfo.normalizedTime > 0.9f)
         {
-            if (m_agent.remainingDistance > _attackAreaRadius || !m_zombie.CheckCanAttack())
+            if (m_agent.remainingDistance > m_attackAreaRadius || !m_zombie.CheckCanAttack())
             {
                 animator.SetBool("IsAttacking", false);
             }

@@ -36,9 +36,9 @@ public class DamageReceiver : MonoBehaviour
     {
     }
 
-    public virtual void UpdateHpInfo(float _hp, float _maxHp)
+    public virtual void UpdateHpInfo(float _maxHp)
     {
-        this._hp = _hp > _maxHp ? _maxHp : _hp;
+        _hp = _maxHp;
         this._maxHp = _maxHp;
     }
 }

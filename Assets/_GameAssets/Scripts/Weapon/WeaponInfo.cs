@@ -27,6 +27,8 @@ public class WeaponInfo
     [Min(0f)]
     public float ExplosionTime;
 
+    public float ExplosionTimeout;
+
     [Min(0f)]
     public float ExplosionRadius;
 }

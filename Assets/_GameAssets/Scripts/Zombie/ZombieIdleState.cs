@@ -38,6 +38,7 @@ public class ZombieIdleState : StateMachineBehaviour
         if (Time.time > m_startTime + m_timeIdle)
         {
             animator.SetBool("IsPatrolling", true);
+            Debug.Log("IsPatrolling : true");
         }
     }
 }

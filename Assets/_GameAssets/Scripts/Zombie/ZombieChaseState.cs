@@ -6,8 +6,7 @@ public class ZombieChaseState : StateMachineBehaviour
     [SerializeField]
     private float _detectionAreaRadius;
 
-    [SerializeField]
-    private float _attackAreaRadius;
+    private float m_attackAreaRadius;
 
     private Transform m_player;
 
@@ -21,8 +20,9 @@ public class ZombieChaseState : StateMachineBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        animator.transform.TryGetComponent(out m_agent);
-        animator.TryGetComponent(out m_zombie);
+        m_agent = animator.GetComponent<NavMeshAgent>();
+        m_zombie = animator.GetComponent<Zombie>();
+        m_attackAreaRadius = m_zombie.AttackRange;
         m_isFirstFrameExecuted = false;
     }
 
@@ -48,7 +48,7 @@ public class ZombieChaseState : StateMachineBehaviour
             return;
         }
 
-        if (m_agent.remainingDistance < _attackAreaRadius && m_zombie.CheckCanAttack())
+        if (m_agent.remainingDistance < m_attackAreaRadius && m_zombie.CheckCanAttack())
         {
             animator.SetBool("IsAttacking", true);
         }

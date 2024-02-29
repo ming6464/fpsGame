@@ -12,12 +12,9 @@ public class GrenadeDamageSender : DamageSender
 
     public void Explosive()
     {
-        Debug.Log("Bummmmmmmmmmmm");
         foreach (Collider col in Physics.OverlapSphere(transform.position, _radius))
         {
             Send(col.transform);
         }
-
-        GObj_pooling.Instance.Push(PoolKEY.Grenade, gameObject);
     }
 }

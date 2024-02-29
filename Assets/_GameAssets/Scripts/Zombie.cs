@@ -14,6 +14,10 @@ public class Zombie : MonoBehaviour
     private ZombieDamageSender m_zombieDamageSender;
     private ZombieInfo m_zombieInfo;
     private Transform m_player;
+
+    public float AttackRange => m_zombieInfo.AttackRange;
+
+    [HideInInspector]
     public bool UpdateRotate;
 
     private void Awake()
@@ -41,7 +45,7 @@ public class Zombie : MonoBehaviour
         {
             if (TryGetComponent(out DamageReceiver damageReceiver))
             {
-                damageReceiver.UpdateHpInfo(m_zombieInfo.HP, m_zombieInfo.MaxHP);
+                damageReceiver.UpdateHpInfo(m_zombieInfo.MaxHP);
             }
 
             if (TryGetComponent(out DamageSender damageSender))
@@ -95,18 +99,6 @@ public class Zombie : MonoBehaviour
         {
             return;
         }
-
-        // float angleY = Quaternion.FromToRotation(m_player.position - transform.position, transform.forward).eulerAngles.y;
-        // if (angleY > 180f)
-        // {
-        //     angleY -= 360f;
-        // }
-        //
-        // angleY = Mathf.Abs(angleY);
-        // if (angleY > 35f)
-        // {
-        //     return;
-        // }
 
         float distance = Vector2.Distance(new Vector2(transform.position.x, transform.position.z),
             new Vector2(m_player.position.x, m_player.position.z));

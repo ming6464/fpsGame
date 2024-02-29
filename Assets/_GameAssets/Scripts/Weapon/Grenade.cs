@@ -1,11 +1,16 @@
 ﻿using System;
-using System.Collections;
-using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(GrenadeDamageSender))]
 public class Grenade : Weapon
 {
+    [Header("Effect Explosion")]
+    public ParticleSystem ExplosionEffect;
+
+    [Space(10)]
+    [SerializeField]
+    private MeshRenderer _meshRenderer;
+
     private bool m_pinPulled;
     private GrenadeDamageSender m_grenadeDamageSender;
 
@@ -26,6 +31,9 @@ public class Grenade : Weapon
     {
         base.ResetData();
         m_pinPulled = false;
+        m_rigid.isKinematic = false;
+        m_rigid.useGravity = true;
+        _meshRenderer.enabled = true;
     }
 
     public override void UnUseWeapon()
@@ -48,7 +56,17 @@ public class Grenade : Weapon
 
     private void DelayDetonation()
     {
+        _meshRenderer.enabled = false;
+        m_rigid.isKinematic = true;
+        m_rigid.useGravity = false;
         m_grenadeDamageSender.Explosive();
+        ExplosionEffect.Emit(1);
+        Invoke(nameof(DelayToPool), m_weaponInfo.ExplosionTimeout);
+    }
+
+    private void DelayToPool()
+    {
+        GObj_pooling.Instance.Push(PoolKEY.Grenade, gameObject);
     }
 
 
@@ -64,7 +82,7 @@ public class Grenade : Weapon
 
     private void OnThrow()
     {
-        Debug.Log("On Throw");
+        m_weaponHolder.ThrowGrenade();
         m_weaponHolder = null;
         m_slot = null;
         if (TryGetComponent(out Collider collider))

@@ -67,6 +67,7 @@ public class VFX_manager : Singleton<VFX_manager>
         }
     }
 
+    [Obsolete("Obsolete")]
     public void PlayBullet(Vector3 start, Vector3 end, VFXKEY key)
     {
         VFXObject vfxObj = GetVFXObj(key);
@@ -75,6 +76,7 @@ public class VFX_manager : Singleton<VFX_manager>
         vfxObj.Emit(1);
     }
 
+    [Obsolete("Obsolete")]
     public void PlayEffect(Vector3 position, Vector3 direction, VFXKEY key)
     {
         VFXObject vfxObj = GetVFXObj(key);
@@ -87,6 +89,7 @@ public class VFX_manager : Singleton<VFX_manager>
         vfxObj.Emit(1);
     }
 
+    [Obsolete("Obsolete")]
     private VFXObject GetVFXObj(VFXKEY key)
     {
         VFXObject vfxObj = m_vfxObjects.Find(x => x.IsReady(key));

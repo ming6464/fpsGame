@@ -85,7 +85,7 @@ public class WeaponHolder : MonoBehaviour
         if (_curWeaponIndex < 0)
         {
             int index = CheckNearestBagWeapon();
-            if (index > 0)
+            if (index >= 0)
             {
                 ChangeWeapon(index);
             }
@@ -275,6 +275,16 @@ public class WeaponHolder : MonoBehaviour
             _handIk.weight = 0f;
             EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands, true);
         }
+    }
+
+    public void ThrowGrenade()
+    {
+        if (!CheckUsingGrande())
+        {
+            return;
+        }
+
+        _curWeaponIndex = -1;
     }
 
 

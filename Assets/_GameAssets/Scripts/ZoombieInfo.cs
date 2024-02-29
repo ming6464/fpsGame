@@ -10,7 +10,5 @@ public class ZombieInfo
 
     public float MaxHP;
 
-    public float HP;
-
     public float AttackRange;
 }

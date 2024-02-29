@@ -30,6 +30,7 @@ MonoBehaviour:
       FireTimes: 1
       Spread: 5
     ExplosionTime: 0
+    ExplosionTimeout: 0
     ExplosionRadius: 0
   - WeaponName: M9
     WeaponType: 1
@@ -44,6 +45,7 @@ MonoBehaviour:
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
+    ExplosionTimeout: 0
     ExplosionRadius: 0
   - WeaponName: G36C
     WeaponType: 1
@@ -58,6 +60,7 @@ MonoBehaviour:
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
+    ExplosionTimeout: 0
     ExplosionRadius: 0
   - WeaponName: M249
     WeaponType: 1
@@ -72,12 +75,13 @@ MonoBehaviour:
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
+    ExplosionTimeout: 0
     ExplosionRadius: 0
   - WeaponName: AA12
     WeaponType: 1
     WeaponPrefab: {fileID: 8743199441388106943, guid: 4a021a80d6dca9341bd10f85e80569f7,
       type: 3}
-    Dame: 120
+    Dame: 400
     MagazineCapacity: 20
     BulletsPerShot: 10
     FireModeOption:
@@ -86,12 +90,13 @@ MonoBehaviour:
       FireTimes: 1
       Spread: 4
     ExplosionTime: 0
+    ExplosionTimeout: 0
     ExplosionRadius: 0
   - WeaponName: Bennelli_M4
     WeaponType: 1
     WeaponPrefab: {fileID: 365352305583647258, guid: da60848543f509c4db434344d56cb1aa,
       type: 3}
-    Dame: 120
+    Dame: 350
     MagazineCapacity: 20
     BulletsPerShot: 15
     FireModeOption:
@@ -100,6 +105,7 @@ MonoBehaviour:
       FireTimes: 1
       Spread: 2
     ExplosionTime: 0
+    ExplosionTimeout: 0
     ExplosionRadius: 0
   - WeaponName: Famas
     WeaponType: 1
@@ -114,6 +120,7 @@ MonoBehaviour:
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
+    ExplosionTimeout: 0
     ExplosionRadius: 0
   - WeaponName: Glock_17
     WeaponType: 1
@@ -128,6 +135,7 @@ MonoBehaviour:
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
+    ExplosionTimeout: 0
     ExplosionRadius: 0
   - WeaponName: SCAR_H
     WeaponType: 1
@@ -142,17 +150,19 @@ MonoBehaviour:
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
+    ExplosionTimeout: 0
     ExplosionRadius: 0
   - WeaponName: Grenade_M67
     WeaponType: 2
     WeaponPrefab: {fileID: 2144646879024034014, guid: d9aed640024628142a19736d25a111df,
       type: 3}
-    Dame: 80
+    Dame: 800
     MagazineCapacity: 40
     BulletsPerShot: 1
     FireModeOption: []
     ExplosionTime: 3
-    ExplosionRadius: 10
+    ExplosionTimeout: 1.7
+    ExplosionRadius: 5.5
   BagInfo:
     WeaponNames:
     - SCAR_H
@@ -160,7 +170,17 @@ MonoBehaviour:
     TotalBullet: 100
   ZoombieInfos:
   - Name: ZombieV1
-    Damage: 20
+    Damage: 10
     MaxHP: 2000
-    HP: 2000
+    HP: 1000
+    AttackRange: 2
+  - Name: ZombieV2
+    Damage: 7
+    MaxHP: 2000
+    HP: 1000
+    AttackRange: 2.5
+  - Name: ZombieV3
+    Damage: 5
+    MaxHP: 2500
+    HP: 1000
     AttackRange: 2.5
