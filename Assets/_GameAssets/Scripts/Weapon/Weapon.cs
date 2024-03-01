@@ -24,6 +24,7 @@ public class Weapon : MonoBehaviour
     protected WeaponInfo m_weaponInfo;
 
     public WeaponKEY WeaponType => m_weaponInfo.WeaponType;
+    public Sprite WeaponIcon => m_weaponInfo.IconWeapon;
     protected bool m_canPickupWeapon;
     private InputBase m_inputBase;
 
@@ -43,7 +44,24 @@ public class Weapon : MonoBehaviour
         LinkInput();
     }
 
-    private void LinkInput()
+    protected virtual void LinkEvent()
+    {
+        EventDispatcher.Instance.RegisterListener(EventID.OnFinishGame, OnFinishGame);
+    }
+
+    protected virtual void UnLinkEvent()
+    {
+        EventDispatcher.Instance.RemoveListener(EventID.OnFinishGame, OnFinishGame);
+    }
+
+    private void OnFinishGame(object obj)
+    {
+        m_inputBase.Disable();
+        ResetData();
+        UnLinkEvent();
+    }
+
+    protected virtual void LinkInput()
     {
         m_inputBase.Weapon.Trigger.performed += _ => { OnPullTrigger(); };
         m_inputBase.Weapon.Trigger.canceled += _ => { OnReleaseTrigger(); };
@@ -123,6 +141,7 @@ public class Weapon : MonoBehaviour
     public virtual void UseWeapon()
     {
         m_inputBase.Enable();
+        LinkEvent();
         UpdateParent(1);
         IsUsing = true;
     }
@@ -130,6 +149,7 @@ public class Weapon : MonoBehaviour
     public virtual void UnUseWeapon()
     {
         m_inputBase.Disable();
+        UnLinkEvent();
         UpdateParent(0);
         IsUsing = false;
     }

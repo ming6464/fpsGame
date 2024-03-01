@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -7,10 +8,14 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(DamageSender))]
 public class Gun : Weapon
 {
-    public int TotalBullet
+    private int TotalBullet
     {
         get => m_weaponHolder.TotalBullet;
-        set => m_weaponHolder.TotalBullet -= value;
+        set
+        {
+            m_weaponHolder.TotalBullet = value;
+            EventDispatcher.Instance.PostEvent(EventID.OnchangeTotalBullets, m_weaponHolder.TotalBullet);
+        }
     }
 
     public int Bullets;
@@ -51,6 +56,15 @@ public class Gun : Weapon
         }
     }
 
+    protected override void ResetData()
+    {
+        base.ResetData();
+        m_isReloading = false;
+        m_isTrigger = false;
+        m_isResetFire = false;
+        m_isCanFire = true;
+    }
+
     protected override void Start()
     {
         base.Start();
@@ -58,11 +72,13 @@ public class Gun : Weapon
         CurrrentFireMode = m_weaponInfo.FireModeOption.Last();
     }
 
-    protected override void ResetData()
+    public override void UseWeapon()
     {
-        base.ResetData();
+        base.UseWeapon();
         m_isReloading = false;
         m_isTrigger = false;
+        m_isResetFire = false;
+        m_isCanFire = true;
     }
 
     protected override void Update()
@@ -84,42 +100,35 @@ public class Gun : Weapon
             return;
         }
 
-        StartCoroutine(PrepareFire());
-    }
+        if (CurrrentFireMode.FireModeType != FireModeKEY.Automatic)
+        {
+            m_isCanFire = false;
+        }
 
-    private IEnumerator PrepareFire()
-    {
+        m_isResetFire = true;
+        Invoke(nameof(ResetFire), CurrrentFireMode.TimeResetFire);
         for (int i = 0; i < CurrrentFireMode.FireTimes; i++)
         {
             OnFire();
             if (!GameConfig.Instance || !GameConfig.Instance.UnlimitedBullet)
             {
                 Bullets--;
+                EventDispatcher.Instance.PostEvent(EventID.OnChangeBullets, Bullets);
                 if (Bullets <= 0)
                 {
-                    yield break;
+                    return;
                 }
             }
-
-            yield return new WaitForEndOfFrame();
-            yield return new WaitForEndOfFrame();
-        }
-
-        StartCoroutine(ResetFire());
-
-        if (CurrrentFireMode.FireModeType != FireModeKEY.Automatic)
-        {
-            m_isCanFire = false;
         }
     }
 
-    private IEnumerator ResetFire()
+    private void ResetFire()
     {
-        m_isResetFire = true;
-        yield return new WaitForSeconds(CurrrentFireMode.TimeResetFire);
         m_isResetFire = false;
     }
 
+
+    [Obsolete("Obsolete")]
     protected virtual void OnFire()
     {
         if (MuzzleFlashs.Length > 0)
@@ -147,7 +156,6 @@ public class Gun : Weapon
             Ray ray = new(startPosRay, dirRay);
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~LayerMask.GetMask(m_weaponHolder.AvoidTags)))
             {
-                Debug.Log($"fire {hit.transform.name}");
                 endPos = hit.point;
                 m_damageSender.Send(hit.transform);
                 if (VFX_manager.Instance)
@@ -182,13 +190,6 @@ public class Gun : Weapon
 
             VFX_manager.Instance.PlayBullet(MuzzleFlashTf.position, endPos, VFXKEY.Bullet);
         }
-
-        // EventDispatcher.Instance.PostEvent(EventID.OnUpdateNumberBulletWeapon,
-        //     new MsgWeapon
-        //     {
-        //         Bullets = _bullets, TotalBullets = _totalBullets,
-        //         WeaponKey = _curWeaponInfo.WeaponType
-        //     });
     }
 
     private bool CheckMagazine()
@@ -234,34 +235,45 @@ public class Gun : Weapon
 
     protected override void ReloadBullet()
     {
-        if (m_isReloading)
+        if (TotalBullet <= 0 || m_isReloading || Bullets == m_weaponInfo.MagazineCapacity)
         {
             return;
         }
 
         base.ReloadBullet();
-        if (TotalBullet <= 0)
-        {
-            return;
-        }
-
         m_isTrigger = false;
-        StartCoroutine(Reloading());
+        m_isReloading = true;
+        EventDispatcher.Instance.PostEvent(EventID.OnReloadBullet);
     }
 
-    private IEnumerator Reloading()
+    private void OnFinishReload(object obj)
     {
-        m_isReloading = true;
-        yield return new WaitForSeconds(1f);
-        int bullet = m_weaponInfo.MagazineCapacity;
-        if (TotalBullet < m_weaponInfo.MagazineCapacity)
+        if (Bullets < 0)
+        {
+            Bullets = 0;
+        }
+
+        int bullet = m_weaponInfo.MagazineCapacity - Bullets;
+        if (TotalBullet < bullet)
         {
             bullet = TotalBullet;
         }
 
         TotalBullet -= bullet;
-        Bullets = bullet;
+        Bullets += bullet;
         m_isReloading = false;
-        Debug.Log("Finish Reload");
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeBullets, Bullets);
+    }
+
+    protected override void LinkEvent()
+    {
+        base.LinkEvent();
+        EventDispatcher.Instance.RegisterListener(EventID.OnFinishReload, OnFinishReload);
+    }
+
+    protected override void UnLinkEvent()
+    {
+        base.UnLinkEvent();
+        EventDispatcher.Instance.RemoveListener(EventID.OnFinishReload, OnFinishReload);
     }
 }

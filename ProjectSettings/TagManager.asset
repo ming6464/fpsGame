@@ -21,6 +21,8 @@ TagManager:
   - Wood
   - Sand
   - Stone
+  - Cam1
+  - Cam2
   layers:
   - Default
   - TransparentFX

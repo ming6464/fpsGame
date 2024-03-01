@@ -12,12 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75ef935d15254d4bb21ce0796faf5893, type: 3}
   m_Name: DataGame
   m_EditorClassIdentifier: 
+  DataSave:
+    PlayerName: SWAT
+    BagInfo:
+      WeaponNames: []
+      TotalBulletRifle: 0
+      TotalBulletShotgun: 0
+      TotalBulletPistol: 0
+      TotalBullet: 0
+  PlayerInfos:
+  - Name: SWAT
+    ObjectPrefab: {fileID: 3608284666767021371, guid: fd394fd97fd546249814ff79d2679184,
+      type: 3}
   WeaponInfos:
-  - WeaponName: AK12
-    WeaponType: 1
-    WeaponPrefab: {fileID: 3807816867564140896, guid: d1cde00170448c34aaf1a741c1c3d312,
+  - WeaponName: AK47
+    WeaponType: 3
+    WeaponPrefab: {fileID: 2615181825165300236, guid: 3a37257705df11b42bfacf9ce6d75bd3,
       type: 3}
     Dame: 60
+    IconWeapon: {fileID: 21300000, guid: fda62563140b39244b624c2f1fa94b2a, type: 3}
     MagazineCapacity: 50
     BulletsPerShot: 1
     FireModeOption:
@@ -33,10 +46,11 @@ MonoBehaviour:
     ExplosionTimeout: 0
     ExplosionRadius: 0
   - WeaponName: M9
-    WeaponType: 1
+    WeaponType: 5
     WeaponPrefab: {fileID: 8260071292302502556, guid: c0cfd59511406644d8510c7cae0b844b,
       type: 3}
     Dame: 30
+    IconWeapon: {fileID: 21300000, guid: f09279823a50e724689f45052830dccf, type: 3}
     MagazineCapacity: 20
     BulletsPerShot: 1
     FireModeOption:
@@ -47,11 +61,12 @@ MonoBehaviour:
     ExplosionTime: 0
     ExplosionTimeout: 0
     ExplosionRadius: 0
-  - WeaponName: G36C
-    WeaponType: 1
-    WeaponPrefab: {fileID: 5494813602892714075, guid: a63d50da764a85e4ea6344665eef580c,
+  - WeaponName: KRISS
+    WeaponType: 3
+    WeaponPrefab: {fileID: 4154277977333045067, guid: 0e26677b805d96246b292bb03959d5cd,
       type: 3}
     Dame: 45
+    IconWeapon: {fileID: 21300000, guid: 71850371fedfdd14c8ff1ba5b9b421d6, type: 3}
     MagazineCapacity: 50
     BulletsPerShot: 1
     FireModeOption:
@@ -62,26 +77,12 @@ MonoBehaviour:
     ExplosionTime: 0
     ExplosionTimeout: 0
     ExplosionRadius: 0
-  - WeaponName: M249
-    WeaponType: 1
-    WeaponPrefab: {fileID: 5928023087873038570, guid: 204e50b9c6c20c649a46376ba0d3e4fd,
-      type: 3}
-    Dame: 50
-    MagazineCapacity: 120
-    BulletsPerShot: 1
-    FireModeOption:
-    - FireModeType: 2
-      TimeResetFire: 0.11
-      FireTimes: 1
-      Spread: 0
-    ExplosionTime: 0
-    ExplosionTimeout: 0
-    ExplosionRadius: 0
-  - WeaponName: AA12
-    WeaponType: 1
-    WeaponPrefab: {fileID: 8743199441388106943, guid: 4a021a80d6dca9341bd10f85e80569f7,
+  - WeaponName: SPAS12
+    WeaponType: 4
+    WeaponPrefab: {fileID: 636105396198874418, guid: 8c63ca3c8f7702b45829b0749e87a89a,
       type: 3}
     Dame: 400
+    IconWeapon: {fileID: 21300000, guid: d1093b3229541cf46a2e099978108deb, type: 3}
     MagazineCapacity: 20
     BulletsPerShot: 10
     FireModeOption:
@@ -93,10 +94,11 @@ MonoBehaviour:
     ExplosionTimeout: 0
     ExplosionRadius: 0
   - WeaponName: Bennelli_M4
-    WeaponType: 1
+    WeaponType: 4
     WeaponPrefab: {fileID: 365352305583647258, guid: da60848543f509c4db434344d56cb1aa,
       type: 3}
     Dame: 350
+    IconWeapon: {fileID: 21300000, guid: 886e3f4eb1bafda4b98112f8b29f826a, type: 3}
     MagazineCapacity: 20
     BulletsPerShot: 15
     FireModeOption:
@@ -107,26 +109,12 @@ MonoBehaviour:
     ExplosionTime: 0
     ExplosionTimeout: 0
     ExplosionRadius: 0
-  - WeaponName: Famas
-    WeaponType: 1
-    WeaponPrefab: {fileID: 2306746107097191957, guid: e904f5f78b792f04fab92ec67bd09faa,
-      type: 3}
-    Dame: 50
-    MagazineCapacity: 40
-    BulletsPerShot: 1
-    FireModeOption:
-    - FireModeType: 2
-      TimeResetFire: 0.1
-      FireTimes: 1
-      Spread: 0
-    ExplosionTime: 0
-    ExplosionTimeout: 0
-    ExplosionRadius: 0
   - WeaponName: Glock_17
-    WeaponType: 1
+    WeaponType: 5
     WeaponPrefab: {fileID: 662556939011561000, guid: 0ad4176e9e398a54a93ad1390911eef1,
       type: 3}
     Dame: 30
+    IconWeapon: {fileID: 21300000, guid: 6ded810bd18d57444a8d454c47627708, type: 3}
     MagazineCapacity: 20
     BulletsPerShot: 1
     FireModeOption:
@@ -138,10 +126,11 @@ MonoBehaviour:
     ExplosionTimeout: 0
     ExplosionRadius: 0
   - WeaponName: SCAR_H
-    WeaponType: 1
+    WeaponType: 3
     WeaponPrefab: {fileID: 4774832003211078635, guid: efed959c642ddb44e906c402cdb1c7ce,
       type: 3}
     Dame: 60
+    IconWeapon: {fileID: 21300000, guid: 0fe5fa700ed96bb46b4d0909026b09b5, type: 3}
     MagazineCapacity: 40
     BulletsPerShot: 1
     FireModeOption:
@@ -157,30 +146,29 @@ MonoBehaviour:
     WeaponPrefab: {fileID: 2144646879024034014, guid: d9aed640024628142a19736d25a111df,
       type: 3}
     Dame: 800
+    IconWeapon: {fileID: 21300000, guid: 91536ca8185d1364ca143c49736c70d8, type: 3}
     MagazineCapacity: 40
     BulletsPerShot: 1
     FireModeOption: []
     ExplosionTime: 3
     ExplosionTimeout: 1.7
     ExplosionRadius: 5.5
-  BagInfo:
-    WeaponNames:
-    - SCAR_H
-    - AA12
-    TotalBullet: 100
   ZoombieInfos:
   - Name: ZombieV1
     Damage: 10
     MaxHP: 2000
-    HP: 1000
     AttackRange: 2
   - Name: ZombieV2
     Damage: 7
     MaxHP: 2000
-    HP: 1000
     AttackRange: 2.5
   - Name: ZombieV3
     Damage: 5
     MaxHP: 2500
-    HP: 1000
     AttackRange: 2.5
+  StageGames:
+  - StageInfos:
+    - ZombieName: ZombieV1
+      Count: 5
+    - ZombieName: ZombieV2
+      Count: 7

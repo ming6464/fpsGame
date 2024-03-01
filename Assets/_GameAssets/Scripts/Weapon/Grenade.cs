@@ -36,9 +36,10 @@ public class Grenade : Weapon
         _meshRenderer.enabled = true;
     }
 
-    public override void UnUseWeapon()
+
+    public override void UseWeapon()
     {
-        base.UnUseWeapon();
+        base.UseWeapon();
         m_pinPulled = false;
     }
 

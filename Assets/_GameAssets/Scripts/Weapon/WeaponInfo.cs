@@ -9,6 +9,7 @@ public class WeaponInfo
     public WeaponKEY WeaponType;
     public GameObject WeaponPrefab;
     public float Dame;
+    public Sprite IconWeapon;
 
     [Space(3)]
     [Header("Gun Information")]
@@ -29,7 +30,6 @@ public class WeaponInfo
 
     public float ExplosionTimeout;
 
-    [Min(0f)]
     public float ExplosionRadius;
 }
 
@@ -47,6 +47,5 @@ public class FireModeInfo
 public enum FireModeKEY
 {
     Single = 0,
-    Burst = 1,
     Automatic = 2
 }

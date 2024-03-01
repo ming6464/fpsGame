@@ -92,6 +92,22 @@ public class PlayerScript : MonoBehaviour
     private void Awake()
     {
         _inputBase = new InputBase();
+        _mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        cameraView1 = GameObject.FindGameObjectWithTag("Cam1").GetComponent<CinemachineVirtualCamera>();
+        cameraView2 = GameObject.FindGameObjectWithTag("Cam2").GetComponent<CinemachineVirtualCamera>();
+        if (cameraView1)
+        {
+            cameraView1.Follow = CinemachineTargetFollow;
+        }
+
+        if (cameraView2)
+        {
+            cameraView2.Follow = CinemachineTargetFollow;
+        }
+
+        TryGetComponent(out _controller);
+        TryGetComponent(out _animator);
+        AssignAnimationIDs();
     }
 
     private void OnEnable()
@@ -150,32 +166,35 @@ public class PlayerScript : MonoBehaviour
     private void LinkEvent()
     {
         EventDispatcher.Instance.RegisterListener(EventID.OnRelaxedHands, OnRelaxedHands);
+        EventDispatcher.Instance.RegisterListener(EventID.OnFinishGame, OnFinishGame);
+    }
+
+    private void OnFinishGame(object obj)
+    {
+        _inputBase.Disable();
+        UnLinkEvent();
     }
 
     private void UnLinkEvent()
     {
         EventDispatcher.Instance.RemoveListener(EventID.OnRelaxedHands, OnRelaxedHands);
+        EventDispatcher.Instance.RemoveListener(EventID.OnFinishGame, OnFinishGame);
     }
 
-    private void OnRelaxedHands(object obj)
+    private void OnRelaxedHands(object obj = null)
     {
-        bool check = (bool)obj;
         if (_animator)
         {
-            _animator.SetLayerWeight(1, check ? 1 : 0);
+            _animator.SetLayerWeight(1, obj != null ? 1 : 0);
         }
     }
 
     // Start is called before the first frame update
     private void Start()
     {
-        _mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
         _cinemachineTargetYaw = CinemachineTargetFollow.rotation.eulerAngles.y;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        TryGetComponent(out _controller);
-        TryGetComponent(out _animator);
-        AssignAnimationIDs();
         _timeJumpNextDelta = TimeJumpNext;
         _addForceTimeJumpUpDelta = 0f;
     }

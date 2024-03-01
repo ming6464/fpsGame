@@ -7,8 +7,9 @@ using UnityEngine.InputSystem;
 public class WeaponHolder : MonoBehaviour
 {
     [Space(10)]
-    [SerializeField]
     public string[] AvoidTags;
+
+    public Sprite RelaxedHandsIcon;
 
     [Header("Weapon")]
     [SerializeField]
@@ -30,7 +31,6 @@ public class WeaponHolder : MonoBehaviour
 
     [SerializeField]
     private Rig _handIk;
-
 
     [Space(10)]
     public int TotalBullet;
@@ -71,8 +71,15 @@ public class WeaponHolder : MonoBehaviour
     private void Start()
     {
         LoadWeaponInBag();
-        _handIk.weight = CheckNearestBagWeapon() < 0 ? 0f : 1f;
-        EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands, CheckNearestBagWeapon() < 0);
+        if (CheckNearestBagWeapon() < 0)
+        {
+            _handIk.weight = 0f;
+            EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands, RelaxedHandsIcon);
+        }
+        else
+        {
+            EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands);
+        }
     }
 
     private void Update()
@@ -121,11 +128,6 @@ public class WeaponHolder : MonoBehaviour
                     nearestWeaponDistance = dis;
                 }
             }
-            // EventDispatcher.Instance.PostEvent(EventID.OnUpdateWeaponPickup, new MsgWeapon
-            // {
-            //     WeaponKey = _weaponCanPickup.WeaponType,
-            //     WeaponName = _weaponCanPickup.WeaponName
-            // });
         }
         else
         {
@@ -181,7 +183,7 @@ public class WeaponHolder : MonoBehaviour
         }
 
         _handIk.weight = 1f;
-        EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands, false);
+        EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands);
 
         OnWeaponPickupAreaExit(weapon);
 
@@ -243,6 +245,25 @@ public class WeaponHolder : MonoBehaviour
         }
 
         weapon.UseWeapon();
+
+        if (index == m_grenadeSlotIndex)
+        {
+            EventDispatcher.Instance.PostEvent(EventID.OnChangeWeapon, new MsgWeapon
+            {
+                Bullets = 1,
+                WeaponKey = weapon.WeaponType, WeaponIcon = weapon.WeaponIcon
+            });
+        }
+        else
+        {
+            Gun gun = weapon.GetComponent<Gun>();
+            EventDispatcher.Instance.PostEvent(EventID.OnChangeWeapon, new MsgWeapon
+            {
+                Bullets = gun.Bullets,
+                WeaponKey = gun.WeaponType, WeaponIcon = gun.WeaponIcon
+            });
+        }
+
         if (_rigAnimator)
         {
             _rigAnimator.Play($"Equip_{weapon.WeaponName}");
@@ -273,7 +294,7 @@ public class WeaponHolder : MonoBehaviour
         if (CheckNearestBagWeapon() < 0)
         {
             _handIk.weight = 0f;
-            EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands, true);
+            EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands, RelaxedHandsIcon);
         }
     }
 
@@ -345,12 +366,20 @@ public class WeaponHolder : MonoBehaviour
     {
         EventDispatcher.Instance.RegisterListener(EventID.OnWeaponPickupAreaExit, OnWeaponPickupAreaExit);
         EventDispatcher.Instance.RegisterListener(EventID.OnWeaponPickupAreaEnter, OnWeaponPickupAreaEnter);
+        EventDispatcher.Instance.RegisterListener(EventID.OnFinishGame, OnFinishGame);
+    }
+
+    private void OnFinishGame(object obj)
+    {
+        m_inputBase.Disable();
+        UnLinkEvent();
     }
 
     private void UnLinkEvent()
     {
         EventDispatcher.Instance.RemoveListener(EventID.OnWeaponPickupAreaExit, OnWeaponPickupAreaExit);
         EventDispatcher.Instance.RemoveListener(EventID.OnWeaponPickupAreaEnter, OnWeaponPickupAreaEnter);
+        EventDispatcher.Instance.RemoveListener(EventID.OnFinishGame, OnFinishGame);
     }
 
     private void OnWeaponPickupAreaEnter(object obj)
@@ -402,6 +431,8 @@ public class Bag
 public enum WeaponKEY
 {
     None = 9999,
-    Gun = 1,
-    Grenade = 2
+    Grenade = 2,
+    Rifle,
+    Shotgun,
+    Pistol
 }

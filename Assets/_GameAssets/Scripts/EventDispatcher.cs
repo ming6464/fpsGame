@@ -183,7 +183,14 @@ public enum EventID
     OnWeaponPickupAreaExit,
     OnUpdateWeaponPickup,
     OnChangeHealth,
-    OnRelaxedHands
+    OnRelaxedHands,
+    OnChangeWeapon,
+    OnChangeBullets,
+    OnchangeTotalBullets,
+    OnReloadBullet,
+    OnFinishReload,
+    OnStartGame,
+    OnFinishGame
 }
 
 #endregion

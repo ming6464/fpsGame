@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -109,7 +110,6 @@ public class Zombie : MonoBehaviour
             Debug.Log("m_player is damaged");
         }
     }
-
 
     private void OnDrawGizmos()
     {

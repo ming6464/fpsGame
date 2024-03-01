@@ -7,13 +7,10 @@ public class GameConfig : Singleton<GameConfig>
 {
     public bool UnlimitedBullet;
 
+    public float TimePerStage;
+
     [SerializeField]
     private DataGame _dataGame;
-
-    public override void Update()
-    {
-        base.Update();
-    }
 
     public WeaponInfo GetWeaponInfo(string weaponName)
     {
@@ -27,7 +24,22 @@ public class GameConfig : Singleton<GameConfig>
 
     public BagInfo GetBagInfo()
     {
-        return _dataGame.BagInfo;
+        return _dataGame.DataSave.BagInfo;
+    }
+
+    public GameObject GetAppointee()
+    {
+        return Array.Find(_dataGame.PlayerInfos, x => x.Name == _dataGame.DataSave.PlayerName).ObjectPrefab;
+    }
+
+    public bool CheckFinalStage(int stageIndex)
+    {
+        return _dataGame.StageGames.Length - stageIndex < 1;
+    }
+
+    public StageGame GetStage(int stageIndex)
+    {
+        return _dataGame.StageGames[stageIndex];
     }
 
     public GameObject GetWeaponPrefab(string weaponName)

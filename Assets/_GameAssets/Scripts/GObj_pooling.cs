@@ -155,5 +155,7 @@ public class GObj_pooling : Singleton<GObj_pooling>
 public enum PoolKEY
 {
     Grenade,
-    Zombie
+    ZombieV1,
+    ZombieV2,
+    ZombieV3
 }
