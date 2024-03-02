@@ -3,9 +3,6 @@ using UnityEngine;
 public class UIManager_Lobby : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _uiHomePenal;
-
-    [SerializeField]
     private GameObject _uiBagPenal;
 
     [SerializeField]
@@ -39,7 +36,6 @@ public class UIManager_Lobby : MonoBehaviour
     private void OnHomePanel(object obj)
     {
         DisableAllPanel();
-        _uiHomePenal.SetActive(true);
     }
 
     private void OnBagPanel(object obj)
@@ -52,7 +48,6 @@ public class UIManager_Lobby : MonoBehaviour
     {
         _uiBagPenal.SetActive(false);
         _uiCharacterPenal.SetActive(false);
-        _uiHomePenal.SetActive(false);
     }
 
     private void UnLinkEvent()
