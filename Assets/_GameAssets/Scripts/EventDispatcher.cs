@@ -190,7 +190,15 @@ public enum EventID
     OnReloadBullet,
     OnFinishReload,
     OnStartGame,
-    OnFinishGame
+    OnFinishGame,
+    OnKilledZombie,
+    OnChangeTimeNextStage,
+    OnUpdateSupplyProgress,
+    OnHandleCrossHair,
+    OnPlayGame,
+    OnBagPanel,
+    OnCharacterPanel,
+    OnHomePanel
 }
 
 #endregion

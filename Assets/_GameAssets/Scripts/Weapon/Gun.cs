@@ -1,20 +1,43 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.VFX;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(DamageSender))]
 public class Gun : Weapon
 {
-    private int TotalBullet
+    public int TotalBullet
     {
-        get => m_weaponHolder.TotalBullet;
+        get
+        {
+            switch (WeaponType)
+            {
+                case WeaponKEY.Pistol:
+                    return m_weaponHolder.TotalBulletPistol;
+                case WeaponKEY.Shotgun:
+                    return m_weaponHolder.TotalBulletShotgun;
+                case WeaponKEY.Rifle:
+                    return m_weaponHolder.TotalBulletRifle;
+            }
+
+            return 0;
+        }
         set
         {
-            m_weaponHolder.TotalBullet = value;
-            EventDispatcher.Instance.PostEvent(EventID.OnchangeTotalBullets, m_weaponHolder.TotalBullet);
+            switch (WeaponType)
+            {
+                case WeaponKEY.Pistol:
+                    m_weaponHolder.TotalBulletPistol = value;
+                    break;
+                case WeaponKEY.Shotgun:
+                    m_weaponHolder.TotalBulletShotgun = value;
+                    break;
+                case WeaponKEY.Rifle:
+                    m_weaponHolder.TotalBulletRifle = value;
+                    break;
+            }
+
+            EventDispatcher.Instance.PostEvent(EventID.OnchangeTotalBullets, TotalBullet);
         }
     }
 
@@ -81,6 +104,7 @@ public class Gun : Weapon
         m_isCanFire = true;
     }
 
+    [Obsolete("Obsolete")]
     protected override void Update()
     {
         base.Update();
@@ -93,6 +117,8 @@ public class Gun : Weapon
         HandleFire();
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
+    [Obsolete("Obsolete")]
     private void HandleFire()
     {
         if (!m_isTrigger || m_isResetFire || !m_isCanFire || m_isReloading || Bullets <= 0)
@@ -137,6 +163,34 @@ public class Gun : Weapon
             {
                 particleSystem.Emit(1);
             }
+        }
+
+        if (AudioManager.Instance)
+        {
+            KeySound key = KeySound.Ak47;
+            switch (name.ToLower())
+            {
+                case "Bennelli_M4":
+                    key = KeySound.Bennelli_M4;
+                    break;
+                case "Glock_17":
+                    key = KeySound.Glock_17;
+                    break;
+                case "KRISS":
+                    key = KeySound.KRISS;
+                    break;
+                case "M9":
+                    key = KeySound.M9;
+                    break;
+                case "SCAR_H":
+                    key = KeySound.SCAR_H;
+                    break;
+                case "SPAS12":
+                    key = KeySound.SPAS12;
+                    break;
+            }
+
+            AudioManager.Instance.PlaySfx(key);
         }
 
 
@@ -192,6 +246,7 @@ public class Gun : Weapon
         }
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     private bool CheckMagazine()
     {
         if (GameConfig.Instance && GameConfig.Instance.UnlimitedBullet)
@@ -275,5 +330,20 @@ public class Gun : Weapon
     {
         base.UnLinkEvent();
         EventDispatcher.Instance.RemoveListener(EventID.OnFinishReload, OnFinishReload);
+    }
+
+    public void Supply()
+    {
+        Bullets = m_weaponInfo.MagazineCapacity;
+        if (!IsUsing)
+        {
+            return;
+        }
+
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeWeapon, new MsgWeapon
+        {
+            WeaponKey = WeaponType, WeaponIcon = WeaponIcon, Bullets = Bullets
+        });
+        EventDispatcher.Instance.PostEvent(EventID.OnchangeTotalBullets, TotalBullet);
     }
 }

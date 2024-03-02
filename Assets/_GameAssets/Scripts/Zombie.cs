@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -24,13 +23,10 @@ public class Zombie : MonoBehaviour
     private void Awake()
     {
         m_zombieInfo = GameConfig.Instance.GetZombieInfo(Name);
-        if (TryGetComponent(out _navMeshAgent))
-        {
-            _navMeshAgent.updateRotation = false;
-        }
-
-        TryGetComponent(out m_collider);
-        TryGetComponent(out m_zombieDamageSender);
+        _navMeshAgent = GetComponent<NavMeshAgent>();
+        m_collider = GetComponent<Collider>();
+        m_zombieDamageSender = GetComponent<ZombieDamageSender>();
+        _navMeshAgent.updateRotation = false;
     }
 
     private void OnEnable()

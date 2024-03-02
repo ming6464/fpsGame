@@ -1,5 +1,4 @@
-﻿using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class ZombieScreamState : StateMachineBehaviour

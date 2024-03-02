@@ -16,7 +16,7 @@ public class WeaponHolder : MonoBehaviour
     private int _curWeaponIndex = -1;
 
     [SerializeField]
-    private Bag[] _bagInfo;
+    private Bag[] _slotsInfo;
 
     [Space(10)]
     [SerializeField]
@@ -33,17 +33,28 @@ public class WeaponHolder : MonoBehaviour
     private Rig _handIk;
 
     [Space(10)]
-    public int TotalBullet;
+    public int TotalBulletRifle;
+
+    public int TotalBulletShotgun;
+    public int TotalBulletPistol;
 
     [Header("References")]
     [SerializeField]
     private AimAndPivotScript _aimAndPivotScript;
+
+    [SerializeField]
+    private PlayerScript PlayerScript;
 
     private InputBase m_inputBase;
 
     public Transform PivotRay => _aimAndPivotScript.PivotRay;
     private int m_grenadeSlotIndex;
 
+    public bool NeedSupplies => TotalBulletRifle < BagInfo.TotalBulletRifle
+                                || TotalBulletPistol < BagInfo.TotalBulletPistol ||
+                                TotalBulletShotgun < BagInfo.TotalBulletShotgun;
+
+    public BagInfo BagInfo;
 
     private void Awake()
     {
@@ -51,8 +62,11 @@ public class WeaponHolder : MonoBehaviour
         LinkInputSystem();
         if (GameConfig.Instance)
         {
-            TotalBullet = GameConfig.Instance.GetBagInfo().TotalBullet;
-            m_grenadeSlotIndex = _bagInfo.Length - 1;
+            BagInfo = GameConfig.Instance.GetBagInfo();
+            TotalBulletRifle = BagInfo.TotalBulletRifle;
+            TotalBulletShotgun = BagInfo.TotalBulletShotgun;
+            TotalBulletPistol = BagInfo.TotalBulletPistol;
+            m_grenadeSlotIndex = _slotsInfo.Length - 1;
         }
     }
 
@@ -101,7 +115,7 @@ public class WeaponHolder : MonoBehaviour
 
     private int CheckNearestBagWeapon()
     {
-        for (int i = 0; i < _bagInfo.Length; i++)
+        for (int i = 0; i < _slotsInfo.Length; i++)
         {
             if (GetWeaponFromBag(i) != null)
             {
@@ -138,7 +152,7 @@ public class WeaponHolder : MonoBehaviour
 
     private void LoadWeaponInBag()
     {
-        if (_bagInfo.Length == 0 || GameConfig.Instance.GetBagInfo().WeaponNames.Length == 0)
+        if (_slotsInfo.Length == 0 || GameConfig.Instance.GetBagInfo().WeaponNames.Length == 0)
         {
             return;
         }
@@ -154,9 +168,9 @@ public class WeaponHolder : MonoBehaviour
 
     private int GetEmptyWeaponSlot()
     {
-        for (int i = 0; i < _bagInfo.Length - 1; i++)
+        for (int i = 0; i < _slotsInfo.Length - 1; i++)
         {
-            if (_bagInfo[i].BagTf.childCount == 0)
+            if (_slotsInfo[i].BagTf.childCount == 0)
             {
                 return i;
             }
@@ -167,7 +181,7 @@ public class WeaponHolder : MonoBehaviour
 
     private bool CheckEmptyGrenadeSlot()
     {
-        return _bagInfo[m_grenadeSlotIndex].BagTf.childCount == 0;
+        return _slotsInfo[m_grenadeSlotIndex].BagTf.childCount == 0;
     }
 
     private bool CheckUsingGrande()
@@ -196,7 +210,7 @@ public class WeaponHolder : MonoBehaviour
             }
 
             weapon.PutToBag(this,
-                _bagInfo[m_grenadeSlotIndex]);
+                _slotsInfo[m_grenadeSlotIndex]);
             if (_curWeaponIndex < 0)
             {
                 ChangeWeapon(m_grenadeSlotIndex);
@@ -212,7 +226,7 @@ public class WeaponHolder : MonoBehaviour
             DropWeapon(index);
         }
 
-        weapon.PutToBag(this, _bagInfo[index]);
+        weapon.PutToBag(this, _slotsInfo[index]);
         if (_curWeaponIndex < 0)
         {
             ChangeWeapon(index);
@@ -221,19 +235,18 @@ public class WeaponHolder : MonoBehaviour
 
     private Weapon GetWeaponFromBag(int index)
     {
-        if (_bagInfo.Length < index)
+        if (_slotsInfo.Length < index)
         {
             return null;
         }
 
-        Transform slot = _bagInfo[index].BagTf;
+        Transform slot = _slotsInfo[index].BagTf;
         return slot.childCount == 0 ? null : slot.GetChild(0).GetComponent<Weapon>();
     }
 
-
     private void ChangeWeapon(int index)
     {
-        if (_bagInfo.Length == 0 || _curWeaponIndex == index)
+        if (_slotsInfo.Length == 0 || _curWeaponIndex == index)
         {
             return;
         }
@@ -245,24 +258,6 @@ public class WeaponHolder : MonoBehaviour
         }
 
         weapon.UseWeapon();
-
-        if (index == m_grenadeSlotIndex)
-        {
-            EventDispatcher.Instance.PostEvent(EventID.OnChangeWeapon, new MsgWeapon
-            {
-                Bullets = 1,
-                WeaponKey = weapon.WeaponType, WeaponIcon = weapon.WeaponIcon
-            });
-        }
-        else
-        {
-            Gun gun = weapon.GetComponent<Gun>();
-            EventDispatcher.Instance.PostEvent(EventID.OnChangeWeapon, new MsgWeapon
-            {
-                Bullets = gun.Bullets,
-                WeaponKey = gun.WeaponType, WeaponIcon = gun.WeaponIcon
-            });
-        }
 
         if (_rigAnimator)
         {
@@ -280,7 +275,7 @@ public class WeaponHolder : MonoBehaviour
 
     private void DropWeapon(int index)
     {
-        if (_curWeaponIndex == -1 || _bagInfo.Length == 0)
+        if (_curWeaponIndex == -1 || _slotsInfo.Length == 0)
         {
             return;
         }
@@ -306,6 +301,17 @@ public class WeaponHolder : MonoBehaviour
         }
 
         _curWeaponIndex = -1;
+    }
+
+    public void SupplyBullet()
+    {
+        TotalBulletRifle = BagInfo.TotalBulletRifle;
+        TotalBulletShotgun = BagInfo.TotalBulletShotgun;
+        TotalBulletPistol = BagInfo.TotalBulletPistol;
+        for (int i = 0; i < 3; i++)
+        {
+            GetWeaponFromBag(i)?.GetComponent<Gun>().Supply();
+        }
     }
 
 

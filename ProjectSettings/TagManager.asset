@@ -23,6 +23,7 @@ TagManager:
   - Stone
   - Cam1
   - Cam2
+  - SupplyPoint
   layers:
   - Default
   - TransparentFX
@@ -30,7 +31,7 @@ TagManager:
   - WeaponInBag
   - Water
   - UI
-  - 
+  - ReloadPoint
   - RangePickUpWeapon
   - Weapon
   - Character

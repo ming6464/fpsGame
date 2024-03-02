@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class AudioScript : MonoBehaviour
+public class AudioManager : Singleton<AudioManager>
 {
     public AudioSource AudioMusic;
     public AudioSource AudioSFX;
@@ -50,6 +50,29 @@ public class AudioScript : MonoBehaviour
 
         int index = Random.Range(0, sound.SoundClip.Length);
         AudioSFX.PlayOneShot(sound.SoundClip[index], sound.Volume);
+        Debug.Log("Play Sfx");
+    }
+
+    public void PlaySfx(KeySound key, float volume)
+    {
+        if (!m_activeSfx)
+        {
+            return;
+        }
+
+        if (AudioSFX == null || Sounds.Length == 0)
+        {
+            return;
+        }
+
+        Sound sound = Array.Find(Sounds, s => s.Key == key);
+        if (sound == null || sound.SoundClip.Length == 0)
+        {
+            return;
+        }
+
+        int index = Random.Range(0, sound.SoundClip.Length);
+        AudioSFX.PlayOneShot(sound.SoundClip[index], volume);
         Debug.Log("Play Sfx");
     }
 
@@ -139,5 +162,13 @@ public enum KeySound
 {
     WalkFootStepStone,
     RunFootStepStone,
-    Landing
+    Landing,
+    Ak47,
+    Bennelli_M4,
+    Glock_17,
+    Grenade_M67,
+    KRISS,
+    M9,
+    SCAR_H,
+    SPAS12
 }

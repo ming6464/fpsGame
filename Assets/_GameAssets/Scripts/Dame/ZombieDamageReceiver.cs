@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class ZombieDamageReceiver : DamageReceiver
@@ -7,16 +6,8 @@ public class ZombieDamageReceiver : DamageReceiver
     protected override void OnDead()
     {
         base.OnDead();
-        if (!TryGetComponent(out Animator _animator))
-        {
-            return;
-        }
-
-        if (TryGetComponent(out Collider collider))
-        {
-            collider.enabled = false;
-        }
-
-        _animator.SetTrigger($"Die{Random.Range(1, 3)}");
+        transform.GetComponent<Collider>().enabled = false;
+        EventDispatcher.Instance.PostEvent(EventID.OnKilledZombie, transform.GetComponent<Zombie>().Name);
+        transform.GetComponent<Animator>().SetTrigger($"Die{Random.Range(1, 3)}");
     }
 }

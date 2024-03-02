@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameConfig : Singleton<GameConfig>
@@ -34,7 +32,7 @@ public class GameConfig : Singleton<GameConfig>
 
     public bool CheckFinalStage(int stageIndex)
     {
-        return _dataGame.StageGames.Length - stageIndex < 1;
+        return _dataGame.StageGames.Length - stageIndex <= 1;
     }
 
     public StageGame GetStage(int stageIndex)

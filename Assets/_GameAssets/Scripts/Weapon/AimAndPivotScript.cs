@@ -1,13 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
 public class AimAndPivotScript : MonoBehaviour
 {
-    public bool DisableAim;
-
     [Header("References")]
     [SerializeField]
     private Transform _weaponHolder;
@@ -48,11 +43,6 @@ public class AimAndPivotScript : MonoBehaviour
 
     public void SetUpAim(float value)
     {
-        if (DisableAim)
-        {
-            value = 0;
-        }
-
         m_weightValue = value;
         if (_headAim)
         {

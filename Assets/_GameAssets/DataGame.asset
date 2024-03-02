@@ -15,11 +15,11 @@ MonoBehaviour:
   DataSave:
     PlayerName: SWAT
     BagInfo:
-      WeaponNames: []
-      TotalBulletRifle: 0
-      TotalBulletShotgun: 0
-      TotalBulletPistol: 0
-      TotalBullet: 0
+      WeaponNames:
+      - KRISS
+      TotalBulletRifle: 130
+      TotalBulletShotgun: 20
+      TotalBulletPistol: 20
   PlayerInfos:
   - Name: SWAT
     ObjectPrefab: {fileID: 3608284666767021371, guid: fd394fd97fd546249814ff79d2679184,
@@ -29,7 +29,7 @@ MonoBehaviour:
     WeaponType: 3
     WeaponPrefab: {fileID: 2615181825165300236, guid: 3a37257705df11b42bfacf9ce6d75bd3,
       type: 3}
-    Dame: 60
+    Dame: 45
     IconWeapon: {fileID: 21300000, guid: fda62563140b39244b624c2f1fa94b2a, type: 3}
     MagazineCapacity: 50
     BulletsPerShot: 1
@@ -49,13 +49,13 @@ MonoBehaviour:
     WeaponType: 5
     WeaponPrefab: {fileID: 8260071292302502556, guid: c0cfd59511406644d8510c7cae0b844b,
       type: 3}
-    Dame: 30
+    Dame: 15
     IconWeapon: {fileID: 21300000, guid: f09279823a50e724689f45052830dccf, type: 3}
     MagazineCapacity: 20
     BulletsPerShot: 1
     FireModeOption:
     - FireModeType: 0
-      TimeResetFire: 0.08
+      TimeResetFire: 0.12
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
@@ -65,7 +65,7 @@ MonoBehaviour:
     WeaponType: 3
     WeaponPrefab: {fileID: 4154277977333045067, guid: 0e26677b805d96246b292bb03959d5cd,
       type: 3}
-    Dame: 45
+    Dame: 20
     IconWeapon: {fileID: 21300000, guid: 71850371fedfdd14c8ff1ba5b9b421d6, type: 3}
     MagazineCapacity: 50
     BulletsPerShot: 1
@@ -81,13 +81,13 @@ MonoBehaviour:
     WeaponType: 4
     WeaponPrefab: {fileID: 636105396198874418, guid: 8c63ca3c8f7702b45829b0749e87a89a,
       type: 3}
-    Dame: 400
+    Dame: 300
     IconWeapon: {fileID: 21300000, guid: d1093b3229541cf46a2e099978108deb, type: 3}
     MagazineCapacity: 20
     BulletsPerShot: 10
     FireModeOption:
     - FireModeType: 0
-      TimeResetFire: 0.14
+      TimeResetFire: 0.2
       FireTimes: 1
       Spread: 4
     ExplosionTime: 0
@@ -97,13 +97,13 @@ MonoBehaviour:
     WeaponType: 4
     WeaponPrefab: {fileID: 365352305583647258, guid: da60848543f509c4db434344d56cb1aa,
       type: 3}
-    Dame: 350
+    Dame: 230
     IconWeapon: {fileID: 21300000, guid: 886e3f4eb1bafda4b98112f8b29f826a, type: 3}
     MagazineCapacity: 20
     BulletsPerShot: 15
     FireModeOption:
     - FireModeType: 0
-      TimeResetFire: 0.14
+      TimeResetFire: 0.2
       FireTimes: 1
       Spread: 2
     ExplosionTime: 0
@@ -113,13 +113,13 @@ MonoBehaviour:
     WeaponType: 5
     WeaponPrefab: {fileID: 662556939011561000, guid: 0ad4176e9e398a54a93ad1390911eef1,
       type: 3}
-    Dame: 30
+    Dame: 15
     IconWeapon: {fileID: 21300000, guid: 6ded810bd18d57444a8d454c47627708, type: 3}
     MagazineCapacity: 20
     BulletsPerShot: 1
     FireModeOption:
     - FireModeType: 0
-      TimeResetFire: 0.08
+      TimeResetFire: 0.13
       FireTimes: 1
       Spread: 0
     ExplosionTime: 0
@@ -129,7 +129,7 @@ MonoBehaviour:
     WeaponType: 3
     WeaponPrefab: {fileID: 4774832003211078635, guid: efed959c642ddb44e906c402cdb1c7ce,
       type: 3}
-    Dame: 60
+    Dame: 37
     IconWeapon: {fileID: 21300000, guid: 0fe5fa700ed96bb46b4d0909026b09b5, type: 3}
     MagazineCapacity: 40
     BulletsPerShot: 1
@@ -145,7 +145,7 @@ MonoBehaviour:
     WeaponType: 2
     WeaponPrefab: {fileID: 2144646879024034014, guid: d9aed640024628142a19736d25a111df,
       type: 3}
-    Dame: 800
+    Dame: 1000
     IconWeapon: {fileID: 21300000, guid: 91536ca8185d1364ca143c49736c70d8, type: 3}
     MagazineCapacity: 40
     BulletsPerShot: 1
@@ -156,19 +156,26 @@ MonoBehaviour:
   ZoombieInfos:
   - Name: ZombieV1
     Damage: 10
-    MaxHP: 2000
+    MaxHP: 120
     AttackRange: 2
   - Name: ZombieV2
     Damage: 7
-    MaxHP: 2000
+    MaxHP: 100
     AttackRange: 2.5
   - Name: ZombieV3
     Damage: 5
-    MaxHP: 2500
+    MaxHP: 250
     AttackRange: 2.5
   StageGames:
   - StageInfos:
     - ZombieName: ZombieV1
-      Count: 5
+      Count: 30
     - ZombieName: ZombieV2
-      Count: 7
+      Count: 20
+  - StageInfos:
+    - ZombieName: ZombieV1
+      Count: 50
+    - ZombieName: ZombieV2
+      Count: 40
+    - ZombieName: ZombieV3
+      Count: 30

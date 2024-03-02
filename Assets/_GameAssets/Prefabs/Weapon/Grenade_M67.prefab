@@ -263,6 +263,8 @@ MonoBehaviour:
   WeaponName: Grenade_M67
   IsUsing: 0
   ExplosionEffect: {fileID: 7278554493041506251}
+  Volume: 1
+  MaxDistance: 100
   _meshRenderer: {fileID: 2144646878859999928}
 --- !u!1 &7477053946423150777
 GameObject:

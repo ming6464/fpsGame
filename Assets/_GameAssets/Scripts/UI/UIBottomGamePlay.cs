@@ -1,10 +1,10 @@
-using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
 public class UIBottomGamePlay : MonoBehaviour
 {
+    [Header("Info Player")]
     [SerializeField]
     private TextMeshProUGUI _currentHpText;
 
@@ -22,6 +22,10 @@ public class UIBottomGamePlay : MonoBehaviour
 
     [SerializeField]
     private CanvasGroup _bulletInfoCG;
+
+    [Header("Supply")]
+    [SerializeField]
+    private Image _supplyImage;
 
     //
     private bool isReloadBullet;
@@ -59,6 +63,20 @@ public class UIBottomGamePlay : MonoBehaviour
         EventDispatcher.Instance.RegisterListener(EventID.OnchangeTotalBullets, OnchangeTotalBullets);
         EventDispatcher.Instance.RegisterListener(EventID.OnRelaxedHands, OnRelaxedHands);
         EventDispatcher.Instance.RegisterListener(EventID.OnReloadBullet, OnReloadBullet);
+        EventDispatcher.Instance.RegisterListener(EventID.OnUpdateSupplyProgress, OnUpdateSupplyProgress);
+    }
+
+    private void OnUpdateSupplyProgress(object obj)
+    {
+        if (obj == null)
+        {
+            _supplyImage.gameObject.SetActive(false);
+            return;
+        }
+
+        _supplyImage.gameObject.SetActive(true);
+        float value = (float)obj;
+        _supplyImage.fillAmount = value;
     }
 
     private void OnReloadBullet(object obj)
@@ -107,11 +125,11 @@ public class UIBottomGamePlay : MonoBehaviour
         }
 
         isReloadBullet = false;
-        OnChangeBullets(msg.Bullets);
         _currentWeaponImg.sprite = msg.WeaponIcon;
         _slideReloadBullet.sprite = msg.WeaponIcon;
         _slideReloadBullet.fillAmount = 1f;
         _bulletInfoCG.alpha = msg.WeaponKey == WeaponKEY.Grenade ? 0f : 1f;
+        OnChangeBullets(msg.Bullets);
     }
 
     private void UnLinkEvent()
@@ -121,7 +139,8 @@ public class UIBottomGamePlay : MonoBehaviour
         EventDispatcher.Instance.RemoveListener(EventID.OnChangeBullets, OnChangeBullets);
         EventDispatcher.Instance.RemoveListener(EventID.OnchangeTotalBullets, OnchangeTotalBullets);
         EventDispatcher.Instance.RemoveListener(EventID.OnRelaxedHands, OnRelaxedHands);
-        EventDispatcher.Instance.RegisterListener(EventID.OnReloadBullet, OnReloadBullet);
+        EventDispatcher.Instance.RemoveListener(EventID.OnReloadBullet, OnReloadBullet);
+        EventDispatcher.Instance.RemoveListener(EventID.OnUpdateSupplyProgress, OnUpdateSupplyProgress);
     }
 
 #endregion

@@ -29,10 +29,9 @@ public class DataSave
 public class BagInfo
 {
     public string[] WeaponNames;
-    public int TotalBulletRifle;
-    public int TotalBulletShotgun;
-    public int TotalBulletPistol;
-    public int TotalBullet;
+    public int TotalBulletRifle = 200;
+    public int TotalBulletShotgun = 50;
+    public int TotalBulletPistol = 50;
 }
 
 [Serializable]

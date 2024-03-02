@@ -1,8 +1,8 @@
 using Cinemachine;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(PlayerDamageReceiver))]
+[RequireComponent(typeof(CharacterController))]
 public class PlayerScript : MonoBehaviour
 {
     [Header("Player")]
@@ -33,10 +33,9 @@ public class PlayerScript : MonoBehaviour
     public float HeadRadius;
 
     [Header("Cinemachine")]
-    public CinemachineVirtualCamera cameraView1;
-
-    public CinemachineVirtualCamera cameraView2;
     public Transform CinemachineTargetFollow;
+
+    public Transform AimTargetTf;
 
     public float TopClamp;
     public float BottomClamp;
@@ -45,118 +44,138 @@ public class PlayerScript : MonoBehaviour
     [Header("Aim")]
     public AimAndPivotScript AimAndPivotScript;
 
-    [Header("Audio")]
-    public AudioScript AudioScript;
-
     // cinemachine
-    private float _cinemachineTargetYaw;
-    private float _cinemachineTargetPitch;
-    private Vector2 _lookView;
-    private int _cameraView;
-    private bool _isFinishLoadViewV2;
+    private CinemachineVirtualCamera m_cameraView1;
+    private CinemachineVirtualCamera m_cameraView2;
+    private float m_cinemachineTargetYaw;
+    private float m_cinemachineTargetPitch;
+    private Vector2 m_lookView;
+    private int m_cameraView;
+    private bool m_isFinishLoadViewV2;
 
     //player
-    private float _speed;
-    private float _animationBlendX;
-    private float _animationBlendY;
-    private float _targetRotation;
-    private float _rotationVelocity;
-    private float _verticalVelocity;
+    private float m_speed;
+    private float m_animationBlendX;
+    private float m_animationBlendY;
+    private float m_targetRotation;
+    private float m_rotationVelocity;
+    private float m_verticalVelocity;
 
     //timeout deltaTime
-    private float _timeJumpNextDelta;
-    private float _addForceTimeJumpUpDelta;
-    private float _timeOutStepDownDelta;
+    private float m_timeJumpNextDelta;
+    private float m_addForceTimeJumpUpDelta;
+    private float m_timeOutStepDownDelta;
 
     //animation field
-    private bool _isJumpingDown;
+    private bool m_isJumpingDown;
 
     //animation IDs
-    private int _animIDY;
-    private int _animIDX;
-    private int _animIDJump;
-    private int _animIDGrounded;
-    private int _animIDFreeFall;
+    private int m_animIDY;
+    private int m_animIDX;
+    private int m_animIDJump;
+    private int m_animIDGrounded;
+    private int m_animIDFreeFall;
 
     //references
-    private CharacterController _controller;
-    private Animator _animator;
-    private InputBase _inputBase;
-    private Transform _mainCam;
+    private CharacterController m_controller;
+    private Animator m_animator;
+    private InputBase m_inputBase;
+    private Transform m_mainCam;
 
     //input values
-    private Vector2 _move;
-    private bool _jump;
-    private bool _sprint;
+    private Vector2 m_move;
+    private bool m_jump;
+    private bool m_sprint;
 
     private void Awake()
     {
-        _inputBase = new InputBase();
-        _mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
-        cameraView1 = GameObject.FindGameObjectWithTag("Cam1").GetComponent<CinemachineVirtualCamera>();
-        cameraView2 = GameObject.FindGameObjectWithTag("Cam2").GetComponent<CinemachineVirtualCamera>();
-        if (cameraView1)
+        m_inputBase = new InputBase();
+        m_mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        m_cameraView1 = GameObject.FindGameObjectWithTag("Cam1").GetComponent<CinemachineVirtualCamera>();
+        m_cameraView2 = GameObject.FindGameObjectWithTag("Cam2").GetComponent<CinemachineVirtualCamera>();
+        if (AimTargetTf)
         {
-            cameraView1.Follow = CinemachineTargetFollow;
+            AimTargetTf.parent = m_mainCam;
+            AimTargetTf.SetLocalPositionAndRotation(Vector3.forward * 20f, Quaternion.identity);
         }
 
-        if (cameraView2)
+        if (m_cameraView1)
         {
-            cameraView2.Follow = CinemachineTargetFollow;
+            m_cameraView1.Follow = CinemachineTargetFollow;
         }
 
-        TryGetComponent(out _controller);
-        TryGetComponent(out _animator);
+        if (m_cameraView2)
+        {
+            m_cameraView2.Follow = CinemachineTargetFollow;
+        }
+
+        m_controller = GetComponent<CharacterController>();
+        m_animator = GetComponent<Animator>();
         AssignAnimationIDs();
+        LinkInput();
     }
 
     private void OnEnable()
     {
-        _inputBase.Enable();
-        LinkInput();
+        m_inputBase.Enable();
         LinkEvent();
-        CameraSwitcher.RegisterCamera(cameraView1);
-        CameraSwitcher.RegisterCamera(cameraView2);
-        CameraSwitcher.SwitchCamera(cameraView2);
-        AimAndPivotScript.SetUpAim(1);
+        CameraSwitcher.RegisterCamera(m_cameraView1);
+        CameraSwitcher.RegisterCamera(m_cameraView2);
     }
 
     private void OnDisable()
     {
-        _inputBase.Disable();
+        m_inputBase.Disable();
         UnLinkEvent();
-        CameraSwitcher.UnRegisterCamera(cameraView1);
-        CameraSwitcher.UnRegisterCamera(cameraView2);
+        CameraSwitcher.UnRegisterCamera(m_cameraView1);
+        CameraSwitcher.UnRegisterCamera(m_cameraView2);
+    }
+
+    private void Start()
+    {
+        CameraSwitcher.SwitchCamera(m_cameraView2);
+        AimAndPivotScript.SetUpAim(1);
+        m_cinemachineTargetYaw = CinemachineTargetFollow.rotation.eulerAngles.y;
+        m_timeJumpNextDelta = TimeJumpNext;
+        m_addForceTimeJumpUpDelta = 0f;
+    }
+
+    private void Update()
+    {
+        GroundedCheck();
+        JumpAndGravity();
+        CollisionAboveCheck();
+        Move();
+    }
+
+    private void LateUpdate()
+    {
+        UpdateRotation();
     }
 
     private void LinkInput()
     {
-        _inputBase.Character.Movement.performed += input => { _move = input.ReadValue<Vector2>(); };
-        _inputBase.Character.Jump.performed += _ => { _jump = true; };
-        _inputBase.Character.Jump.canceled += _ => { _jump = false; };
-        _inputBase.Character.Sprint.performed += _ => { _sprint = true; };
-        _inputBase.Character.Sprint.canceled += _ => { _sprint = false; };
-        _inputBase.Character.View.performed += input => { _lookView = input.ReadValue<Vector2>(); };
-        _inputBase.Character.SwitchCamera.performed += _ =>
+        m_inputBase.Character.Movement.performed += input => { m_move = input.ReadValue<Vector2>(); };
+        m_inputBase.Character.Jump.performed += _ => { m_jump = true; };
+        m_inputBase.Character.Jump.canceled += _ => { m_jump = false; };
+        m_inputBase.Character.Sprint.performed += _ => { m_sprint = true; };
+        m_inputBase.Character.Sprint.canceled += _ => { m_sprint = false; };
+        m_inputBase.Character.View.performed += input => { m_lookView = input.ReadValue<Vector2>(); };
+        m_inputBase.Character.SwitchCamera.performed += _ =>
         {
             CameraSwitcher.SwitchNextCamera();
-            if (CameraSwitcher.IsActiveCamera(cameraView2))
+            if (CameraSwitcher.IsActiveCamera(m_cameraView2))
             {
-                _isFinishLoadViewV2 = false;
-                _targetRotation = transform.eulerAngles.y;
-                // if (UIManager.Instance)
-                // {
-                //     UIManager.Instance.HandleCrossHair(true);
-                // }
+                m_isFinishLoadViewV2 = false;
+                m_targetRotation = transform.eulerAngles.y;
+
+                EventDispatcher.Instance.PostEvent(EventID.OnHandleCrossHair, true);
 
                 AimAndPivotScript.SetUpAim(1);
             }
             else
             {
-                // if (UIManager.Instance)
-                // {
-                //     UIManager.Instance.HandleCrossHair(false);
-                // }
+                EventDispatcher.Instance.PostEvent(EventID.OnHandleCrossHair, false);
 
                 AimAndPivotScript.SetUpAim(0);
             }
@@ -171,7 +190,7 @@ public class PlayerScript : MonoBehaviour
 
     private void OnFinishGame(object obj)
     {
-        _inputBase.Disable();
+        m_inputBase.Disable();
         UnLinkEvent();
     }
 
@@ -183,90 +202,70 @@ public class PlayerScript : MonoBehaviour
 
     private void OnRelaxedHands(object obj = null)
     {
-        if (_animator)
+        if (m_animator)
         {
-            _animator.SetLayerWeight(1, obj != null ? 1 : 0);
+            m_animator.SetLayerWeight(1, obj != null ? 1 : 0);
         }
     }
 
     // Start is called before the first frame update
-    private void Start()
-    {
-        _cinemachineTargetYaw = CinemachineTargetFollow.rotation.eulerAngles.y;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        _timeJumpNextDelta = TimeJumpNext;
-        _addForceTimeJumpUpDelta = 0f;
-    }
+
 
     private void AssignAnimationIDs()
     {
-        _animIDGrounded = Animator.StringToHash("Grounded");
-        _animIDJump = Animator.StringToHash("Jump");
-        _animIDX = Animator.StringToHash("X");
-        _animIDY = Animator.StringToHash("Y");
-        _animIDFreeFall = Animator.StringToHash("FreeFall");
+        m_animIDGrounded = Animator.StringToHash("Grounded");
+        m_animIDJump = Animator.StringToHash("Jump");
+        m_animIDX = Animator.StringToHash("X");
+        m_animIDY = Animator.StringToHash("Y");
+        m_animIDFreeFall = Animator.StringToHash("FreeFall");
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-        GroundedCheck();
-        JumpAndGravity();
-        CollisionAboveCheck();
-        Move();
-    }
-
-    private void LateUpdate()
-    {
-        UpdateRotation();
-    }
 
     private void UpdateRotation()
     {
         CinemachineTargetFollow.localPosition = PositionTargetFollow;
 
-        if (_lookView.sqrMagnitude >= 0.1f)
+        if (m_lookView.sqrMagnitude >= 0.05f)
         {
-            _cinemachineTargetPitch += _lookView.y;
-            if (CameraSwitcher.IsActiveCamera(cameraView1))
+            m_cinemachineTargetPitch += m_lookView.y;
+            if (CameraSwitcher.IsActiveCamera(m_cameraView1))
             {
-                _cinemachineTargetYaw += _lookView.x;
+                m_cinemachineTargetYaw += m_lookView.x;
             }
             else
             {
-                _targetRotation += _lookView.x;
+                m_targetRotation += m_lookView.x;
             }
         }
 
-        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+        m_cinemachineTargetPitch = ClampAngle(m_cinemachineTargetPitch, BottomClamp, TopClamp);
 
 
-        if (CameraSwitcher.IsActiveCamera(cameraView2))
+        if (CameraSwitcher.IsActiveCamera(m_cameraView2))
         {
-            _targetRotation = ClampAngle(_targetRotation, float.MinValue, float.MaxValue);
-            transform.rotation = Quaternion.Euler(0, _targetRotation, 0);
-            if (!_isFinishLoadViewV2)
+            m_targetRotation = ClampAngle(m_targetRotation, float.MinValue, float.MaxValue);
+            transform.rotation = Quaternion.Euler(0, m_targetRotation, 0);
+            if (!m_isFinishLoadViewV2)
             {
-                _cinemachineTargetYaw = Mathf.SmoothDampAngle(CinemachineTargetFollow.eulerAngles.y, _targetRotation,
-                    ref _rotationVelocity, 0.1f);
-                if (Mathf.Abs(CinemachineTargetFollow.eulerAngles.y - _targetRotation) <= 1f)
+                m_cinemachineTargetYaw = Mathf.SmoothDampAngle(CinemachineTargetFollow.eulerAngles.y, m_targetRotation,
+                    ref m_rotationVelocity, 0.1f);
+                if (Mathf.Abs(CinemachineTargetFollow.eulerAngles.y - m_targetRotation) <= 1f)
                 {
-                    _isFinishLoadViewV2 = true;
+                    m_isFinishLoadViewV2 = true;
                 }
             }
             else
             {
-                _cinemachineTargetYaw = _targetRotation;
+                m_cinemachineTargetYaw = m_targetRotation;
             }
         }
         else
         {
-            _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-            AimAndPivotScript.SetUpAim(_move != Vector2.zero ? 1f : 0f);
+            m_cinemachineTargetYaw = ClampAngle(m_cinemachineTargetYaw, float.MinValue, float.MaxValue);
+            AimAndPivotScript.SetUpAim(m_move != Vector2.zero ? 1f : 0f);
         }
 
-        CinemachineTargetFollow.rotation = Quaternion.Euler(_cinemachineTargetPitch, _cinemachineTargetYaw, 0f);
+        CinemachineTargetFollow.rotation = Quaternion.Euler(m_cinemachineTargetPitch, m_cinemachineTargetYaw, 0f);
     }
 
     private float ClampAngle(float target, float min, float max)
@@ -287,57 +286,57 @@ public class PlayerScript : MonoBehaviour
     {
         if (Grounded)
         {
-            _timeOutStepDownDelta = TimeOutStepDown;
-            if (_animator)
+            m_timeOutStepDownDelta = TimeOutStepDown;
+            if (m_animator)
             {
-                _animator.SetBool(_animIDJump, false);
-                _animator.SetBool(_animIDFreeFall, false);
+                m_animator.SetBool(m_animIDJump, false);
+                m_animator.SetBool(m_animIDFreeFall, false);
             }
 
-            if (_verticalVelocity <= 0)
+            if (m_verticalVelocity <= 0)
             {
-                _verticalVelocity = -2f;
+                m_verticalVelocity = -2f;
             }
 
-            if (_addForceTimeJumpUpDelta > 0)
+            if (m_addForceTimeJumpUpDelta > 0)
             {
-                _addForceTimeJumpUpDelta -= Time.deltaTime;
-                _jump = false;
-                if (_addForceTimeJumpUpDelta <= 0)
+                m_addForceTimeJumpUpDelta -= Time.deltaTime;
+                m_jump = false;
+                if (m_addForceTimeJumpUpDelta <= 0)
                 {
-                    _verticalVelocity = Mathf.Sqrt(-2f * JumpHeight * Gravity);
+                    m_verticalVelocity = Mathf.Sqrt(-2f * JumpHeight * Gravity);
                 }
             }
             else
             {
-                if (_jump && _timeJumpNextDelta <= 0f)
+                if (m_jump && m_timeJumpNextDelta <= 0f)
                 {
-                    if (_animator)
+                    if (m_animator)
                     {
-                        _animator.SetBool(_animIDJump, true);
-                        _addForceTimeJumpUpDelta = AddForceTimeJumpUp;
+                        m_animator.SetBool(m_animIDJump, true);
+                        m_addForceTimeJumpUpDelta = AddForceTimeJumpUp;
                     }
                 }
-                else if (_timeJumpNextDelta > 0)
+                else if (m_timeJumpNextDelta > 0)
                 {
-                    _timeJumpNextDelta -= Time.deltaTime;
+                    m_timeJumpNextDelta -= Time.deltaTime;
                 }
             }
         }
         else
         {
-            _timeJumpNextDelta = TimeJumpNext;
-            _timeOutStepDownDelta -= Time.deltaTime;
+            m_timeJumpNextDelta = TimeJumpNext;
+            m_timeOutStepDownDelta -= Time.deltaTime;
 
-            if (_timeOutStepDownDelta <= 0 && _animator)
+            if (m_timeOutStepDownDelta <= 0 && m_animator)
             {
-                _animator.SetBool(_animIDFreeFall, true);
+                m_animator.SetBool(m_animIDFreeFall, true);
             }
 
-            _jump = false;
+            m_jump = false;
         }
 
-        _verticalVelocity += Gravity * Time.deltaTime;
+        m_verticalVelocity += Gravity * Time.deltaTime;
     }
 
     private void GroundedCheck()
@@ -345,9 +344,9 @@ public class PlayerScript : MonoBehaviour
         Vector3 myPos = transform.position;
         Vector3 spherePos = new(myPos.x, myPos.y + GroundedOffset, myPos.z);
         Grounded = Physics.CheckSphere(spherePos, GroundRadius, GroundLayers, QueryTriggerInteraction.Ignore);
-        if (_animator)
+        if (m_animator)
         {
-            _animator.SetBool(_animIDGrounded, Grounded);
+            m_animator.SetBool(m_animIDGrounded, Grounded);
         }
     }
 
@@ -355,133 +354,138 @@ public class PlayerScript : MonoBehaviour
     {
         if (Physics.CheckSphere(transform.position + HeadOffset, HeadRadius, GroundLayers,
                 QueryTriggerInteraction.Ignore) &&
-            _verticalVelocity > 0)
+            m_verticalVelocity > 0)
         {
-            _verticalVelocity = 0;
+            m_verticalVelocity = 0;
         }
     }
 
     private void Move()
     {
-        if (_addForceTimeJumpUpDelta > 0 || _isJumpingDown)
+        if (m_addForceTimeJumpUpDelta > 0 || m_isJumpingDown)
         {
             return;
         }
 
         float targetSpeed = 0;
-        if (_move != Vector2.zero)
+        if (m_move != Vector2.zero)
         {
-            targetSpeed = _sprint ? SprintSpeed : MoveSpeed;
+            targetSpeed = m_sprint ? SprintSpeed : MoveSpeed;
         }
 
-        if (_speed != targetSpeed)
+        if (m_speed != targetSpeed)
         {
-            _speed = Mathf.Lerp(_speed, targetSpeed, SpeedChangeRate * Time.deltaTime);
+            m_speed = Mathf.Lerp(m_speed, targetSpeed, SpeedChangeRate * Time.deltaTime);
         }
 
         float dirBlendX = 0;
-        if (_move.x != 0)
+        if (m_move.x != 0)
         {
-            dirBlendX = _move.x > 0 ? 1 : -1;
+            dirBlendX = m_move.x > 0 ? 1 : -1;
         }
 
         float dirBlendY = 0;
-        if (_move.y != 0)
+        if (m_move.y != 0)
         {
-            dirBlendY = _move.y > 0 ? 1 : -1;
+            dirBlendY = m_move.y > 0 ? 1 : -1;
         }
 
-        _animationBlendX = Mathf.Lerp(_animationBlendX, targetSpeed * dirBlendX,
+        m_animationBlendX = Mathf.Lerp(m_animationBlendX, targetSpeed * dirBlendX,
             SpeedChangeRate * Time.deltaTime);
-        if (Mathf.Abs(_animationBlendX) <= 0.01f)
+        if (Mathf.Abs(m_animationBlendX) <= 0.01f)
         {
-            _animationBlendX = 0f;
+            m_animationBlendX = 0f;
         }
 
-        _animationBlendY = Mathf.Lerp(_animationBlendY, targetSpeed * dirBlendY,
+        m_animationBlendY = Mathf.Lerp(m_animationBlendY, targetSpeed * dirBlendY,
             SpeedChangeRate * Time.deltaTime);
-        if (Mathf.Abs(_animationBlendY) <= 0.01f)
+        if (Mathf.Abs(m_animationBlendY) <= 0.01f)
         {
-            _animationBlendY = 0f;
+            m_animationBlendY = 0f;
         }
 
         float rotationY = 0;
-        if (_move != Vector2.zero)
+        if (m_move != Vector2.zero)
         {
-            if (_move.y == 0)
+            if (m_move.y == 0)
             {
-                if (_move.x > 0)
+                if (m_move.x > 0)
                 {
                     rotationY = 90f;
                 }
-                else if (_move.x < 0)
+                else if (m_move.x < 0)
                 {
                     rotationY = -90f;
                 }
             }
             else
             {
-                if (_move.x > 0)
+                if (m_move.x > 0)
                 {
-                    rotationY = _move.y > 0 ? 45 : 135;
+                    rotationY = m_move.y > 0 ? 45 : 135;
                 }
-                else if (_move.x < 0)
+                else if (m_move.x < 0)
                 {
-                    rotationY = _move.y > 0 ? -45 : -135;
+                    rotationY = m_move.y > 0 ? -45 : -135;
                 }
                 else
                 {
-                    rotationY = _move.y > 0 ? 0 : 180;
+                    rotationY = m_move.y > 0 ? 0 : 180;
                 }
             }
         }
 
-        if (_move != Vector2.zero && _mainCam && CameraSwitcher.IsActiveCamera(cameraView1))
+        if (m_move != Vector2.zero && m_mainCam && CameraSwitcher.IsActiveCamera(m_cameraView1))
         {
-            _targetRotation = _mainCam.eulerAngles.y;
-            float rotationAngleY = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation,
-                ref _rotationVelocity,
+            m_targetRotation = m_mainCam.eulerAngles.y;
+            float rotationAngleY = Mathf.SmoothDampAngle(transform.eulerAngles.y, m_targetRotation,
+                ref m_rotationVelocity,
                 RotationSmoothTime);
             transform.rotation = Quaternion.Euler(0f, rotationAngleY, 0f);
         }
         else
         {
-            _rotationVelocity = 0f;
+            m_rotationVelocity = 0f;
         }
 
         Vector3 dirNormalized = (Quaternion.Euler(0, rotationY, 0) * transform.forward).normalized;
 
-        _controller.Move(dirNormalized * (_speed * Time.deltaTime) +
-                         new Vector3(0f, _verticalVelocity * Time.deltaTime, 0f));
-        _animator.SetFloat(_animIDX, _animationBlendX);
-        _animator.SetFloat(_animIDY, _animationBlendY);
+        m_controller.Move(dirNormalized * (m_speed * Time.deltaTime) +
+                          new Vector3(0f, m_verticalVelocity * Time.deltaTime, 0f));
+        m_animator.SetFloat(m_animIDX, m_animationBlendX);
+        m_animator.SetFloat(m_animIDY, m_animationBlendY);
     }
 
     private void OnFootStep(int state)
     {
+        if (!AudioManager.Instance)
+        {
+            return;
+        }
+
         if (state == 0)
         {
-            AudioScript.PlaySfx(KeySound.WalkFootStepStone);
+            AudioManager.Instance.PlaySfx(KeySound.WalkFootStepStone);
         }
         else
         {
-            AudioScript.PlaySfx(KeySound.RunFootStepStone);
+            AudioManager.Instance.PlaySfx(KeySound.RunFootStepStone);
         }
     }
 
     private void OnLand()
     {
-        AudioScript.PlaySfx(KeySound.Landing);
+        AudioManager.Instance.PlaySfx(KeySound.Landing);
     }
 
     private void OnStartJumpDown()
     {
-        _isJumpingDown = true;
+        m_isJumpingDown = true;
     }
 
     private void OnEndJumpDown()
     {
-        _isJumpingDown = false;
+        m_isJumpingDown = false;
     }
 
     private void OnDrawGizmosSelected()

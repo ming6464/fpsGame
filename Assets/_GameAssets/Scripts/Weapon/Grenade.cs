@@ -1,11 +1,15 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(GrenadeDamageSender))]
 public class Grenade : Weapon
 {
     [Header("Effect Explosion")]
     public ParticleSystem ExplosionEffect;
+
+    [Header("Audio Info")]
+    public float Volume;
+
+    public float MaxDistance;
 
     [Space(10)]
     [SerializeField]
@@ -63,6 +67,17 @@ public class Grenade : Weapon
         m_grenadeDamageSender.Explosive();
         ExplosionEffect.Emit(1);
         Invoke(nameof(DelayToPool), m_weaponInfo.ExplosionTimeout);
+        if (AudioManager.Instance)
+        {
+            Transform player = GameObject.FindWithTag("Player").transform;
+            float dis = Vector3.Distance(transform.position, player.position);
+            if (dis > MaxDistance)
+            {
+                return;
+            }
+
+            AudioManager.Instance.PlaySfx(KeySound.Grenade_M67, Volume * (1f - dis / MaxDistance));
+        }
     }
 
     private void DelayToPool()
