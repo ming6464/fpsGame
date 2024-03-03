@@ -11,7 +11,7 @@ public class AudioManager : Singleton<AudioManager>
     private bool m_activeSfx;
     private bool m_activeMusic;
 
-    private void Awake()
+    public override void Awake()
     {
         if (AudioMusic != null)
         {

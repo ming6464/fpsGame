@@ -196,7 +196,6 @@ public class WeaponHolder : MonoBehaviour
             return;
         }
 
-        _handIk.weight = 1f;
         EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands);
 
         OnWeaponPickupAreaExit(weapon);
@@ -377,8 +376,19 @@ public class WeaponHolder : MonoBehaviour
 
     private void OnFinishGame(object obj)
     {
+        if (obj == null)
+        {
+            return;
+        }
+
+        bool result = (bool)obj;
         m_inputBase.Disable();
         UnLinkEvent();
+        if (!result)
+        {
+            DropWeapon(_curWeaponIndex);
+            _curWeaponIndex = 10;
+        }
     }
 
     private void UnLinkEvent()

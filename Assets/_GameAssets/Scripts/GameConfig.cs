@@ -7,6 +7,8 @@ public class GameConfig : Singleton<GameConfig>
 
     public float TimePerStage;
 
+    public bool DisableInitStage;
+
     [SerializeField]
     private DataGame _dataGame;
 
@@ -25,9 +27,15 @@ public class GameConfig : Singleton<GameConfig>
         return _dataGame.DataSave.BagInfo;
     }
 
+    public DataSave GetDataSave()
+    {
+        return _dataGame.DataSave;
+    }
+
     public GameObject GetAppointee()
     {
-        return Array.Find(_dataGame.PlayerInfos, x => x.Name == _dataGame.DataSave.PlayerName).ObjectPrefab;
+        string name = SaveManager.CharacterNameSelect.ToLower();
+        return Array.Find(_dataGame.PlayerInfos, x => x.Name.ToLower() == name)?.ObjectPrefab;
     }
 
     public bool CheckFinalStage(int stageIndex)

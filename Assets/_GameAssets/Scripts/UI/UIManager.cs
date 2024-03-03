@@ -1,13 +1,10 @@
+using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject _finishGamePanel;
-
-    [SerializeField]
-    private GameObject _startGamePanel;
 
     [SerializeField]
     private GameObject _crossHair;
@@ -24,12 +21,6 @@ public class UIManager : MonoBehaviour
         EventDispatcher.Instance.RemoveListener(EventID.OnHandleCrossHair, OnHandleCrossHair);
     }
 
-
-    private void Start()
-    {
-        _startGamePanel.SetActive(true);
-    }
-
     private void OnHandleCrossHair(object obj)
     {
         _crossHair.SetActive((bool)obj);
@@ -40,14 +31,16 @@ public class UIManager : MonoBehaviour
         _finishGamePanel.SetActive(true);
     }
 
-    public void OnStartGame()
+    private void Start()
     {
-        EventDispatcher.Instance.PostEvent(EventID.OnStartGame);
-        _startGamePanel.SetActive(false);
+        EventDispatcher.Instance.PostEvent(EventID.OnClosePauseGamePanel);
     }
 
-    public void RePlay()
+    private void Update()
     {
-        SceneManager.LoadScene(0);
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            EventDispatcher.Instance.PostEvent(EventID.OnHandlePauseGamePanel);
+        }
     }
 }

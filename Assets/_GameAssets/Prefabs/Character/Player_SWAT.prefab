@@ -3606,8 +3606,6 @@ MonoBehaviour:
     m_Active: 1
   - m_Rig: {fileID: 3608284665277630420}
     m_Active: 1
-  - m_Rig: {fileID: 0}
-    m_Active: 1
   m_Effectors:
   - m_Transform: {fileID: 3608284666965383560}
     m_Style:

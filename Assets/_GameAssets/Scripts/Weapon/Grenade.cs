@@ -37,7 +37,7 @@ public class Grenade : Weapon
         m_pinPulled = false;
         m_rigid.isKinematic = false;
         m_rigid.useGravity = true;
-        _meshRenderer.enabled = true;
+        //_meshRenderer.enabled = true;
     }
 
 
@@ -61,7 +61,7 @@ public class Grenade : Weapon
 
     private void DelayDetonation()
     {
-        _meshRenderer.enabled = false;
+        //_meshRenderer.enabled = false;
         m_rigid.isKinematic = true;
         m_rigid.useGravity = false;
         m_grenadeDamageSender.Explosive();

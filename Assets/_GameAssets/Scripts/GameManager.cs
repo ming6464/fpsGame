@@ -25,16 +25,37 @@ public class GameManager : Singleton<GameManager>
 
     private void OnDisable()
     {
-        EventDispatcher.Instance.RemoveListener(EventID.OnStartGame, OnStartGame);
         EventDispatcher.Instance.RemoveListener(EventID.OnFinishGame, OnFinishGame);
         EventDispatcher.Instance.RemoveListener(EventID.OnKilledZombie, OnKilledZombie);
+        EventDispatcher.Instance.RemoveListener(EventID.OnClosePauseGamePanel, HandleClosePauseGamePanel);
+        EventDispatcher.Instance.RemoveListener(EventID.OnOpenPauseGamePanel, HandleOpenPauseGamePanel);
     }
 
     private void OnEnable()
     {
-        EventDispatcher.Instance.RegisterListener(EventID.OnStartGame, OnStartGame);
         EventDispatcher.Instance.RegisterListener(EventID.OnFinishGame, OnFinishGame);
         EventDispatcher.Instance.RegisterListener(EventID.OnKilledZombie, OnKilledZombie);
+        EventDispatcher.Instance.RegisterListener(EventID.OnClosePauseGamePanel, HandleClosePauseGamePanel);
+        EventDispatcher.Instance.RegisterListener(EventID.OnOpenPauseGamePanel, HandleOpenPauseGamePanel);
+    }
+
+    private void HandleClosePauseGamePanel(object obj)
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private void HandleOpenPauseGamePanel(object obj)
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+
+    public override void Start()
+    {
+        base.Start();
+        OnStartGame();
     }
 
     public override void Update()
@@ -73,18 +94,27 @@ public class GameManager : Singleton<GameManager>
 
     private void OnFinishGame(object obj)
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
         IsFinishGame = true;
-        Time.timeScale = 0.1f;
+        Time.timeScale = 0.4f;
     }
 
-    private void OnStartGame(object obj)
+    private void OnStartGame()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        Instantiate(GameConfig.Instance.GetAppointee(),
+        GameObject character = GameConfig.Instance.GetAppointee();
+        if (!character)
+        {
+            return;
+        }
+
+        Instantiate(character,
             SpawnPointPlayer.position, Quaternion.identity);
+        if (GameConfig.Instance && GameConfig.Instance.DisableInitStage)
+        {
+            return;
+        }
+
         m_TimePerStageDeltaTime = 9;
         Time.timeScale = 1f;
     }

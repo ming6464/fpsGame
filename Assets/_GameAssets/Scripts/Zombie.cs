@@ -16,6 +16,7 @@ public class Zombie : MonoBehaviour
     private Transform m_player;
 
     public float AttackRange => m_zombieInfo.AttackRange;
+    public float DistanceStop => AttackRange - 1f;
 
     [HideInInspector]
     public bool UpdateRotate;

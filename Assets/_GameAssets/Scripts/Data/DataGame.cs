@@ -21,7 +21,7 @@ public class PlayerInfo
 [Serializable]
 public class DataSave
 {
-    public string PlayerName;
+    public int Hp;
     public BagInfo BagInfo;
 }
 

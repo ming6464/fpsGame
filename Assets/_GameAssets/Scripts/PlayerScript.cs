@@ -75,6 +75,7 @@ public class PlayerScript : MonoBehaviour
     private int m_animIDJump;
     private int m_animIDGrounded;
     private int m_animIDFreeFall;
+    private int m_animIDDie;
 
     //references
     private CharacterController m_controller;
@@ -89,6 +90,7 @@ public class PlayerScript : MonoBehaviour
 
     private void Awake()
     {
+        GetComponent<PlayerDamageReceiver>().UpdateHpInfo(GameConfig.Instance.GetDataSave().Hp);
         m_inputBase = new InputBase();
         m_mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
         m_cameraView1 = GameObject.FindGameObjectWithTag("Cam1").GetComponent<CinemachineVirtualCamera>();
@@ -190,8 +192,18 @@ public class PlayerScript : MonoBehaviour
 
     private void OnFinishGame(object obj)
     {
+        if (obj == null)
+        {
+            return;
+        }
+
+        bool result = (bool)obj;
         m_inputBase.Disable();
         UnLinkEvent();
+        if (!result && m_animator)
+        {
+            m_animator.SetTrigger(m_animIDDie);
+        }
     }
 
     private void UnLinkEvent()
@@ -218,6 +230,7 @@ public class PlayerScript : MonoBehaviour
         m_animIDX = Animator.StringToHash("X");
         m_animIDY = Animator.StringToHash("Y");
         m_animIDFreeFall = Animator.StringToHash("FreeFall");
+        m_animIDDie = Animator.StringToHash("Die");
     }
 
 

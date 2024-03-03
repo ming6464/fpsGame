@@ -198,7 +198,13 @@ public enum EventID
     OnPlayGame,
     OnBagPanel,
     OnCharacterPanel,
-    OnHomePanel
+    OnHomePanel,
+    OnSelectCharacter,
+    OnLoadScene,
+    OnOpenPauseGamePanel,
+    OnClosePauseGamePanel,
+    OnGoHome,
+    OnHandlePauseGamePanel
 }
 
 #endregion

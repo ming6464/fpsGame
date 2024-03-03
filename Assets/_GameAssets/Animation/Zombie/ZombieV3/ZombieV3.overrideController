@@ -9,8 +9,6 @@ AnimatorOverrideController:
   m_Name: ZombieV3
   m_Controller: {fileID: 9100000, guid: fa9e73e19109b8442b5094ea10acb542, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: 7400000, guid: c525930daf3862b4f9f4b958e779b091, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: e1faba32bc62f07498e3db70d472dce2, type: 2}
   - m_OriginalClip: {fileID: 7400000, guid: ef470d1d2ca15a340b6f76353665839f, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: 06cc34b0a3959ad489e22dd4aebe5e9a, type: 2}
   - m_OriginalClip: {fileID: 7400000, guid: b78493826d6431943afa0a7f97c2571e, type: 2}
@@ -23,3 +21,5 @@ AnimatorOverrideController:
     m_OverrideClip: {fileID: 7400000, guid: 5f90d6eee14e3124caeafd64697ddd5a, type: 2}
   - m_OriginalClip: {fileID: 7400000, guid: e7a73cd339cb8e64baf4f6c9e8d6c9f5, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: f89f408b74e710544804312ac39701e8, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: c525930daf3862b4f9f4b958e779b091, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: e1faba32bc62f07498e3db70d472dce2, type: 2}

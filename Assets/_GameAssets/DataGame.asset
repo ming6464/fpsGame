@@ -13,16 +13,21 @@ MonoBehaviour:
   m_Name: DataGame
   m_EditorClassIdentifier: 
   DataSave:
-    PlayerName: SWAT
+    Hp: 100
     BagInfo:
-      WeaponNames:
-      - KRISS
+      WeaponNames: []
       TotalBulletRifle: 130
       TotalBulletShotgun: 20
       TotalBulletPistol: 20
   PlayerInfos:
   - Name: SWAT
     ObjectPrefab: {fileID: 3608284666767021371, guid: fd394fd97fd546249814ff79d2679184,
+      type: 3}
+  - Name: Atienza
+    ObjectPrefab: {fileID: 1560944571222350290, guid: 1fd1ed316b4e6f9469682a5eab538067,
+      type: 3}
+  - Name: Gonza
+    ObjectPrefab: {fileID: 5919146498488325575, guid: 780022719732f15418e0ae26ce7257a4,
       type: 3}
   WeaponInfos:
   - WeaponName: AK47
@@ -156,26 +161,28 @@ MonoBehaviour:
   ZoombieInfos:
   - Name: ZombieV1
     Damage: 10
-    MaxHP: 120
-    AttackRange: 2
+    MaxHP: 400
+    AttackRange: 3
   - Name: ZombieV2
-    Damage: 7
-    MaxHP: 100
-    AttackRange: 2.5
+    Damage: 12
+    MaxHP: 360
+    AttackRange: 3.5
   - Name: ZombieV3
-    Damage: 5
-    MaxHP: 250
-    AttackRange: 2.5
+    Damage: 10
+    MaxHP: 450
+    AttackRange: 3.5
   StageGames:
   - StageInfos:
-    - ZombieName: ZombieV1
+    - ZombieName: Zombiev1
       Count: 30
-    - ZombieName: ZombieV2
-      Count: 20
+    - ZombieName: Zombiev2
+      Count: 10
+    - ZombieName: Zombiev2
+      Count: 10
   - StageInfos:
-    - ZombieName: ZombieV1
-      Count: 50
-    - ZombieName: ZombieV2
-      Count: 40
-    - ZombieName: ZombieV3
+    - ZombieName: Zombiev1
       Count: 30
+    - ZombieName: Zombiev2
+      Count: 10
+    - ZombieName: Zombiev2
+      Count: 40

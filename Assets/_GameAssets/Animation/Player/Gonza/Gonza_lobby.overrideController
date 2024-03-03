@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Gonza_lobby
+  m_Controller: {fileID: 9100000, guid: 52a59299cad9c4a4691048b27fcae460, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: bdf735cefe5f11b49a00c94afdc73098, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 7e5facdbda4527f4c8a45601c51695dc, type: 2}
