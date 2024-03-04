@@ -7,4 +7,10 @@ public static class SaveManager
         get => PlayerPrefs.GetString("CharacterNameSelect");
         set => PlayerPrefs.SetString("CharacterNameSelect", value);
     }
+
+    public static bool AudioSound
+    {
+        get => PlayerPrefs.GetInt("AudioSound", 1) == 1;
+        set => PlayerPrefs.SetInt("AudioSound", value ? 1 : 0);
+    }
 }

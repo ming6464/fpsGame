@@ -27,6 +27,13 @@ public class UIPauseGame : MonoBehaviour
     [SerializeField]
     private GameObject _warningGameLose;
 
+    [Header("Audio")]
+    [SerializeField]
+    private GameObject _audioOn;
+
+    [SerializeField]
+    private GameObject _audioOff;
+
     private bool m_isOpenPauseGame;
     private bool m_isClosePauseGame;
 
@@ -62,6 +69,7 @@ public class UIPauseGame : MonoBehaviour
     {
         _warningGameWin.SetActive(false);
         _warningGameLose.SetActive(false);
+        LoadAudio();
     }
 
     private void OnShowResultGame(object obj)
@@ -120,16 +128,21 @@ public class UIPauseGame : MonoBehaviour
 
     public void Warning_button_on_click()
     {
-        ClickButton("warning");
-    }
+        if (AudioManager.Instance)
+        {
+            AudioManager.Instance.PlaySfx(KeySound.UI);
+        }
 
-    public void Setting_button_on_click()
-    {
-        ClickButton("setting");
+        ClickButton("warning");
     }
 
     public void Replay_button_on_click()
     {
+        if (AudioManager.Instance)
+        {
+            AudioManager.Instance.PlaySfx(KeySound.UI);
+        }
+
         ClickButton("replay");
         OnClosePauseGamePanel();
         EventDispatcher.Instance.PostEvent(EventID.OnLoadScene, 1);
@@ -137,6 +150,11 @@ public class UIPauseGame : MonoBehaviour
 
     public void Home_button_on_click()
     {
+        if (AudioManager.Instance)
+        {
+            AudioManager.Instance.PlaySfx(KeySound.UI);
+        }
+
         OnClosePauseGamePanel();
         ClickButton("home");
         EventDispatcher.Instance.PostEvent(EventID.OnLoadScene, 0);
@@ -156,6 +174,35 @@ public class UIPauseGame : MonoBehaviour
             if (info.HighLineButton)
             {
                 info.HighLineButton.SetActive(isActive);
+            }
+        }
+    }
+
+    public void Audio_button_on_click()
+    {
+        if (AudioManager.Instance)
+        {
+            AudioManager.Instance.PlaySfx(KeySound.UI);
+        }
+
+        SaveManager.AudioSound = !SaveManager.AudioSound;
+        LoadAudio();
+    }
+
+    private void LoadAudio()
+    {
+        bool check = SaveManager.AudioSound;
+        _audioOn.SetActive(check);
+        _audioOff.SetActive(!check);
+        if (AudioManager.Instance)
+        {
+            if (check)
+            {
+                AudioManager.Instance.ActiveSfx();
+            }
+            else
+            {
+                AudioManager.Instance.DisableSfx();
             }
         }
     }

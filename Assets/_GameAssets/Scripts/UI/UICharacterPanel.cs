@@ -25,6 +25,11 @@ public class UICharacterPanel : MonoBehaviour
 
     public void Card_button_on_click(string cardName)
     {
+        if (AudioManager.Instance)
+        {
+            AudioManager.Instance.PlaySfx(KeySound.UI);
+        }
+
         ChosenEff(cardName);
         SaveManager.CharacterNameSelect = cardName;
         EventDispatcher.Instance.PostEvent(EventID.OnSelectCharacter);

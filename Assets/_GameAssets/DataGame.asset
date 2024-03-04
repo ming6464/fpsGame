@@ -188,4 +188,8 @@ MonoBehaviour:
       Count: 20
   - StageInfos:
     - ZombieName: Zombiev1
-      Count: 1
+      Count: 20
+    - ZombieName: Zombiev2
+      Count: 20
+    - ZombieName: Zombiev3
+      Count: 15

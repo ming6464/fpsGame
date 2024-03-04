@@ -171,5 +171,6 @@ public enum KeySound
     M9,
     SCAR_H,
     SPAS12,
-    Zombie_Scream
+    Zombie_Scream,
+    UI
 }
