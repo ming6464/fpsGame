@@ -121,6 +121,12 @@ public class PlayerScript : MonoBehaviour
 
     private void OnEnable()
     {
+        MinimapScript minimapScript = GameObject.FindGameObjectWithTag("CamMinimap")?.GetComponent<MinimapScript>();
+        if (minimapScript)
+        {
+            minimapScript.FollowTarget(transform);
+        }
+
         m_inputBase.Enable();
         LinkEvent();
         CameraSwitcher.RegisterCamera(m_cameraView1);

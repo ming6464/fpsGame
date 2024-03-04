@@ -24,6 +24,7 @@ TagManager:
   - Cam1
   - Cam2
   - SupplyPoint
+  - CamMinimap
   layers:
   - Default
   - TransparentFX
@@ -38,8 +39,8 @@ TagManager:
   - Card1
   - Card2
   - Card3
-  - 
-  - 
+  - MinimapPoint
+  - Zombie
   - 
   - 
   - 
