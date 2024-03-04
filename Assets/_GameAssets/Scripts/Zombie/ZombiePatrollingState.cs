@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,9 +7,7 @@ public class ZombiePatrollingState : StateMachineBehaviour
     [SerializeField]
     private float _timePatrol;
 
-    [SerializeField]
-    private float _detectionAreaRadius;
-
+    private float m_detectionAreaRadius = -1;
     private Transform m_player;
     private float m_startTime;
     private Transform m_patrolPoints;
@@ -19,18 +18,40 @@ public class ZombiePatrollingState : StateMachineBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         m_isFirstFrameExecuted = false;
-        m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        m_patrolPoints = GameObject.FindGameObjectWithTag("PatrolPoints")?.transform;
+        if (!m_player)
+        {
+            m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        }
+
+        if (!m_patrolPoints)
+        {
+            m_patrolPoints = GameObject.FindGameObjectWithTag("PatrolPoints")?.transform;
+        }
+
         m_startTime = Time.time;
-        animator.transform.TryGetComponent(out m_agent);
+
+        if (!m_agent)
+        {
+            m_agent = animator.transform.GetComponent<NavMeshAgent>();
+        }
+
+
+        if (m_detectionAreaRadius < 0)
+        {
+            m_detectionAreaRadius = animator.GetComponent<Zombie>().DetectionRadiusWhenPatrolling;
+        }
 
         if (m_patrolPoints && m_agent)
         {
+            List<int> indexs = new();
+            int index = -1;
             do
             {
-                m_nextPatrolPoint = m_patrolPoints.GetChild(Random.Range(0, m_patrolPoints.childCount)).position;
+                indexs.Add(index);
+                index = Random.Range(0, m_patrolPoints.childCount);
+                m_nextPatrolPoint = m_patrolPoints.GetChild(index).position;
             }
-            while (Vector3.Distance(animator.transform.position, m_nextPatrolPoint) < 1.5f);
+            while (indexs.Contains(index) || Vector3.Distance(animator.transform.position, m_nextPatrolPoint) < 15f);
 
             m_agent.SetDestination(m_nextPatrolPoint);
         }
@@ -45,7 +66,7 @@ public class ZombiePatrollingState : StateMachineBehaviour
             return;
         }
 
-        if (m_player && Vector3.Distance(animator.transform.position, m_player.position) <= _detectionAreaRadius)
+        if (m_player && Vector3.Distance(animator.transform.position, m_player.position) <= m_detectionAreaRadius)
         {
             animator.SetBool("IsChasing", true);
             animator.SetBool("IsPatrolling", false);
@@ -57,7 +78,6 @@ public class ZombiePatrollingState : StateMachineBehaviour
         {
             m_agent.ResetPath();
             animator.SetBool("IsPatrolling", false);
-            Debug.Log("IsPatrolling : false");
         }
     }
 }

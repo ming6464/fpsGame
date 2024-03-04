@@ -31,7 +31,7 @@ TagManager:
   - WeaponInBag
   - Water
   - UI
-  - ReloadPoint
+  - SupplyPoint
   - RangePickUpWeapon
   - Weapon
   - Character

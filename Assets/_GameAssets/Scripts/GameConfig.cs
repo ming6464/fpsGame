@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class GameConfig : Singleton<GameConfig>
 {
+    public float Volume;
+    public float MaxDistance;
     public bool UnlimitedBullet;
 
     public float TimePerStage;

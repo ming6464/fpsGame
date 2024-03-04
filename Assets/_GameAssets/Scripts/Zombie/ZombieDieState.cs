@@ -5,11 +5,14 @@ public class ZombieDieState : StateMachineBehaviour
     private bool m_isDelayToPool;
     private float m_startTimeDelay;
     private const float m_timeDelay = 2f;
-    private string m_zombieName;
+    private string m_zombieName = null;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        m_zombieName = animator.transform.GetComponent<Zombie>().Name;
+        if (m_zombieName == null)
+        {
+            m_zombieName = animator.transform.GetComponent<Zombie>().Name;
+        }
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

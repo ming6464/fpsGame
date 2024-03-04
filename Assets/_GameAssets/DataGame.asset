@@ -162,27 +162,30 @@ MonoBehaviour:
   - Name: ZombieV1
     Damage: 10
     MaxHP: 400
+    DistanceStop: 2
     AttackRange: 3
+    DetectionRadiusWhenPatrolling: 15
+    DetectionRadiusWhenChasing: 20
   - Name: ZombieV2
     Damage: 12
     MaxHP: 360
-    AttackRange: 3.5
+    DistanceStop: 2
+    AttackRange: 3
+    DetectionRadiusWhenPatrolling: 15
+    DetectionRadiusWhenChasing: 20
   - Name: ZombieV3
     Damage: 10
     MaxHP: 450
-    AttackRange: 3.5
+    DistanceStop: 2
+    AttackRange: 3
+    DetectionRadiusWhenPatrolling: 15
+    DetectionRadiusWhenChasing: 20
   StageGames:
   - StageInfos:
     - ZombieName: Zombiev1
-      Count: 30
+      Count: 20
     - ZombieName: Zombiev2
-      Count: 10
-    - ZombieName: Zombiev2
-      Count: 10
+      Count: 20
   - StageInfos:
     - ZombieName: Zombiev1
-      Count: 30
-    - ZombieName: Zombiev2
-      Count: 10
-    - ZombieName: Zombiev2
-      Count: 40
+      Count: 1

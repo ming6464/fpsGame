@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class WeaponHolder : MonoBehaviour
 {
     [Space(10)]
-    public string[] AvoidTags;
+    public string[] AvoidLayers;
 
     public Sprite RelaxedHandsIcon;
 
@@ -299,7 +299,19 @@ public class WeaponHolder : MonoBehaviour
             return;
         }
 
+        if (_curWeaponIndex == -1 || _slotsInfo.Length == 0)
+        {
+            return;
+        }
+
+        GetWeaponFromBag(_curWeaponIndex).GetComponent<Grenade>().OnThrow();
         _curWeaponIndex = -1;
+
+        if (CheckNearestBagWeapon() < 0)
+        {
+            _handIk.weight = 0f;
+            EventDispatcher.Instance.PostEvent(EventID.OnRelaxedHands, RelaxedHandsIcon);
+        }
     }
 
     public void SupplyBullet()
@@ -367,11 +379,43 @@ public class WeaponHolder : MonoBehaviour
 
 #region -Event handle-
 
+    private void UnLinkEvent()
+    {
+        EventDispatcher.Instance.RemoveListener(EventID.OnWeaponPickupAreaExit, OnWeaponPickupAreaExit);
+        EventDispatcher.Instance.RemoveListener(EventID.OnWeaponPickupAreaEnter, OnWeaponPickupAreaEnter);
+        EventDispatcher.Instance.RemoveListener(EventID.OnFinishGame, OnFinishGame);
+        EventDispatcher.Instance.RemoveListener(EventID.OnOpenPauseGamePanel, OnHandleOpenPauseGamePanel);
+        EventDispatcher.Instance.RemoveListener(EventID.OnClosePauseGamePanel, OnHandleClosePauseGamePanel);
+    }
+
+
     private void LinkEvent()
     {
         EventDispatcher.Instance.RegisterListener(EventID.OnWeaponPickupAreaExit, OnWeaponPickupAreaExit);
         EventDispatcher.Instance.RegisterListener(EventID.OnWeaponPickupAreaEnter, OnWeaponPickupAreaEnter);
         EventDispatcher.Instance.RegisterListener(EventID.OnFinishGame, OnFinishGame);
+        EventDispatcher.Instance.RegisterListener(EventID.OnOpenPauseGamePanel, OnHandleOpenPauseGamePanel);
+        EventDispatcher.Instance.RegisterListener(EventID.OnClosePauseGamePanel, OnHandleClosePauseGamePanel);
+    }
+
+    private void OnHandleClosePauseGamePanel(object obj)
+    {
+        if (GameManager.Instance && GameManager.Instance.IsFinishGame)
+        {
+            return;
+        }
+
+        m_inputBase.Enable();
+    }
+
+    private void OnHandleOpenPauseGamePanel(object obj)
+    {
+        if (GameManager.Instance && GameManager.Instance.IsFinishGame)
+        {
+            return;
+        }
+
+        m_inputBase.Disable();
     }
 
     private void OnFinishGame(object obj)
@@ -381,6 +425,7 @@ public class WeaponHolder : MonoBehaviour
             return;
         }
 
+        _handIk.weight = 0f;
         bool result = (bool)obj;
         m_inputBase.Disable();
         UnLinkEvent();
@@ -389,13 +434,6 @@ public class WeaponHolder : MonoBehaviour
             DropWeapon(_curWeaponIndex);
             _curWeaponIndex = 10;
         }
-    }
-
-    private void UnLinkEvent()
-    {
-        EventDispatcher.Instance.RemoveListener(EventID.OnWeaponPickupAreaExit, OnWeaponPickupAreaExit);
-        EventDispatcher.Instance.RemoveListener(EventID.OnWeaponPickupAreaEnter, OnWeaponPickupAreaEnter);
-        EventDispatcher.Instance.RemoveListener(EventID.OnFinishGame, OnFinishGame);
     }
 
     private void OnWeaponPickupAreaEnter(object obj)

@@ -16,7 +16,10 @@ public class Zombie : MonoBehaviour
     private Transform m_player;
 
     public float AttackRange => m_zombieInfo.AttackRange;
-    public float DistanceStop => AttackRange - 1f;
+    public float DistanceStop => m_zombieInfo.DistanceStop;
+
+    public float DetectionRadiusWhenChasing => m_zombieInfo.DetectionRadiusWhenChasing;
+    public float DetectionRadiusWhenPatrolling => m_zombieInfo.DetectionRadiusWhenPatrolling;
 
     [HideInInspector]
     public bool UpdateRotate;
@@ -105,6 +108,32 @@ public class Zombie : MonoBehaviour
         {
             m_zombieDamageSender.Send(m_player);
             Debug.Log("m_player is damaged");
+        }
+    }
+
+    private void OnFootStep(int state)
+    {
+        return;
+        if (!AudioManager.Instance || !m_player)
+        {
+            return;
+        }
+
+        float dis = Vector3.Distance(m_player.position, transform.position);
+        float volume = GameConfig.Instance.Volume;
+        float maxDis = GameConfig.Instance.MaxDistance;
+        if (dis > maxDis)
+        {
+            return;
+        }
+
+        if (state == 0)
+        {
+            AudioManager.Instance.PlaySfx(KeySound.WalkFootStepStone, volume * (1 - dis / maxDis));
+        }
+        else
+        {
+            AudioManager.Instance.PlaySfx(KeySound.RunFootStepStone, volume * (1 - dis / maxDis));
         }
     }
 

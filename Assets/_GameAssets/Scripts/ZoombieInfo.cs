@@ -9,5 +9,11 @@ public class ZombieInfo
 
     public float MaxHP;
 
+    public float DistanceStop;
+
     public float AttackRange;
+
+    public float DetectionRadiusWhenPatrolling;
+
+    public float DetectionRadiusWhenChasing;
 }

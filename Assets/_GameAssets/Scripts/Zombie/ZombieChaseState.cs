@@ -3,10 +3,9 @@ using UnityEngine.AI;
 
 public class ZombieChaseState : StateMachineBehaviour
 {
-    [SerializeField]
-    private float _detectionAreaRadius;
+    private float m_detectionAreaRadius = -1;
 
-    private float m_distanceStop;
+    private float m_distanceStop = -1;
 
     private Transform m_player;
 
@@ -19,10 +18,31 @@ public class ZombieChaseState : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        m_agent = animator.GetComponent<NavMeshAgent>();
-        m_zombie = animator.GetComponent<Zombie>();
-        m_distanceStop = m_zombie.DistanceStop;
+        if (!m_player)
+        {
+            m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        }
+
+        if (!m_agent)
+        {
+            m_agent = animator.GetComponent<NavMeshAgent>();
+        }
+
+        if (!m_zombie)
+        {
+            m_zombie = animator.GetComponent<Zombie>();
+        }
+
+        if (m_zombie && m_detectionAreaRadius < 0)
+        {
+            m_detectionAreaRadius = m_zombie.DetectionRadiusWhenChasing;
+        }
+
+        if (m_zombie && m_distanceStop < 0)
+        {
+            m_distanceStop = m_zombie.DistanceStop;
+        }
+
         m_isFirstFrameExecuted = false;
     }
 
@@ -42,7 +62,7 @@ public class ZombieChaseState : StateMachineBehaviour
             return;
         }
 
-        if (Vector3.Distance(animator.transform.position, m_player.position) > _detectionAreaRadius)
+        if (Vector3.Distance(animator.transform.position, m_player.position) > m_detectionAreaRadius)
         {
             animator.SetBool("IsChasing", false);
             return;

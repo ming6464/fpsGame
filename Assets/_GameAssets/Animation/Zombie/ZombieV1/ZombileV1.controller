@@ -37,7 +37,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b35ea83fc4340f9910d53ea1681d50f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detectionAreaRadius: 20
 --- !u!1101 &-7925676616721305121
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -232,7 +231,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _timePatrol: 30
-  _detectionAreaRadius: 15
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -297,7 +295,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0772e2d58d2e4ad6a7317ef35beaee55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detectionAreaRadius: 20
 --- !u!1101 &797933222410694315
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -444,7 +441,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _timeIdleMax: 4
-  _detectionAreaRadius: 15
 --- !u!1101 &3049106202599736063
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

@@ -7,8 +7,6 @@ public class Grenade : Weapon
     public ParticleSystem ExplosionEffect;
 
     [Header("Audio Info")]
-    public float Volume;
-
     public float MaxDistance;
 
     [Space(10)]
@@ -37,7 +35,7 @@ public class Grenade : Weapon
         m_pinPulled = false;
         m_rigid.isKinematic = false;
         m_rigid.useGravity = true;
-        //_meshRenderer.enabled = true;
+        _meshRenderer.enabled = true;
     }
 
 
@@ -55,13 +53,13 @@ public class Grenade : Weapon
             return;
         }
 
-        OnThrow();
+        m_weaponHolder.ThrowGrenade();
     }
 
 
     private void DelayDetonation()
     {
-        //_meshRenderer.enabled = false;
+        _meshRenderer.enabled = false;
         m_rigid.isKinematic = true;
         m_rigid.useGravity = false;
         m_grenadeDamageSender.Explosive();
@@ -76,7 +74,7 @@ public class Grenade : Weapon
                 return;
             }
 
-            AudioManager.Instance.PlaySfx(KeySound.Grenade_M67, Volume * (1f - dis / MaxDistance));
+            AudioManager.Instance.PlaySfx(KeySound.Grenade_M67, 1f - dis / MaxDistance);
         }
     }
 
@@ -96,9 +94,8 @@ public class Grenade : Weapon
         base.OnTriggerEnter(other);
     }
 
-    private void OnThrow()
+    public void OnThrow()
     {
-        m_weaponHolder.ThrowGrenade();
         m_weaponHolder = null;
         m_slot = null;
         if (TryGetComponent(out Collider collider))

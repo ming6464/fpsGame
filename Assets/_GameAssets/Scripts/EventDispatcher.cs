@@ -204,7 +204,8 @@ public enum EventID
     OnOpenPauseGamePanel,
     OnClosePauseGamePanel,
     OnGoHome,
-    OnHandlePauseGamePanel
+    OnHandlePauseGamePanel,
+    OnShowResultGame
 }
 
 #endregion

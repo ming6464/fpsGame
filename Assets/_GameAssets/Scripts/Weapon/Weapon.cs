@@ -46,19 +46,34 @@ public class Weapon : MonoBehaviour
 
     protected virtual void LinkEvent()
     {
-        EventDispatcher.Instance.RegisterListener(EventID.OnFinishGame, OnFinishGame);
+        EventDispatcher.Instance.RegisterListener(EventID.OnClosePauseGamePanel, HandleClosePauseGamePanel);
+        EventDispatcher.Instance.RegisterListener(EventID.OnOpenPauseGamePanel, HandleOpenPauseGamePanel);
     }
 
     protected virtual void UnLinkEvent()
     {
-        EventDispatcher.Instance.RemoveListener(EventID.OnFinishGame, OnFinishGame);
+        EventDispatcher.Instance.RemoveListener(EventID.OnClosePauseGamePanel, HandleClosePauseGamePanel);
+        EventDispatcher.Instance.RemoveListener(EventID.OnOpenPauseGamePanel, HandleOpenPauseGamePanel);
     }
 
-    private void OnFinishGame(object obj)
+    private void HandleOpenPauseGamePanel(object obj)
     {
+        if (!IsUsing || (GameManager.Instance && GameManager.Instance.IsFinishGame))
+        {
+            return;
+        }
+
         m_inputBase.Disable();
-        ResetData();
-        UnLinkEvent();
+    }
+
+    private void HandleClosePauseGamePanel(object obj)
+    {
+        if (!IsUsing || (GameManager.Instance && GameManager.Instance.IsFinishGame))
+        {
+            return;
+        }
+
+        m_inputBase.Enable();
     }
 
     protected virtual void LinkInput()

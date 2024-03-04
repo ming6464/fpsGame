@@ -11,7 +11,7 @@ public class LoadSceneScript : MonoBehaviour
     [SerializeField]
     private Image _slideImageLoad;
 
-    private bool m_animLefp;
+    private bool m_animLerp;
     private int indexSceneLoad;
 
     private void Awake()
@@ -40,7 +40,7 @@ public class LoadSceneScript : MonoBehaviour
         _loadUiCg.interactable = false;
         _loadUiCg.blocksRaycasts = true;
         _loadUiCg.alpha = 0f;
-        m_animLefp = true;
+        m_animLerp = true;
         _slideImageLoad.fillAmount = 0f;
         indexSceneLoad = (int)obj;
     }
@@ -50,7 +50,7 @@ public class LoadSceneScript : MonoBehaviour
         _loadUiCg.interactable = true;
         _loadUiCg.blocksRaycasts = false;
         _loadUiCg.alpha = 0f;
-        m_animLefp = false;
+        m_animLerp = false;
         indexSceneLoad = -1;
     }
 
@@ -68,13 +68,13 @@ public class LoadSceneScript : MonoBehaviour
 
     private void Update()
     {
-        if (m_animLefp)
+        if (m_animLerp)
         {
             _loadUiCg.alpha = Mathf.Lerp(_loadUiCg.alpha, 1f, 10 * Time.deltaTime);
             if (_loadUiCg.alpha > 0.95f)
             {
                 _loadUiCg.alpha = 1;
-                m_animLefp = false;
+                m_animLerp = false;
                 if (indexSceneLoad < 0)
                 {
                     return;

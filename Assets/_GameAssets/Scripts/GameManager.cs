@@ -3,6 +3,8 @@
 public class GameManager : Singleton<GameManager>
 {
     public bool IsFinishGame;
+    public bool IsPauseGame;
+    public bool ResultGame;
     public int CurrentStageGame;
     public int CurrentNumberZombie;
     public bool IsFinalStage;
@@ -15,7 +17,7 @@ public class GameManager : Singleton<GameManager>
 
     //
     private int m_indexSpawnPointZombie;
-    private float m_TimePerStageDeltaTime;
+    private float m_timePerStageDeltaTime;
 
     public override void Awake()
     {
@@ -41,12 +43,14 @@ public class GameManager : Singleton<GameManager>
 
     private void HandleClosePauseGamePanel(object obj)
     {
+        IsPauseGame = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     private void HandleOpenPauseGamePanel(object obj)
     {
+        IsPauseGame = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -61,11 +65,16 @@ public class GameManager : Singleton<GameManager>
     public override void Update()
     {
         base.Update();
-        if (m_TimePerStageDeltaTime > 0)
+        if (IsFinishGame)
         {
-            m_TimePerStageDeltaTime -= Time.deltaTime;
-            EventDispatcher.Instance.PostEvent(EventID.OnChangeTimeNextStage, m_TimePerStageDeltaTime);
-            if (m_TimePerStageDeltaTime <= 0)
+            return;
+        }
+
+        if (m_timePerStageDeltaTime > 0)
+        {
+            m_timePerStageDeltaTime -= Time.deltaTime;
+            EventDispatcher.Instance.PostEvent(EventID.OnChangeTimeNextStage, m_timePerStageDeltaTime);
+            if (m_timePerStageDeltaTime <= 0)
             {
                 PlayNextStage();
                 EventDispatcher.Instance.PostEvent(EventID.OnChangeTimeNextStage);
@@ -87,7 +96,7 @@ public class GameManager : Singleton<GameManager>
 
             if (GameConfig.Instance && GameConfig.Instance.TimePerStage > 10)
             {
-                m_TimePerStageDeltaTime = 9;
+                m_timePerStageDeltaTime = 9;
             }
         }
     }
@@ -95,8 +104,9 @@ public class GameManager : Singleton<GameManager>
     private void OnFinishGame(object obj)
     {
         IsFinishGame = true;
-        Time.timeScale = 0.4f;
+        ResultGame = (bool)obj;
     }
+
 
     private void OnStartGame()
     {
@@ -115,7 +125,7 @@ public class GameManager : Singleton<GameManager>
             return;
         }
 
-        m_TimePerStageDeltaTime = 9;
+        m_timePerStageDeltaTime = 9;
         Time.timeScale = 1f;
     }
 
@@ -144,12 +154,11 @@ public class GameManager : Singleton<GameManager>
             return;
         }
 
-        m_TimePerStageDeltaTime = GameConfig.Instance.TimePerStage;
+        m_timePerStageDeltaTime = GameConfig.Instance.TimePerStage;
     }
 
     private void InitStage(StageGame stageGame)
     {
-        Debug.Log("Play New Stage");
         foreach (StageInfo info in stageGame.StageInfos)
         {
             CurrentNumberZombie += info.Count;

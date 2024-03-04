@@ -88,6 +88,7 @@ public class PlayerScript : MonoBehaviour
     private bool m_jump;
     private bool m_sprint;
 
+
     private void Awake()
     {
         GetComponent<PlayerDamageReceiver>().UpdateHpInfo(GameConfig.Instance.GetDataSave().Hp);
@@ -115,6 +116,7 @@ public class PlayerScript : MonoBehaviour
         m_animator = GetComponent<Animator>();
         AssignAnimationIDs();
         LinkInput();
+        CameraSwitcher.UnRegisterAllCam();
     }
 
     private void OnEnable()
@@ -129,8 +131,7 @@ public class PlayerScript : MonoBehaviour
     {
         m_inputBase.Disable();
         UnLinkEvent();
-        CameraSwitcher.UnRegisterCamera(m_cameraView1);
-        CameraSwitcher.UnRegisterCamera(m_cameraView2);
+        CameraSwitcher.UnRegisterAllCam();
     }
 
     private void Start()
@@ -144,6 +145,11 @@ public class PlayerScript : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance && (GameManager.Instance.IsPauseGame || GameManager.Instance.IsFinishGame))
+        {
+            return;
+        }
+
         GroundedCheck();
         JumpAndGravity();
         CollisionAboveCheck();
@@ -152,6 +158,11 @@ public class PlayerScript : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (GameManager.Instance && (GameManager.Instance.IsPauseGame || GameManager.Instance.IsFinishGame))
+        {
+            return;
+        }
+
         UpdateRotation();
     }
 
@@ -184,6 +195,12 @@ public class PlayerScript : MonoBehaviour
         };
     }
 
+    private void UnLinkEvent()
+    {
+        EventDispatcher.Instance.RemoveListener(EventID.OnRelaxedHands, OnRelaxedHands);
+        EventDispatcher.Instance.RemoveListener(EventID.OnFinishGame, OnFinishGame);
+    }
+
     private void LinkEvent()
     {
         EventDispatcher.Instance.RegisterListener(EventID.OnRelaxedHands, OnRelaxedHands);
@@ -197,6 +214,7 @@ public class PlayerScript : MonoBehaviour
             return;
         }
 
+        CameraSwitcher.SwitchCamera(m_cameraView1);
         bool result = (bool)obj;
         m_inputBase.Disable();
         UnLinkEvent();
@@ -206,12 +224,6 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void UnLinkEvent()
-    {
-        EventDispatcher.Instance.RemoveListener(EventID.OnRelaxedHands, OnRelaxedHands);
-        EventDispatcher.Instance.RemoveListener(EventID.OnFinishGame, OnFinishGame);
-    }
-
     private void OnRelaxedHands(object obj = null)
     {
         if (m_animator)
@@ -219,9 +231,6 @@ public class PlayerScript : MonoBehaviour
             m_animator.SetLayerWeight(1, obj != null ? 1 : 0);
         }
     }
-
-    // Start is called before the first frame update
-
 
     private void AssignAnimationIDs()
     {

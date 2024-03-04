@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 public class ZombieAttackState : StateMachineBehaviour
 {
-    private float m_attackAreaRadius;
+    private float m_attackAreaRadius = -1;
 
     private NavMeshAgent m_agent;
 
@@ -14,10 +14,25 @@ public class ZombieAttackState : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        m_zombie = animator.GetComponent<Zombie>();
-        m_agent = animator.GetComponent<NavMeshAgent>();
-        m_attackAreaRadius = m_zombie.AttackRange;
+        if (!m_player)
+        {
+            m_player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        }
+
+        if (!m_zombie)
+        {
+            m_zombie = animator.GetComponent<Zombie>();
+        }
+
+        if (!m_agent)
+        {
+            m_agent = animator.GetComponent<NavMeshAgent>();
+        }
+
+        if (m_zombie && m_attackAreaRadius < 0)
+        {
+            m_attackAreaRadius = m_zombie.AttackRange;
+        }
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

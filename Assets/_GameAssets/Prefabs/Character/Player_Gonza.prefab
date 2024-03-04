@@ -2625,11 +2625,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0716176d79284d898e5b60437395613b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AvoidTags:
-  - Character
-  - WeaponInBag
-  - RangePickUpWeapon
+  AvoidLayers:
   - SupplyPoint
+  - RangePickUpWeapon
+  - WeaponInBag
+  - Character
   RelaxedHandsIcon: {fileID: 21300000, guid: 134bfa2b3038d2a459eb1d3d482c082d, type: 3}
   _curWeaponIndex: -1
   _slotsInfo:

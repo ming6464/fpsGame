@@ -95,6 +95,7 @@ public class UIBottomGamePlay : MonoBehaviour
         _bulletInfoCG.alpha = 0f;
         _currentWeaponImg.sprite = (Sprite)obj;
         _slideReloadBullet.sprite = (Sprite)obj;
+        _slideReloadBullet.fillAmount = 1f;
     }
 
     private void OnchangeTotalBullets(object obj)
@@ -128,8 +129,16 @@ public class UIBottomGamePlay : MonoBehaviour
         _currentWeaponImg.sprite = msg.WeaponIcon;
         _slideReloadBullet.sprite = msg.WeaponIcon;
         _slideReloadBullet.fillAmount = 1f;
-        _bulletInfoCG.alpha = msg.WeaponKey == WeaponKEY.Grenade ? 0f : 1f;
-        OnChangeBullets(msg.Bullets);
+        if (msg.WeaponKey == WeaponKEY.Grenade)
+        {
+            _bulletInfoCG.alpha = 0f;
+            _slideReloadBullet.fillAmount = 1f;
+        }
+        else
+        {
+            _bulletInfoCG.alpha = 1f;
+            OnChangeBullets(msg.Bullets);
+        }
     }
 
     private void UnLinkEvent()

@@ -53,7 +53,7 @@ public class AudioManager : Singleton<AudioManager>
         Debug.Log("Play Sfx");
     }
 
-    public void PlaySfx(KeySound key, float volume)
+    public void PlaySfx(KeySound key, float ratio)
     {
         if (!m_activeSfx)
         {
@@ -72,7 +72,7 @@ public class AudioManager : Singleton<AudioManager>
         }
 
         int index = Random.Range(0, sound.SoundClip.Length);
-        AudioSFX.PlayOneShot(sound.SoundClip[index], volume);
+        AudioSFX.PlayOneShot(sound.SoundClip[index], ratio * sound.Volume);
         Debug.Log("Play Sfx");
     }
 
@@ -170,5 +170,6 @@ public enum KeySound
     KRISS,
     M9,
     SCAR_H,
-    SPAS12
+    SPAS12,
+    Zombie_Scream
 }

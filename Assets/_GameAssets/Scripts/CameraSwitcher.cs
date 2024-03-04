@@ -22,6 +22,11 @@ public class CameraSwitcher
         return true;
     }
 
+    public static void UnRegisterAllCam()
+    {
+        m_cameras = new List<CinemachineVirtualCamera>();
+    }
+
     public static bool UnRegisterCamera(CinemachineVirtualCamera cam)
     {
         if (!cam || !m_cameras.Contains(cam))

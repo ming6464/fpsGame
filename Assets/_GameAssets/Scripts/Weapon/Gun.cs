@@ -104,7 +104,6 @@ public class Gun : Weapon
         m_isCanFire = true;
     }
 
-    [Obsolete("Obsolete")]
     protected override void Update()
     {
         base.Update();
@@ -168,7 +167,7 @@ public class Gun : Weapon
         if (AudioManager.Instance)
         {
             KeySound key = KeySound.Ak47;
-            switch (name.ToLower())
+            switch (name)
             {
                 case "Bennelli_M4":
                     key = KeySound.Bennelli_M4;
@@ -208,7 +207,7 @@ public class Gun : Weapon
             }
 
             Ray ray = new(startPosRay, dirRay);
-            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~LayerMask.GetMask(m_weaponHolder.AvoidTags)))
+            if (Physics.Raycast(ray, out RaycastHit hit, 200f, ~LayerMask.GetMask(m_weaponHolder.AvoidLayers)))
             {
                 endPos = hit.point;
                 m_damageSender.Send(hit.transform);

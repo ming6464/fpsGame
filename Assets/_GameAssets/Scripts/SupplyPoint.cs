@@ -5,18 +5,16 @@ public class SupplyPoint : MonoBehaviour
     [Header("Reload Info")]
     public float ReloadTime;
 
+    [Space(10)]
+    public MeshRenderer MeshRenderer;
+
     //
     private float m_reloadTimeDelta;
-    private Color m_normalColor = Color.yellow;
+    private Color m_normalColor = Color.gray;
     private Color m_color1 = Color.red;
     private Color m_color2 = Color.green;
-    private MeshRenderer m_meshRenderer;
     private ReceiveSupplyBullet m_receiveSupplyBullet;
 
-    private void Start()
-    {
-        m_meshRenderer = GetComponent<MeshRenderer>();
-    }
 
     // Update is called once per frame
     private void Update()
@@ -27,21 +25,26 @@ public class SupplyPoint : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     private void HandleSupply()
     {
+        if (!MeshRenderer)
+        {
+            return;
+        }
+
         if (m_receiveSupplyBullet == null)
         {
-            m_meshRenderer.material.color = m_normalColor;
+            MeshRenderer.material.color = m_normalColor;
             m_reloadTimeDelta = 0f;
             return;
         }
 
         if (m_receiveSupplyBullet.CheckNeedSupply() == false)
         {
-            m_meshRenderer.material.color = m_color2;
+            MeshRenderer.material.color = m_color2;
             m_reloadTimeDelta = 0f;
             return;
         }
 
-        m_meshRenderer.material.color = m_color1;
+        MeshRenderer.material.color = m_color1;
         if (m_reloadTimeDelta <= 0f)
         {
             m_reloadTimeDelta = ReloadTime;
@@ -59,7 +62,6 @@ public class SupplyPoint : MonoBehaviour
                 1.0f - m_reloadTimeDelta / ReloadTime);
         }
     }
-
 
     private void OnTriggerEnter(Collider other)
     {

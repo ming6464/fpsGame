@@ -1,11 +1,7 @@
-using System;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject _finishGamePanel;
-
     [SerializeField]
     private GameObject _crossHair;
 
@@ -28,7 +24,7 @@ public class UIManager : MonoBehaviour
 
     private void OnFinishGame(object obj)
     {
-        _finishGamePanel.SetActive(true);
+        Invoke(nameof(DelayShowResultGame), 3f);
     }
 
     private void Start()
@@ -36,8 +32,18 @@ public class UIManager : MonoBehaviour
         EventDispatcher.Instance.PostEvent(EventID.OnClosePauseGamePanel);
     }
 
+    private void DelayShowResultGame()
+    {
+        EventDispatcher.Instance.PostEvent(EventID.OnShowResultGame, GameManager.Instance.ResultGame);
+    }
+
     private void Update()
     {
+        if (GameManager.Instance && GameManager.Instance.IsFinishGame)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             EventDispatcher.Instance.PostEvent(EventID.OnHandlePauseGamePanel);

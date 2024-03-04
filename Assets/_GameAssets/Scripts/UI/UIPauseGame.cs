@@ -5,22 +5,27 @@ public class UIPauseGame : MonoBehaviour
 {
     public bool PauseGameState;
 
+    [Serializable]
+    public struct PanelGameInfo
+    {
+        public string Name;
+        public GameObject PanelGame;
+        public GameObject HighLineButton;
+    }
+
     [SerializeField]
     private CanvasGroup _uiPauseGameCg;
 
     [Space(10)]
     [SerializeField]
-    private GameObject _warningHighLine;
+    private PanelGameInfo[] _panelGameInfos;
+
+    [Header("Warning game")]
+    [SerializeField]
+    private GameObject _warningGameWin;
 
     [SerializeField]
-    private GameObject _settingHighLine;
-
-    [SerializeField]
-    private GameObject _replayHighLine;
-
-    [SerializeField]
-    private GameObject _homeHighLine;
-
+    private GameObject _warningGameLose;
 
     private bool m_isOpenPauseGame;
     private bool m_isClosePauseGame;
@@ -30,6 +35,7 @@ public class UIPauseGame : MonoBehaviour
         EventDispatcher.Instance.RemoveListener(EventID.OnOpenPauseGamePanel, OnOpenPauseGamePanel);
         EventDispatcher.Instance.RemoveListener(EventID.OnClosePauseGamePanel, OnClosePauseGamePanel);
         EventDispatcher.Instance.RemoveListener(EventID.OnHandlePauseGamePanel, OnHandlePauseGamePanel);
+        EventDispatcher.Instance.RemoveListener(EventID.OnShowResultGame, OnShowResultGame);
     }
 
     private void OnHandlePauseGamePanel(object obj)
@@ -49,6 +55,25 @@ public class UIPauseGame : MonoBehaviour
         EventDispatcher.Instance.RegisterListener(EventID.OnOpenPauseGamePanel, OnOpenPauseGamePanel);
         EventDispatcher.Instance.RegisterListener(EventID.OnClosePauseGamePanel, OnClosePauseGamePanel);
         EventDispatcher.Instance.RegisterListener(EventID.OnHandlePauseGamePanel, OnHandlePauseGamePanel);
+        EventDispatcher.Instance.RegisterListener(EventID.OnShowResultGame, OnShowResultGame);
+    }
+
+    private void Start()
+    {
+        _warningGameWin.SetActive(false);
+        _warningGameLose.SetActive(false);
+    }
+
+    private void OnShowResultGame(object obj)
+    {
+        if (obj == null)
+        {
+            return;
+        }
+
+        _warningGameWin.SetActive((bool)obj);
+        _warningGameLose.SetActive(!(bool)obj);
+        EventDispatcher.Instance.PostEvent(EventID.OnOpenPauseGamePanel);
     }
 
     private void Update()
@@ -60,6 +85,7 @@ public class UIPauseGame : MonoBehaviour
             {
                 _uiPauseGameCg.alpha = 1f;
                 m_isOpenPauseGame = false;
+                Time.timeScale = 0f;
             }
         }
         else if (m_isClosePauseGame)
@@ -78,7 +104,9 @@ public class UIPauseGame : MonoBehaviour
         PauseGameState = true;
         _uiPauseGameCg.alpha = 0f;
         _uiPauseGameCg.interactable = true;
+        Time.timeScale = 1f;
         m_isOpenPauseGame = true;
+        Warning_button_on_click();
     }
 
     private void OnClosePauseGamePanel(object obj = null)
@@ -86,22 +114,23 @@ public class UIPauseGame : MonoBehaviour
         PauseGameState = false;
         _uiPauseGameCg.alpha = 1f;
         _uiPauseGameCg.interactable = false;
+        Time.timeScale = 1f;
         m_isClosePauseGame = true;
     }
 
     public void Warning_button_on_click()
     {
-        ClickButton(_warningHighLine);
+        ClickButton("warning");
     }
 
     public void Setting_button_on_click()
     {
-        ClickButton(_settingHighLine);
+        ClickButton("setting");
     }
 
     public void Replay_button_on_click()
     {
-        ClickButton(_replayHighLine);
+        ClickButton("replay");
         OnClosePauseGamePanel();
         EventDispatcher.Instance.PostEvent(EventID.OnLoadScene, 1);
     }
@@ -109,16 +138,25 @@ public class UIPauseGame : MonoBehaviour
     public void Home_button_on_click()
     {
         OnClosePauseGamePanel();
-        ClickButton(_homeHighLine);
+        ClickButton("home");
         EventDispatcher.Instance.PostEvent(EventID.OnLoadScene, 0);
     }
 
-    private void ClickButton(GameObject highLine)
+    private void ClickButton(string name)
     {
-        _homeHighLine.SetActive(false);
-        _settingHighLine.SetActive(false);
-        _warningHighLine.SetActive(false);
-        _replayHighLine.SetActive(false);
-        highLine.SetActive(true);
+        name = name.ToLower();
+        foreach (PanelGameInfo info in _panelGameInfos)
+        {
+            bool isActive = info.Name.ToLower() == name;
+            if (info.PanelGame)
+            {
+                info.PanelGame.SetActive(isActive);
+            }
+
+            if (info.HighLineButton)
+            {
+                info.HighLineButton.SetActive(isActive);
+            }
+        }
     }
 }

@@ -1513,7 +1513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0716176d79284d898e5b60437395613b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AvoidTags:
+  AvoidLayers:
   - Character
   - WeaponInBag
   - RangePickUpWeapon
