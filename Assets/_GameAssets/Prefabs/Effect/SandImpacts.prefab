@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5695369712987520944}
   - component: {fileID: 5594609700071785754}
   - component: {fileID: 5611081492037994346}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Dust2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4655,7 +4655,7 @@ GameObject:
   - component: {fileID: 5698327503590902170}
   - component: {fileID: 5609851727184928094}
   - component: {fileID: 5611138356423877014}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SandImpacts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9492,7 +9492,7 @@ GameObject:
   - component: {fileID: 5695494498799856536}
   - component: {fileID: 5610160540810902642}
   - component: {fileID: 5610943070142643626}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Dust
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14145,7 +14145,7 @@ GameObject:
   - component: {fileID: 5695580464307592072}
   - component: {fileID: 5594786876999695420}
   - component: {fileID: 5610777406396599412}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Decal
   m_TagString: Untagged
   m_Icon: {fileID: 0}

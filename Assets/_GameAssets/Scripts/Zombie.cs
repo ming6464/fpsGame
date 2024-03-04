@@ -114,27 +114,27 @@ public class Zombie : MonoBehaviour
     private void OnFootStep(int state)
     {
         return;
-        if (!AudioManager.Instance || !m_player)
-        {
-            return;
-        }
-
-        float dis = Vector3.Distance(m_player.position, transform.position);
-        float volume = GameConfig.Instance.Volume;
-        float maxDis = GameConfig.Instance.MaxDistance;
-        if (dis > maxDis)
-        {
-            return;
-        }
-
-        if (state == 0)
-        {
-            AudioManager.Instance.PlaySfx(KeySound.WalkFootStepStone, volume * (1 - dis / maxDis));
-        }
-        else
-        {
-            AudioManager.Instance.PlaySfx(KeySound.RunFootStepStone, volume * (1 - dis / maxDis));
-        }
+        // if (!AudioManager.Instance || !m_player)
+        // {
+        //     return;
+        // }
+        //
+        // float dis = Vector3.Distance(m_player.position, transform.position);
+        // float volume = GameConfig.Instance.Volume;
+        // float maxDis = GameConfig.Instance.MaxDistance;
+        // if (dis > maxDis)
+        // {
+        //     return;
+        // }
+        //
+        // if (state == 0)
+        // {
+        //     AudioManager.Instance.PlaySfx(KeySound.WalkFootStepStone, volume * (1 - dis / maxDis));
+        // }
+        // else
+        // {
+        //     AudioManager.Instance.PlaySfx(KeySound.RunFootStepStone, volume * (1 - dis / maxDis));
+        // }
     }
 
     private void OnDrawGizmos()

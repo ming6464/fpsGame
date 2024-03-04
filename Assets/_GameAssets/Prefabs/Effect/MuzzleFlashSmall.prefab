@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2457706463420450363}
   - component: {fileID: 2365595216147931263}
   - component: {fileID: 2364739340354371795}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: FlashHeadon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4893,7 +4893,7 @@ GameObject:
   - component: {fileID: 2457359969655607703}
   - component: {fileID: 2365878020183089369}
   - component: {fileID: 2364808837623808587}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: MuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9773,7 +9773,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4499687258610613381}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: MuzzleFlashSmall
   m_TagString: Untagged
   m_Icon: {fileID: 0}

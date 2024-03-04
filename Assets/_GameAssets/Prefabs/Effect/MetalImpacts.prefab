@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4495446017715109420}
   - component: {fileID: 4374109152037006598}
   - component: {fileID: 4375093536143698798}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Decal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4902,7 +4902,7 @@ GameObject:
   - component: {fileID: 4502609587723841380}
   - component: {fileID: 4373510154275060930}
   - component: {fileID: 4375206917017557596}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: MetalImpacts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9739,7 +9739,7 @@ GameObject:
   - component: {fileID: 4495481371442615344}
   - component: {fileID: 4373596002822108346}
   - component: {fileID: 4375009173710985524}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Dust
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14414,7 +14414,7 @@ GameObject:
   - component: {fileID: 4495421002040692748}
   - component: {fileID: 4373999897604982616}
   - component: {fileID: 4373246658908481030}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
