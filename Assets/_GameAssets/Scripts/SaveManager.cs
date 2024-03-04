@@ -4,7 +4,7 @@ public static class SaveManager
 {
     public static string CharacterNameSelect
     {
-        get => PlayerPrefs.GetString("CharacterNameSelect");
+        get => PlayerPrefs.GetString("CharacterNameSelect", "swat");
         set => PlayerPrefs.SetString("CharacterNameSelect", value);
     }
 
