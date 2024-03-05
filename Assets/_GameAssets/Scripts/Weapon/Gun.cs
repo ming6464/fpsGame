@@ -102,6 +102,15 @@ public class Gun : Weapon
         m_isTrigger = false;
         m_isResetFire = false;
         m_isCanFire = true;
+
+        MsgWeapon msg = new()
+        {
+            WeaponKey = WeaponType, WeaponIcon = WeaponIcon, Bullets = Bullets,
+            FireModeKey = CurrrentFireMode.FireModeType
+        };
+
+        EventDispatcher.Instance.PostEvent(EventID.OnchangeTotalBullets, TotalBullet);
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeWeapon, msg);
     }
 
     protected override void Update()
@@ -272,6 +281,7 @@ public class Gun : Weapon
         }
 
         CurrrentFireMode = m_weaponInfo.FireModeOption[nextIndex];
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeFireMode, CurrrentFireMode.FireModeType);
     }
 
     protected override void OnPullTrigger()

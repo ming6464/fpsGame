@@ -12,6 +12,16 @@ public class DataGame : ScriptableObject
 }
 
 [Serializable]
+public class DataGameSave
+{
+    public DataSave DataSave;
+    public PlayerInfo[] PlayerInfos;
+    public WeaponInfo[] WeaponInfos;
+    public ZombieInfo[] ZoombieInfos;
+    public StageGame[] StageGames;
+}
+
+[Serializable]
 public class PlayerInfo
 {
     public string Name;

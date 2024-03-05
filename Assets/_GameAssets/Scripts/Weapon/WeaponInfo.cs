@@ -47,5 +47,6 @@ public class FireModeInfo
 public enum FireModeKEY
 {
     Single = 0,
-    Automatic = 2
+    Automatic = 2,
+    None
 }

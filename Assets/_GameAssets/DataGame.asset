@@ -75,6 +75,10 @@ MonoBehaviour:
     MagazineCapacity: 50
     BulletsPerShot: 1
     FireModeOption:
+    - FireModeType: 0
+      TimeResetFire: 0.06
+      FireTimes: 1
+      Spread: 0
     - FireModeType: 2
       TimeResetFire: 0.06
       FireTimes: 1
@@ -139,6 +143,10 @@ MonoBehaviour:
     MagazineCapacity: 40
     BulletsPerShot: 1
     FireModeOption:
+    - FireModeType: 0
+      TimeResetFire: 0.07
+      FireTimes: 1
+      Spread: 0
     - FireModeType: 2
       TimeResetFire: 0.08
       FireTimes: 1

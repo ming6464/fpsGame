@@ -136,6 +136,16 @@ public class UIPauseGame : MonoBehaviour
         ClickButton("warning");
     }
 
+    public void Tutorial_button_on_click()
+    {
+        if (AudioManager.Instance)
+        {
+            AudioManager.Instance.PlaySfx(KeySound.UI);
+        }
+
+        ClickButton("tutorial");
+    }
+
     public void Replay_button_on_click()
     {
         if (AudioManager.Instance)

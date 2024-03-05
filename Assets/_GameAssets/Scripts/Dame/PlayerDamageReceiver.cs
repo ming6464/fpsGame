@@ -1,7 +1,10 @@
-﻿using System;
+﻿using UnityEngine;
 
 public class PlayerDamageReceiver : DamageReceiver
 {
+    [SerializeField]
+    private MinimapPointScript _minimapPoint;
+
     private void Start()
     {
         PostEventChangeHp();
@@ -22,6 +25,10 @@ public class PlayerDamageReceiver : DamageReceiver
     {
         base.OnDead();
         EventDispatcher.Instance.PostEvent(EventID.OnFinishGame, false);
+        if (_minimapPoint)
+        {
+            _minimapPoint.OnDead();
+        }
     }
 
     public override void Reduct(float reduct)

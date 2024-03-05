@@ -11,14 +11,45 @@ public class UITopGamePlay : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _CountDownHighLine;
 
+    [Header("Score")]
+    [SerializeField]
+    private TextMeshProUGUI _amountHero;
+
+    [SerializeField]
+    private TextMeshProUGUI _amountzombie;
+
     private void OnDisable()
     {
         EventDispatcher.Instance.RemoveListener(EventID.OnChangeTimeNextStage, OnChangeTimeNextStage);
+        EventDispatcher.Instance.RemoveListener(EventID.OnChangeAmountZombie, OnChangeAmountZombie);
+        EventDispatcher.Instance.RemoveListener(EventID.OnChangeAmountHero, OnChangeAmountHero);
     }
 
     private void OnEnable()
     {
         EventDispatcher.Instance.RegisterListener(EventID.OnChangeTimeNextStage, OnChangeTimeNextStage);
+        EventDispatcher.Instance.RegisterListener(EventID.OnChangeAmountZombie, OnChangeAmountZombie);
+        EventDispatcher.Instance.RegisterListener(EventID.OnChangeAmountHero, OnChangeAmountHero);
+    }
+
+    private void OnChangeAmountZombie(object obj)
+    {
+        if (obj == null)
+        {
+            return;
+        }
+
+        _amountzombie.text = (int)obj + "";
+    }
+
+    private void OnChangeAmountHero(object obj)
+    {
+        if (obj == null)
+        {
+            return;
+        }
+
+        _amountHero.text = (int)obj + "";
     }
 
     private void OnChangeTimeNextStage(object obj)

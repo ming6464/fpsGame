@@ -74,8 +74,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a768e5433c3d20d4980bb44713668e4c, type: 3}
-  m_Color: {r: 0, g: 1, b: 0.17284632, a: 1}
+  m_Sprite: {fileID: 21300000, guid: c1e073e429d82514b99becc85f6e0bd6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -99,6 +99,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PosAxisY: 20
   UsePositionDefault: 0
+  MinimapIcon: {fileID: 116514505}
+  MinimapIconAlive: {fileID: 21300000, guid: c1e073e429d82514b99becc85f6e0bd6, type: 3}
+  MinimapIconDead: {fileID: 21300000, guid: 90695853c75f8bd4ca098aff256e3238, type: 3}
 --- !u!1 &49997205325358828
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,7 +407,6 @@ GameObject:
   - component: {fileID: 1560944571222350295}
   - component: {fileID: 1560944571222350288}
   - component: {fileID: 1560944571222350289}
-  - component: {fileID: 1560944571222350299}
   m_Layer: 9
   m_Name: Player_Atienza
   m_TagString: Player
@@ -485,8 +487,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7a54aae25984f0a80e15cfe6c1081d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHp: 0
-  _hp: 0
+  _maxHp: 100
+  _hp: 100
+  _minimapPoint: {fileID: 2304585307064128334}
 --- !u!114 &1560944571222350294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -574,92 +577,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponHolder: {fileID: 5672651750300397760}
---- !u!114 &1560944571222350299
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1560944571222350290}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2d8418b0b9634b1892b0268dd9c2743, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boneShape: 1
-  drawBones: 1
-  drawTripods: 0
-  boneSize: 1
-  tripodSize: 1
-  boneColor: {r: 0, g: 0, b: 1, a: 0.5}
-  m_Transforms:
-  - {fileID: 5958848007820960764}
-  - {fileID: 4245935576970254976}
-  - {fileID: 7509617616740537539}
-  - {fileID: 6258575654547886191}
-  - {fileID: 704621020356641927}
-  - {fileID: 2052539035727508716}
-  - {fileID: 4829137219976280209}
-  - {fileID: 5228349909555286507}
-  - {fileID: 7050274904820028677}
-  - {fileID: 2247808341800678621}
-  - {fileID: 6161514478659510755}
-  - {fileID: 4106920395653571703}
-  - {fileID: 5275219265880864699}
-  - {fileID: 9205286627195705978}
-  - {fileID: 4851674048081948992}
-  - {fileID: 6874409911473170645}
-  - {fileID: 4160414534493406553}
-  - {fileID: 1673624778072652085}
-  - {fileID: 3598790981837116568}
-  - {fileID: 801416690039074671}
-  - {fileID: 8290418735275116747}
-  - {fileID: 9185059863152769720}
-  - {fileID: 1527281846385524765}
-  - {fileID: 7780237586262020971}
-  - {fileID: 5169655005103341225}
-  - {fileID: 3838769639588414110}
-  - {fileID: 8607809956010924989}
-  - {fileID: 4798491278993405148}
-  - {fileID: 927599885465533104}
-  - {fileID: 2884914133450666552}
-  - {fileID: 7776233094420265601}
-  - {fileID: 6380207785810452742}
-  - {fileID: 4986701987347782452}
-  - {fileID: 675648820566772175}
-  - {fileID: 2269913164097666761}
-  - {fileID: 8886820177742028062}
-  - {fileID: 5345005090261744518}
-  - {fileID: 4250168698354340139}
-  - {fileID: 62298099396025163}
-  - {fileID: 7805563015140175997}
-  - {fileID: 7674918604613098526}
-  - {fileID: 191060317554922905}
-  - {fileID: 1885308270685849547}
-  - {fileID: 7515846622607352357}
-  - {fileID: 3064515530722237576}
-  - {fileID: 6905566541785296833}
-  - {fileID: 8603343159964009822}
-  - {fileID: 3138961946403043176}
-  - {fileID: 4713247497626565519}
-  - {fileID: 3822734243434683801}
-  - {fileID: 1297371153213047978}
-  - {fileID: 7486259928738972559}
-  - {fileID: 5668853278438507527}
-  - {fileID: 1603840643943067606}
-  - {fileID: 4120443964756656689}
-  - {fileID: 714647483406347499}
-  - {fileID: 6045412154534632415}
-  - {fileID: 4285898487940532971}
-  - {fileID: 5572251163329309523}
-  - {fileID: 8815336150018671198}
-  - {fileID: 4174958616356010674}
-  - {fileID: 4675970307647362093}
-  - {fileID: 2409823517347058171}
-  - {fileID: 6154772296623155801}
-  - {fileID: 1232242934572106495}
-  - {fileID: 3535680573743198763}
-  - {fileID: 8560383113473430153}
 --- !u!1 &1616228888481479305
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,6 +5,12 @@ public class MinimapPointScript : MonoBehaviour
     public float PosAxisY;
     public bool UsePositionDefault;
 
+    [Header("icon")]
+    public SpriteRenderer MinimapIcon;
+
+    public Sprite MinimapIconAlive;
+    public Sprite MinimapIconDead;
+
     private float m_posAxisY;
 
     private void OnEnable()
@@ -17,6 +23,11 @@ public class MinimapPointScript : MonoBehaviour
         {
             m_posAxisY = PosAxisY;
         }
+
+        if (MinimapIcon && MinimapIconAlive)
+        {
+            MinimapIcon.sprite = MinimapIconAlive;
+        }
     }
 
     private void LateUpdate()
@@ -24,5 +35,13 @@ public class MinimapPointScript : MonoBehaviour
         Vector3 nextPos = transform.position;
         nextPos.y = m_posAxisY;
         transform.position = nextPos;
+    }
+
+    public void OnDead()
+    {
+        if (MinimapIcon && MinimapIconDead)
+        {
+            MinimapIcon.sprite = MinimapIconDead;
+        }
     }
 }

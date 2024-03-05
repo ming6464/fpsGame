@@ -160,20 +160,6 @@ public class Weapon : MonoBehaviour
         LinkEvent();
         UpdateParent(1);
         IsUsing = true;
-
-        MsgWeapon msg = new()
-        {
-            WeaponKey = WeaponType, WeaponIcon = WeaponIcon
-        };
-
-        if (WeaponType != WeaponKEY.Grenade && WeaponType != WeaponKEY.None)
-        {
-            Gun gun = GetComponent<Gun>();
-            msg.Bullets = gun.Bullets;
-            EventDispatcher.Instance.PostEvent(EventID.OnchangeTotalBullets, gun.TotalBullet);
-        }
-
-        EventDispatcher.Instance.PostEvent(EventID.OnChangeWeapon, msg);
     }
 
     // ReSharper disable Unity.PerformanceAnalysis

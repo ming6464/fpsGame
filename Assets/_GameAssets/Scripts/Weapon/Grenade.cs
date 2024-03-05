@@ -43,6 +43,12 @@ public class Grenade : Weapon
     {
         base.UseWeapon();
         m_pinPulled = false;
+        MsgWeapon msg = new()
+        {
+            WeaponKey = WeaponType, WeaponIcon = WeaponIcon
+        };
+
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeWeapon, msg);
     }
 
     protected override void OnReleaseTrigger()

@@ -3655,6 +3655,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHp: 100
   _hp: 100
+  _minimapPoint: {fileID: 3578429201051578002}
 --- !u!114 &7081631938946031632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4217,8 +4218,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a768e5433c3d20d4980bb44713668e4c, type: 3}
-  m_Color: {r: 0, g: 1, b: 0.17284632, a: 1}
+  m_Sprite: {fileID: 21300000, guid: c1e073e429d82514b99becc85f6e0bd6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -4242,3 +4243,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PosAxisY: 20
   UsePositionDefault: 0
+  MinimapIcon: {fileID: 325365122630273262}
+  MinimapIconAlive: {fileID: 21300000, guid: c1e073e429d82514b99becc85f6e0bd6, type: 3}
+  MinimapIconDead: {fileID: 21300000, guid: 90695853c75f8bd4ca098aff256e3238, type: 3}

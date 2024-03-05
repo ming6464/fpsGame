@@ -99,6 +99,8 @@ public class GameManager : Singleton<GameManager>
                 m_timePerStageDeltaTime = 9;
             }
         }
+
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeAmountZombie, CurrentNumberZombie);
     }
 
     private void OnFinishGame(object obj)
@@ -120,6 +122,8 @@ public class GameManager : Singleton<GameManager>
 
         Instantiate(character,
             SpawnPointPlayer.position, Quaternion.identity);
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeAmountHero, 1);
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeAmountZombie, CurrentNumberZombie);
         if (GameConfig.Instance && GameConfig.Instance.DisableInitStage)
         {
             return;
@@ -145,6 +149,8 @@ public class GameManager : Singleton<GameManager>
         {
             Invoke(nameof(DelayCountDownNextStage), 3f);
         }
+
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeAmountZombie, CurrentNumberZombie);
     }
 
     private void DelayCountDownNextStage()

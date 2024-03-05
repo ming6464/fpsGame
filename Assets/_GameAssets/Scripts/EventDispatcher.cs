@@ -206,7 +206,12 @@ public enum EventID
     OnGoHome,
     OnHandlePauseGamePanel,
     OnShowResultGame,
-    OnHandleđAuio
+    OnHandleđAuio,
+    OnTutorialPanel,
+    OnChangeFireMode,
+    OnChangeAmountZombie,
+    OnChangeAmountHero,
+    OnSettingPanel
 }
 
 #endregion

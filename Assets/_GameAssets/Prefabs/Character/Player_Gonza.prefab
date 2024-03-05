@@ -1233,7 +1233,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6444326494030565245}
   - component: {fileID: 1121101745475900679}
-  - component: {fileID: 1121101745475900686}
   - component: {fileID: 1121101745475900673}
   - component: {fileID: 1121101745475900672}
   - component: {fileID: 1121101745475900675}
@@ -1290,90 +1289,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1121101745475900686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5919146498488325575}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2d8418b0b9634b1892b0268dd9c2743, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boneShape: 1
-  drawBones: 1
-  drawTripods: 0
-  boneSize: 1
-  tripodSize: 1
-  boneColor: {r: 0, g: 0, b: 1, a: 0.5}
-  m_Transforms:
-  - {fileID: 1530812661302489065}
-  - {fileID: 9034231132151731861}
-  - {fileID: 3439373386813888726}
-  - {fileID: 1249313310257486970}
-  - {fileID: 5641831268297279634}
-  - {fileID: 6624948781459028217}
-  - {fileID: 326532993791374468}
-  - {fileID: 1081508476012830206}
-  - {fileID: 2763808414685108496}
-  - {fileID: 9183447562790660194}
-  - {fileID: 1061100503415176110}
-  - {fileID: 4049617711390250607}
-  - {fileID: 349034912399719765}
-  - {fileID: 1795337373708772544}
-  - {fileID: 9092869119634999628}
-  - {fileID: 5815684710623573280}
-  - {fileID: 8538235437341956237}
-  - {fileID: 5517941486210360186}
-  - {fileID: 3783557338514687198}
-  - {fileID: 4106013988474042029}
-  - {fileID: 5962027101188705288}
-  - {fileID: 3203302250737229694}
-  - {fileID: 14306185631871676}
-  - {fileID: 8271584289344474763}
-  - {fileID: 3529004875590834088}
-  - {fileID: 367945884666345673}
-  - {fileID: 5427930045789320869}
-  - {fileID: 8036067355001372205}
-  - {fileID: 3199284703335216788}
-  - {fileID: 2235918043811507475}
-  - {fileID: 196132779496691489}
-  - {fileID: 5687199387066287578}
-  - {fileID: 6344665117965857500}
-  - {fileID: 4384480110166331659}
-  - {fileID: 982307533753956243}
-  - {fileID: 9040764430782668094}
-  - {fileID: 5139114576671020894}
-  - {fileID: 3161087703978081384}
-  - {fileID: 3246628582510596107}
-  - {fileID: 4983891494497966476}
-  - {fileID: 6747917616624077790}
-  - {fileID: 3441093294354345520}
-  - {fileID: 7857591762593861789}
-  - {fileID: 1754467196236719060}
-  - {fileID: 3524534781005891915}
-  - {fileID: 7783148084938079101}
-  - {fileID: 496608792086787994}
-  - {fileID: 8251027975316296076}
-  - {fileID: 6164775332121856191}
-  - {fileID: 2335141755195150234}
-  - {fileID: 659582412934498322}
-  - {fileID: 5894475382591316931}
-  - {fileID: 9124960542045605412}
-  - {fileID: 5649324457565839614}
-  - {fileID: 1470707729108637642}
-  - {fileID: 9004401305597822718}
-  - {fileID: 781377115880466246}
-  - {fileID: 1361980976842925644}
-  - {fileID: 6238981763508162282}
-  - {fileID: 8547229627403927102}
-  - {fileID: 3548847115440135836}
-  - {fileID: 4457089417725169227}
-  - {fileID: 9114423688710043303}
-  - {fileID: 533954218125744184}
-  - {fileID: 7421359376938966510}
 --- !u!143 &1121101745475900673
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1406,6 +1321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHp: 100
   _hp: 100
+  _minimapPoint: {fileID: 1450222140999683547}
 --- !u!114 &1121101745475900675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3851,8 +3767,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a768e5433c3d20d4980bb44713668e4c, type: 3}
-  m_Color: {r: 0, g: 1, b: 0.17284632, a: 1}
+  m_Sprite: {fileID: 21300000, guid: c1e073e429d82514b99becc85f6e0bd6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -3876,6 +3792,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PosAxisY: 20
   UsePositionDefault: 0
+  MinimapIcon: {fileID: 3684559381539149036}
+  MinimapIconAlive: {fileID: 21300000, guid: c1e073e429d82514b99becc85f6e0bd6, type: 3}
+  MinimapIconDead: {fileID: 21300000, guid: 90695853c75f8bd4ca098aff256e3238, type: 3}
 --- !u!1 &8565115427307855186
 GameObject:
   m_ObjectHideFlags: 0

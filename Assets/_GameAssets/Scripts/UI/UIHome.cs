@@ -11,6 +11,13 @@ public class UIHome : MonoBehaviour
     [SerializeField]
     private GameObject _highLineCharacterBtn;
 
+    [SerializeField]
+    private GameObject _highLineTutorialBtn;
+
+    [SerializeField]
+    private GameObject _highLineSettingBtn;
+
+
     [Header("Audio")]
     [SerializeField]
     private GameObject _audioOn;
@@ -87,6 +94,28 @@ public class UIHome : MonoBehaviour
         ClickButton(_highLineHomeBtn);
     }
 
+    public void Tutorial_button_on_click()
+    {
+        if (AudioManager.Instance)
+        {
+            AudioManager.Instance.PlaySfx(KeySound.UI);
+        }
+
+        EventDispatcher.Instance.PostEvent(EventID.OnTutorialPanel);
+        ClickButton(_highLineTutorialBtn);
+    }
+
+    public void Setting_button_on_click()
+    {
+        if (AudioManager.Instance)
+        {
+            AudioManager.Instance.PlaySfx(KeySound.UI);
+        }
+
+        EventDispatcher.Instance.PostEvent(EventID.OnSettingPanel);
+        ClickButton(_highLineSettingBtn);
+    }
+
 
     private void ClickButton(GameObject btn)
     {
@@ -99,5 +128,7 @@ public class UIHome : MonoBehaviour
         _highLinePlayBtn.SetActive(false);
         _highLineHomeBtn.SetActive(false);
         _highLineCharacterBtn.SetActive(false);
+        _highLineTutorialBtn.SetActive(false);
+        _highLineSettingBtn.SetActive(false);
     }
 }

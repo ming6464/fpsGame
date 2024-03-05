@@ -50,7 +50,6 @@ public class AudioManager : Singleton<AudioManager>
 
         int index = Random.Range(0, sound.SoundClip.Length);
         AudioSFX.PlayOneShot(sound.SoundClip[index], sound.Volume);
-        Debug.Log("Play Sfx");
     }
 
     public void PlaySfx(KeySound key, float ratio)
@@ -73,7 +72,6 @@ public class AudioManager : Singleton<AudioManager>
 
         int index = Random.Range(0, sound.SoundClip.Length);
         AudioSFX.PlayOneShot(sound.SoundClip[index], ratio * sound.Volume);
-        Debug.Log("Play Sfx");
     }
 
     public void PlayMusic(KeySound key)
@@ -98,7 +96,6 @@ public class AudioManager : Singleton<AudioManager>
         AudioMusic.clip = sound.SoundClip[index];
         AudioMusic.volume = sound.Volume;
         AudioMusic.Play();
-        Debug.Log("Play Music");
     }
 
     public void ActiveSfx()

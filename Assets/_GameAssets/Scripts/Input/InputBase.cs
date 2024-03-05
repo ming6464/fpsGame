@@ -249,7 +249,7 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""da219c09-8c43-4717-8c71-5097641dfbd8"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -260,7 +260,7 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""72f7df83-ac66-4bdd-9574-9816b04b2c4c"",
-                    ""path"": ""<Keyboard>/v"",
+                    ""path"": ""<Keyboard>/c"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -393,7 +393,7 @@ public partial class @InputBase : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""7d6054f0-c876-4736-939e-83210970e7ce"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

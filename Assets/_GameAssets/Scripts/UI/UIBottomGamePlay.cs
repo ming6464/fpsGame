@@ -12,6 +12,9 @@ public class UIBottomGamePlay : MonoBehaviour
     private Image _currentWeaponImg;
 
     [SerializeField]
+    private TextMeshProUGUI _currentFireModeText;
+
+    [SerializeField]
     private Image _slideReloadBullet;
 
     [SerializeField]
@@ -64,6 +67,7 @@ public class UIBottomGamePlay : MonoBehaviour
         EventDispatcher.Instance.RegisterListener(EventID.OnRelaxedHands, OnRelaxedHands);
         EventDispatcher.Instance.RegisterListener(EventID.OnReloadBullet, OnReloadBullet);
         EventDispatcher.Instance.RegisterListener(EventID.OnUpdateSupplyProgress, OnUpdateSupplyProgress);
+        EventDispatcher.Instance.RegisterListener(EventID.OnChangeFireMode, OnChangeFireMode);
     }
 
     private void OnUpdateSupplyProgress(object obj)
@@ -96,6 +100,7 @@ public class UIBottomGamePlay : MonoBehaviour
         _currentWeaponImg.sprite = (Sprite)obj;
         _slideReloadBullet.sprite = (Sprite)obj;
         _slideReloadBullet.fillAmount = 1f;
+        OnChangeFireMode(null);
     }
 
     private void OnchangeTotalBullets(object obj)
@@ -133,12 +138,28 @@ public class UIBottomGamePlay : MonoBehaviour
         {
             _bulletInfoCG.alpha = 0f;
             _slideReloadBullet.fillAmount = 1f;
+            OnChangeFireMode(null);
         }
         else
         {
             _bulletInfoCG.alpha = 1f;
             OnChangeBullets(msg.Bullets);
+            _currentFireModeText.gameObject.SetActive(true);
+            OnChangeFireMode(msg.FireModeKey);
         }
+    }
+
+    private void OnChangeFireMode(object obj)
+    {
+        if (obj == null)
+        {
+            _currentFireModeText.gameObject.SetActive(false);
+            return;
+        }
+
+        _currentFireModeText.gameObject.SetActive(true);
+        FireModeKEY key = (FireModeKEY)obj;
+        _currentFireModeText.text = key.ToString();
     }
 
     private void UnLinkEvent()
@@ -150,6 +171,7 @@ public class UIBottomGamePlay : MonoBehaviour
         EventDispatcher.Instance.RemoveListener(EventID.OnRelaxedHands, OnRelaxedHands);
         EventDispatcher.Instance.RemoveListener(EventID.OnReloadBullet, OnReloadBullet);
         EventDispatcher.Instance.RemoveListener(EventID.OnUpdateSupplyProgress, OnUpdateSupplyProgress);
+        EventDispatcher.Instance.RemoveListener(EventID.OnChangeFireMode, OnChangeFireMode);
     }
 
 #endregion
