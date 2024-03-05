@@ -34,6 +34,12 @@ public class UIPauseGame : MonoBehaviour
     [SerializeField]
     private GameObject _audioOff;
 
+    [SerializeField]
+    private GameObject _musicOn;
+
+    [SerializeField]
+    private GameObject _musicOff;
+
     private bool m_isOpenPauseGame;
     private bool m_isClosePauseGame;
 
@@ -70,6 +76,7 @@ public class UIPauseGame : MonoBehaviour
         _warningGameWin.SetActive(false);
         _warningGameLose.SetActive(false);
         LoadAudio();
+        LoadMusic();
     }
 
     private void OnShowResultGame(object obj)
@@ -199,6 +206,17 @@ public class UIPauseGame : MonoBehaviour
         LoadAudio();
     }
 
+    public void Music_button_on_click()
+    {
+        if (AudioManager.Instance)
+        {
+            AudioManager.Instance.PlaySfx(KeySound.UI);
+        }
+
+        SaveManager.MusicSound = !SaveManager.MusicSound;
+        LoadMusic();
+    }
+
     private void LoadAudio()
     {
         bool check = SaveManager.AudioSound;
@@ -213,6 +231,25 @@ public class UIPauseGame : MonoBehaviour
             else
             {
                 AudioManager.Instance.DisableSfx();
+            }
+        }
+    }
+
+    private void LoadMusic()
+    {
+        bool check = SaveManager.MusicSound;
+        _musicOn.SetActive(check);
+        _musicOff.SetActive(!check);
+        if (AudioManager.Instance)
+        {
+            if (check)
+            {
+                AudioManager.Instance.ActiveMusic();
+                AudioManager.Instance.PlayMusic(KeySound.Theme);
+            }
+            else
+            {
+                AudioManager.Instance.DisableMusic();
             }
         }
     }

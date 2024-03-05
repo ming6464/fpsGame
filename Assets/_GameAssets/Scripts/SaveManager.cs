@@ -14,6 +14,12 @@ public static class SaveManager
         set => PlayerPrefs.SetInt("AudioSound", value ? 1 : 0);
     }
 
+    public static bool MusicSound
+    {
+        get => PlayerPrefs.GetInt("MusicSound", 1) == 1;
+        set => PlayerPrefs.SetInt("MusicSound", value ? 1 : 0);
+    }
+
     public static bool FirstOpen
     {
         get => PlayerPrefs.GetInt("FirstOpen", 1) == 1;

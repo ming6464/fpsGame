@@ -169,5 +169,6 @@ public enum KeySound
     SCAR_H,
     SPAS12,
     Zombie_Scream,
-    UI
+    UI,
+    Theme
 }

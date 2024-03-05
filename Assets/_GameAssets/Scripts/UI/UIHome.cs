@@ -18,18 +18,25 @@ public class UIHome : MonoBehaviour
     private GameObject _highLineSettingBtn;
 
 
-    [Header("Audio")]
+    [Header("Audio-Music")]
     [SerializeField]
     private GameObject _audioOn;
 
     [SerializeField]
     private GameObject _audioOff;
 
+    [SerializeField]
+    private GameObject _musicOn;
+
+    [SerializeField]
+    private GameObject _musicOff;
+
     private void Start()
     {
         EventDispatcher.Instance.PostEvent(EventID.OnHomePanel);
         ClickButton(_highLineHomeBtn);
         LoadAudio();
+        LoadMusic();
     }
 
     public void Play_button_on_click()
@@ -54,6 +61,17 @@ public class UIHome : MonoBehaviour
         LoadAudio();
     }
 
+    public void Music_button_on_click()
+    {
+        if (AudioManager.Instance)
+        {
+            AudioManager.Instance.PlaySfx(KeySound.UI);
+        }
+
+        SaveManager.MusicSound = !SaveManager.MusicSound;
+        LoadMusic();
+    }
+
     private void LoadAudio()
     {
         bool check = SaveManager.AudioSound;
@@ -68,6 +86,25 @@ public class UIHome : MonoBehaviour
             else
             {
                 AudioManager.Instance.DisableSfx();
+            }
+        }
+    }
+
+    private void LoadMusic()
+    {
+        bool check = SaveManager.MusicSound;
+        _musicOn.SetActive(check);
+        _musicOff.SetActive(!check);
+        if (AudioManager.Instance)
+        {
+            if (check)
+            {
+                AudioManager.Instance.ActiveMusic();
+                AudioManager.Instance.PlayMusic(KeySound.Theme);
+            }
+            else
+            {
+                AudioManager.Instance.DisableMusic();
             }
         }
     }
