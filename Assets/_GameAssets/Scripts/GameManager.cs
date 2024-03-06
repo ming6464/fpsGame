@@ -120,6 +120,7 @@ public class GameManager : Singleton<GameManager>
             return;
         }
 
+        Debug.Log(character + " | " + SpawnPointPlayer.position);
         Instantiate(character,
             SpawnPointPlayer.position, Quaternion.identity);
         EventDispatcher.Instance.PostEvent(EventID.OnChangeAmountHero, 1);

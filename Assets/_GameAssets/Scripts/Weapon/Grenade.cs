@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [RequireComponent(typeof(GrenadeDamageSender))]
 public class Grenade : Weapon
@@ -60,6 +61,7 @@ public class Grenade : Weapon
     }
 
 
+    [Obsolete("Obsolete")]
     private void DelayDetonation()
     {
         _meshRenderer.enabled = false;
