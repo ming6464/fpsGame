@@ -18,6 +18,8 @@ public class Gun : Weapon
                     return m_weaponHolder.TotalBulletShotgun;
                 case WeaponKEY.Rifle:
                     return m_weaponHolder.TotalBulletRifle;
+                case WeaponKEY.Bazooka:
+                    return m_weaponHolder.TotalBulletBazooka;
             }
 
             return 0;
@@ -34,6 +36,9 @@ public class Gun : Weapon
                     break;
                 case WeaponKEY.Rifle:
                     m_weaponHolder.TotalBulletRifle = value;
+                    break;
+                case WeaponKEY.Bazooka:
+                    m_weaponHolder.TotalBulletBazooka = value;
                     break;
             }
 
@@ -167,7 +172,7 @@ public class Gun : Weapon
         if (AudioManager.Instance)
         {
             KeySound key = KeySound.Ak47;
-            switch (name)
+            switch (WeaponName)
             {
                 case "Bennelli_M4":
                     key = KeySound.Bennelli_M4;
@@ -186,6 +191,12 @@ public class Gun : Weapon
                     break;
                 case "SPAS12":
                     key = KeySound.SPAS12;
+                    break;
+                case "M72":
+                    key = KeySound.Grenade_M67;
+                    break;
+                case "RPG7":
+                    key = KeySound.Grenade_M67;
                     break;
             }
 
@@ -210,7 +221,24 @@ public class Gun : Weapon
             if (Physics.Raycast(ray, out RaycastHit hit, 200f, ~LayerMask.GetMask(m_weaponHolder.AvoidLayers)))
             {
                 endPos = hit.point;
-                m_damageSender.Send(hit.transform);
+
+                if (WeaponType != WeaponKEY.Bazooka)
+                {
+                    m_damageSender.Send(hit.transform);
+                }
+                else
+                {
+                    if (VFX_manager.Instance)
+                    {
+                        VFX_manager.Instance.PlayEffect(hit.point, VFXKEY.BazookaImpact);
+                    }
+
+                    foreach (Collider col in Physics.OverlapSphere(endPos, m_weaponInfo.ExplosionRadius))
+                    {
+                        m_damageSender.Send(col.transform);
+                    }
+                }
+
                 if (VFX_manager.Instance)
                 {
                     VFXKEY key = VFXKEY.None;

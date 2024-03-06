@@ -91,7 +91,7 @@ public class PlayerScript : MonoBehaviour
 
     private void Awake()
     {
-        GetComponent<PlayerDamageReceiver>().UpdateHpInfo(GameConfig.Instance.GetDataSave().Hp);
+        GetComponent<PlayerDamageReceiver>().UpdateHpInfo(GameConfig.Instance.GetDataSave().PlayerInfoSave.Hp);
         m_inputBase = new InputBase();
         m_mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
         m_cameraView1 = GameObject.FindGameObjectWithTag("Cam1").GetComponent<CinemachineVirtualCamera>();

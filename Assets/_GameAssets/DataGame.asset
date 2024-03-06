@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: DataGame
   m_EditorClassIdentifier: 
   DataSave:
-    Hp: 100
+    PlayerInfoSave:
+      Hp: 100
     BagInfo:
       WeaponNames: []
       TotalBulletRifle: 200
       TotalBulletShotgun: 50
       TotalBulletPistol: 50
+      TotalBulletBazooka: 100
   PlayerInfos:
   - Name: SWAT
     ObjectPrefab: {fileID: 3608284666767021371, guid: fd394fd97fd546249814ff79d2679184,
@@ -166,24 +168,64 @@ MonoBehaviour:
     ExplosionTime: 3
     ExplosionTimeout: 1.7
     ExplosionRadius: 5.5
+  - WeaponName: M72
+    WeaponType: 6
+    WeaponPrefab: {fileID: 7232983320326467018, guid: 64e57d89fa8e46b4193bbebc2b30bdd0,
+      type: 3}
+    Dame: 1000
+    IconWeapon: {fileID: 21300000, guid: 0ca0d7dfe37727f4f9390f11c46599b2, type: 3}
+    MagazineCapacity: 20
+    BulletsPerShot: 4
+    FireModeOption:
+    - FireModeType: 0
+      TimeResetFire: 1
+      FireTimes: 1
+      Spread: 3
+    - FireModeType: 2
+      TimeResetFire: 0.1
+      FireTimes: 1
+      Spread: 4.5
+    ExplosionTime: 3
+    ExplosionTimeout: 1.7
+    ExplosionRadius: 5.5
+  - WeaponName: RPG7
+    WeaponType: 6
+    WeaponPrefab: {fileID: 2045324498451225630, guid: 093a7609ffb679b4cb88afe019876e75,
+      type: 3}
+    Dame: 1000
+    IconWeapon: {fileID: 21300000, guid: 0ca0d7dfe37727f4f9390f11c46599b2, type: 3}
+    MagazineCapacity: 20
+    BulletsPerShot: 1
+    FireModeOption:
+    - FireModeType: 0
+      TimeResetFire: 1
+      FireTimes: 1
+      Spread: 1
+    - FireModeType: 2
+      TimeResetFire: 0.1
+      FireTimes: 1
+      Spread: 1
+    ExplosionTime: 3
+    ExplosionTimeout: 1.7
+    ExplosionRadius: 5.5
   ZoombieInfos:
   - Name: ZombieV1
     Damage: 20
-    MaxHP: 170
+    MaxHP: 200
     DistanceStop: 2
     AttackRange: 3
     DetectionRadiusWhenPatrolling: 15
     DetectionRadiusWhenChasing: 24
   - Name: ZombieV2
     Damage: 25
-    MaxHP: 140
+    MaxHP: 170
     DistanceStop: 2
     AttackRange: 3
     DetectionRadiusWhenPatrolling: 15
     DetectionRadiusWhenChasing: 24
   - Name: ZombieV3
     Damage: 17
-    MaxHP: 200
+    MaxHP: 230
     DistanceStop: 2
     AttackRange: 3
     DetectionRadiusWhenPatrolling: 15

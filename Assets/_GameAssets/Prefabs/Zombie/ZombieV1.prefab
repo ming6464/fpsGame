@@ -1464,6 +1464,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PosAxisY: 20
   UsePositionDefault: 0
+  Object: {fileID: 5425600381550438045}
   MinimapIcon: {fileID: 6947952878134997365}
   MinimapIconAlive: {fileID: 21300114, guid: b2ff3b281537fbc4d91af3e848afde5c, type: 3}
   MinimapIconDead: {fileID: 21300000, guid: 50f58619dfb84664c985d4deade4c947, type: 3}

@@ -37,6 +37,7 @@ public class WeaponHolder : MonoBehaviour
 
     public int TotalBulletShotgun;
     public int TotalBulletPistol;
+    public int TotalBulletBazooka;
 
     [Header("References")]
     [SerializeField]
@@ -52,7 +53,8 @@ public class WeaponHolder : MonoBehaviour
 
     public bool NeedSupplies => TotalBulletRifle < BagInfo.TotalBulletRifle
                                 || TotalBulletPistol < BagInfo.TotalBulletPistol ||
-                                TotalBulletShotgun < BagInfo.TotalBulletShotgun;
+                                TotalBulletShotgun < BagInfo.TotalBulletShotgun ||
+                                TotalBulletBazooka < BagInfo.TotalBulletBazooka;
 
     public BagInfo BagInfo;
 
@@ -66,6 +68,7 @@ public class WeaponHolder : MonoBehaviour
             TotalBulletRifle = BagInfo.TotalBulletRifle;
             TotalBulletShotgun = BagInfo.TotalBulletShotgun;
             TotalBulletPistol = BagInfo.TotalBulletPistol;
+            TotalBulletBazooka = BagInfo.TotalBulletBazooka;
             m_grenadeSlotIndex = _slotsInfo.Length - 1;
         }
     }
@@ -319,6 +322,7 @@ public class WeaponHolder : MonoBehaviour
         TotalBulletRifle = BagInfo.TotalBulletRifle;
         TotalBulletShotgun = BagInfo.TotalBulletShotgun;
         TotalBulletPistol = BagInfo.TotalBulletPistol;
+        TotalBulletBazooka = BagInfo.TotalBulletBazooka;
         for (int i = 0; i < 3; i++)
         {
             GetWeaponFromBag(i)?.GetComponent<Gun>().Supply();
@@ -488,5 +492,6 @@ public enum WeaponKEY
     Grenade = 2,
     Rifle,
     Shotgun,
-    Pistol
+    Pistol,
+    Bazooka
 }

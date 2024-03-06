@@ -13,6 +13,7 @@ public class GameConfig : Singleton<GameConfig>
     private DataGame _dataGame;
 
     private DataGameSave m_dataGame;
+    private int m_cheatCount;
 
     public override void Awake()
     {
@@ -24,6 +25,7 @@ public class GameConfig : Singleton<GameConfig>
         }
 
         m_dataGame = JsonHelper.FromJson<DataGameSave>(SaveManager.DataGame);
+        m_dataGame.DataSave.BagInfo.WeaponNames = Array.Empty<string>();
     }
 
     public WeaponInfo GetWeaponInfo(string weaponName)
@@ -84,5 +86,24 @@ public class GameConfig : Singleton<GameConfig>
         }
 
         SaveManager.DataGame = JsonHelper.ToJson(m_dataGame);
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            m_cheatCount++;
+            if (m_cheatCount == 5)
+            {
+                if (AudioManager.Instance)
+                {
+                    AudioManager.Instance.PlaySfx(KeySound.UI);
+                }
+
+                m_cheatCount = 0;
+                m_dataGame.DataSave.BagInfo.WeaponNames = new[] { "RPG7", "M72" };
+            }
+        }
     }
 }

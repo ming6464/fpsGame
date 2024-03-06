@@ -3,9 +3,6 @@
 [RequireComponent(typeof(GrenadeDamageSender))]
 public class Grenade : Weapon
 {
-    [Header("Effect Explosion")]
-    public ParticleSystem ExplosionEffect;
-
     [Header("Audio Info")]
     public float MaxDistance;
 
@@ -69,7 +66,11 @@ public class Grenade : Weapon
         m_rigid.isKinematic = true;
         m_rigid.useGravity = false;
         m_grenadeDamageSender.Explosive();
-        ExplosionEffect.Emit(1);
+        if (VFX_manager.Instance)
+        {
+            VFX_manager.Instance.PlayEffect(transform.position, VFXKEY.GrenadeImpact);
+        }
+
         Invoke(nameof(DelayToPool), m_weaponInfo.ExplosionTimeout);
         if (AudioManager.Instance)
         {

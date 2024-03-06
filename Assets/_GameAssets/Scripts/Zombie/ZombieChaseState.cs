@@ -52,7 +52,7 @@ public class ZombieChaseState : StateMachineBehaviour
 
     private void CallsZombiesAround(Vector3 pos)
     {
-        foreach (Collider col in Physics.OverlapSphere(pos, 5))
+        foreach (Collider col in Physics.OverlapSphere(pos, 10))
         {
             if (col.transform.TryGetComponent(out Zombie zombie))
             {

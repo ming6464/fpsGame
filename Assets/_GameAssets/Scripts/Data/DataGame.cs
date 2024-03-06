@@ -31,17 +31,24 @@ public class PlayerInfo
 [Serializable]
 public class DataSave
 {
-    public int Hp;
+    public PlayerInfoSave PlayerInfoSave;
     public BagInfo BagInfo;
+}
+
+[Serializable]
+public class PlayerInfoSave
+{
+    public int Hp;
 }
 
 [Serializable]
 public class BagInfo
 {
-    public string[] WeaponNames;
+    public string[] WeaponNames = new string[1];
     public int TotalBulletRifle = 200;
     public int TotalBulletShotgun = 50;
     public int TotalBulletPistol = 50;
+    public int TotalBulletBazooka = 50;
 }
 
 [Serializable]

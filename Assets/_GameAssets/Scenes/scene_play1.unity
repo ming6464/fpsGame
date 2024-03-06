@@ -2211,6 +2211,12 @@ MonoBehaviour:
   - VFXPrefab: {fileID: 9204588995197714793, guid: e54fc357047bc1d43a63940d100a943d,
       type: 3}
     Vfxkey: 6
+  - VFXPrefab: {fileID: 5481741220704899969, guid: 242de9e3b7bca0143b1ea9dc6627e5d3,
+      type: 3}
+    Vfxkey: 7
+  - VFXPrefab: {fileID: 5481741220704899969, guid: 242de9e3b7bca0143b1ea9dc6627e5d3,
+      type: 3}
+    Vfxkey: 8
 --- !u!4 &221676516
 Transform:
   m_ObjectHideFlags: 0
@@ -6832,7 +6838,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 35
-  orthographic: 0
+  orthographic: 1
   orthographic size: 9.3
   m_Depth: 10
   m_CullingMask:
@@ -6857,12 +6863,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 732926939}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -10.3, y: 42.4, z: -8}
+  m_LocalPosition: {x: 0, y: 42.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 750168634}
-  m_RootOrder: 14
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &732926944
 MonoBehaviour:
@@ -7022,7 +7028,6 @@ Transform:
   - {fileID: 330585546}
   - {fileID: 1995422170}
   - {fileID: 1039668810}
-  - {fileID: 732926943}
   - {fileID: 1306037378}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -9158,7 +9163,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 196015b000d9e4b42a0aff518b3d1de5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bbb2c09a27f0bad45b26d31c193223a7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11403,7 +11408,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 750168634}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1317863609
 GameObject:

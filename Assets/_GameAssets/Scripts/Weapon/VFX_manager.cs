@@ -40,9 +40,14 @@ public class VFX_manager : Singleton<VFX_manager>
             return m_obj.activeSelf && Vfxkey == key;
         }
 
-        public void SetPosRot(Vector3 pos, Vector3 dir)
+        public void SetPos(Vector3 pos)
         {
             m_obj.transform.position = pos;
+        }
+
+        public void SetPosRot(Vector3 pos, Vector3 dir)
+        {
+            SetPos(pos);
             m_obj.transform.forward = dir;
         }
 
@@ -90,6 +95,19 @@ public class VFX_manager : Singleton<VFX_manager>
     }
 
     [Obsolete("Obsolete")]
+    public void PlayEffect(Vector3 position, VFXKEY key)
+    {
+        VFXObject vfxObj = GetVFXObj(key);
+        if (vfxObj == null)
+        {
+            return;
+        }
+
+        vfxObj.SetPos(position);
+        vfxObj.Emit(1);
+    }
+
+    [Obsolete("Obsolete")]
     private VFXObject GetVFXObj(VFXKEY key)
     {
         VFXObject vfxObj = m_vfxObjects.Find(x => x.IsReady(key));
@@ -118,5 +136,7 @@ public enum VFXKEY
     SandImpact,
     StoneImpact,
     None,
-    FleshImpact
+    FleshImpact,
+    GrenadeImpact,
+    BazookaImpact
 }

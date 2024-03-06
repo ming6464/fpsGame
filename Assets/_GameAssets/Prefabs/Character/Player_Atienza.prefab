@@ -99,6 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PosAxisY: 20
   UsePositionDefault: 0
+  Object: {fileID: 2225418671301854056}
   MinimapIcon: {fileID: 116514505}
   MinimapIconAlive: {fileID: 21300000, guid: c1e073e429d82514b99becc85f6e0bd6, type: 3}
   MinimapIconDead: {fileID: 21300000, guid: 90695853c75f8bd4ca098aff256e3238, type: 3}
@@ -506,7 +507,7 @@ MonoBehaviour:
   SprintSpeed: 4.7
   RotationSmoothTime: 0.13
   SpeedChangeRate: 6
-  JumpHeight: 4
+  JumpHeight: 3
   Gravity: -15
   TimeJumpNext: 0.3
   AddForceTimeJumpUp: 0.1
