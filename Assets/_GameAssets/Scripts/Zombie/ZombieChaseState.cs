@@ -44,6 +44,21 @@ public class ZombieChaseState : StateMachineBehaviour
         }
 
         m_isFirstFrameExecuted = false;
+
+        animator.SetBool("IsPatrolling", false);
+
+        CallsZombiesAround(animator.transform.position);
+    }
+
+    private void CallsZombiesAround(Vector3 pos)
+    {
+        foreach (Collider col in Physics.OverlapSphere(pos, 5))
+        {
+            if (col.transform.TryGetComponent(out Zombie zombie))
+            {
+                zombie.CheckDistanceFromPlayer();
+            }
+        }
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

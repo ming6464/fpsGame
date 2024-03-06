@@ -14,6 +14,7 @@ public class Zombie : MonoBehaviour
     private ZombieDamageSender m_zombieDamageSender;
     private ZombieInfo m_zombieInfo;
     private Transform m_player;
+    private Animator m_animator;
 
     public float AttackRange => m_zombieInfo.AttackRange;
     public float DistanceStop => m_zombieInfo.DistanceStop;
@@ -26,6 +27,7 @@ public class Zombie : MonoBehaviour
 
     private void Awake()
     {
+        m_animator = GetComponent<Animator>();
         m_zombieInfo = GameConfig.Instance.GetZombieInfo(Name);
         _navMeshAgent = GetComponent<NavMeshAgent>();
         m_collider = GetComponent<Collider>();
@@ -108,6 +110,20 @@ public class Zombie : MonoBehaviour
         {
             m_zombieDamageSender.Send(m_player);
             Debug.Log("m_player is damaged");
+        }
+    }
+
+    public void CheckDistanceFromPlayer()
+    {
+        if (!m_player && !m_animator)
+        {
+            return;
+        }
+
+        float dis = Vector3.Distance(transform.position, m_player.position);
+        if (dis <= DetectionRadiusWhenChasing)
+        {
+            m_animator.SetBool("IsChasing", true);
         }
     }
 

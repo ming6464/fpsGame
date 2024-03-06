@@ -1,10 +1,28 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class ZombieDamageReceiver : DamageReceiver
 {
     [SerializeField]
     private MinimapPointScript _minimapPoint;
+
+    private Zombie m_zombie;
+
+    private void Awake()
+    {
+        m_zombie = transform.GetComponent<Zombie>();
+    }
+
+    public override void Reduct(float reduct)
+    {
+        if (_hp > 0 && m_zombie)
+        {
+            m_zombie.CheckDistanceFromPlayer();
+        }
+
+        base.Reduct(reduct);
+    }
 
     protected override void OnDead()
     {

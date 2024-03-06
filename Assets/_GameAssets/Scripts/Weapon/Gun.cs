@@ -45,9 +45,7 @@ public class Gun : Weapon
     public FireModeInfo CurrrentFireMode;
 
     [Header("MuzzleFlash")]
-    public Transform MuzzleFlashTf;
-
-    public ParticleSystem[] MuzzleFlashs;
+    public ParticleSystem MuzzleFlash;
 
     //gun
     private bool m_isTrigger;
@@ -165,14 +163,7 @@ public class Gun : Weapon
     [Obsolete("Obsolete")]
     protected virtual void OnFire()
     {
-        if (MuzzleFlashs.Length > 0)
-        {
-            foreach (ParticleSystem particleSystem in MuzzleFlashs)
-            {
-                particleSystem.Emit(1);
-            }
-        }
-
+        MuzzleFlash.Emit(1);
         if (AudioManager.Instance)
         {
             KeySound key = KeySound.Ak47;
@@ -250,7 +241,7 @@ public class Gun : Weapon
                 endPos = startPosRay + dirRay * 100;
             }
 
-            VFX_manager.Instance.PlayBullet(MuzzleFlashTf.position, endPos, VFXKEY.Bullet);
+            VFX_manager.Instance.PlayBullet(MuzzleFlash.transform.position, endPos, VFXKEY.Bullet);
         }
     }
 
@@ -349,10 +340,9 @@ public class Gun : Weapon
             return;
         }
 
-        EventDispatcher.Instance.PostEvent(EventID.OnChangeWeapon, new MsgWeapon
-        {
-            WeaponKey = WeaponType, WeaponIcon = WeaponIcon, Bullets = Bullets
-        });
+        EventDispatcher.Instance.PostEvent(EventID.OnChangeBullets, Bullets);
+
         EventDispatcher.Instance.PostEvent(EventID.OnchangeTotalBullets, TotalBullet);
+        m_isReloading = false;
     }
 }
